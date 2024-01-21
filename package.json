@@ -1,0 +1,16 @@
+{
+  "name": "inspecto",
+  "version": "1.0.0",
+  "description": "Indigo provides a subset of its API as wasm files.   \r Right now project already have a file `indigo-ketcher.js` which is compiled version of those APIs.",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.epam.com:epm-lstr/epm-lstr-chc/inspecto.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "types": "./indigo-ketcher.d.ts"
+}
