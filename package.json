@@ -2,12 +2,17 @@
   "name": "inspecto",
   "version": "1.0.0",
   "description": "Molecules checker",
-  "main": "build/index.js",
+  "main": "build/inspecto.umd.js",
   "source": "index.ts",
   "types": "build/types.d.ts",
+  "type": "module",
+  "module": "build/inspecto.js",
   "scripts": {
-    "build": "parcel build --no-source-maps --no-cache",
-    "lint": "eslint index.ts src/**/*.ts"
+    "build": "npm run build:bundle && npm run build:types",
+    "build:bundle": "vite build",
+    "build:types": "tsc --emitDeclarationOnly",
+    "lint": "eslint index.ts src/**/*.ts",
+    "prepare": "husky && husky install"
   },
   "repository": {
     "type": "git",
@@ -21,20 +26,26 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@parcel/packager-ts": "^2.11.0",
-    "@parcel/transformer-typescript-types": "^2.11.0",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
     "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
+    "husky": "^9.0.10",
     "inversify": "^6.0.2",
-    "parcel": "^2.11.0",
+    "lint-staged": "^15.2.1",
+    "prettier": "3.2.5",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "indigo-ketcher": "^1.16.0",
-    "reflect-metadata": "^0.2.1"
+    "reflect-metadata": "^0.2.1",
+    "vite": "^5.0.12"
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --fix",
+    "*.{ts,md}": "prettier --write"
   }
 }
