@@ -8,9 +8,8 @@
   "type": "module",
   "module": "build/inspecto.js",
   "scripts": {
-    "build": "npm run build:bundle && npm run build:types",
+    "build": "npm run build:bundle",
     "build:bundle": "vite build",
-    "build:types": "tsc --emitDeclarationOnly",
     "lint": "eslint index.ts src/**/*.ts",
     "prepare": "husky && husky install"
   },
