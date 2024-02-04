@@ -1,3 +1,3 @@
-import 'reflect-metadata'
+import "reflect-metadata";
 
-export * from './src/function'
+export * from "./src/function";

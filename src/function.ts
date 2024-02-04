@@ -1,3 +1,3 @@
-export type Test = () => number
+export type Test = () => number;
 
-export const TestFunction: Test = () => 42
+export const TestFunction: Test = () => 42;
