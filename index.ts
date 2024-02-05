@@ -1,8 +1,8 @@
 import { createContainer } from "./src/container";
-import { TOKENS, type IIndigoProcessor } from "@infrastructure";
+import { TOKENS, type IInspectoProcessor } from "@infrastructure";
 
 const container = createContainer();
 
-const Indigo = container.get<IIndigoProcessor>(TOKENS.INDIGO_PROCESSOR);
+const Inspecto = container.get<IInspectoProcessor>(TOKENS.INSPECTO_PROCESSOR);
 
-export default Indigo;
+export default Inspecto;
