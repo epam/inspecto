@@ -6,7 +6,9 @@ export interface IInspectoProcessor {
 }
 
 export interface IFileProvider {
-  getFileContent: (path: string) => Promise<string | ERRORS.WRONG_FILE_FORMAT>;
+  getFileContent: (
+    path: string,
+  ) => Promise<Buffer | ERRORS.WRONG_FILE_FORMAT | ERRORS.FILE_READING_FAILURE>;
 }
 
 export interface IIndigoProvider {
