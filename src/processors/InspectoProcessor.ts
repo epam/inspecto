@@ -5,7 +5,7 @@ import {
   IIndigoProvider,
   ERRORS,
   ERROR_MESSAGES,
-  IMoleculeCheckerProvider,
+  IRulesProcessor,
 } from "@infrastructure";
 import { inject, injectable } from "inversify";
 
@@ -15,11 +15,13 @@ export class InspectoProcessor implements IInspectoProcessor {
     @inject(TOKENS.FILE_PROVIDER) private readonly _fileProvide: IFileProvider,
     @inject(TOKENS.INDIGO_PROVIDER)
     private readonly _indigoProvider: IIndigoProvider,
-    @inject(TOKENS.MOLECULE_CHECKER_PROVIDER)
-    private readonly _moleculeChecker: IMoleculeCheckerProvider,
+    @inject(TOKENS.RULES_PROCESSOR)
+    private readonly _rulesProcessor: IRulesProcessor,
   ) {}
 
-  public async checkMoleculeFromFileForRules(path: string): Promise<string[]> {
+  public async applyRulesToMolMoleculeFromFile(
+    path: string,
+  ): Promise<string[]> {
     const moleculeFileContentResponse =
       await this._fileProvide.getFileContent(path);
     if (moleculeFileContentResponse === ERRORS.WRONG_FILE_FORMAT) {
@@ -29,16 +31,16 @@ export class InspectoProcessor implements IInspectoProcessor {
     }
   }
 
-  public async checkMoleculeForRules(): Promise<void> {}
+  public async applyRulesToMolMolecule(): Promise<void> {}
 
   private async _handleMoleculeChecking(molecule: string): Promise<string[]> {
     try {
       const ketMolecule =
         await this._indigoProvider.convertToKetFormat(molecule);
       const response =
-        await this._moleculeChecker.checkKetMolecule(ketMolecule);
+        await this._rulesProcessor.applyRulesToMolecule(ketMolecule);
 
-      return response as string[];
+      return response;
     } catch (error) {
       // throw a proper exception
       console.error(error);
