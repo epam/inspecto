@@ -4,9 +4,15 @@
   "description": "Molecules checker",
   "main": "build/inspecto.umd.js",
   "source": "index.ts",
-  "types": "build/types.d.ts",
   "type": "module",
   "module": "build/inspecto.js",
+  "files": ["build"],
+  "exports": {
+    ".": {
+      "import": "./build/inspecto.js",
+      "require": "./build/inspecto.umd.cjs"
+    }
+  },
   "scripts": {
     "build": "npm run build:bundle",
     "build:bundle": "vite build",

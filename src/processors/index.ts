@@ -1,1 +1,1 @@
-export * from "./IndigoProcessor";
+export * from "./InspectoProcessor";
