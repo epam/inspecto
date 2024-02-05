@@ -24,10 +24,13 @@ export class InspectoProcessor implements IInspectoProcessor {
   ): Promise<string[]> {
     const moleculeFileContentResponse =
       await this._fileProvide.getFileContent(path);
-    if (moleculeFileContentResponse === ERRORS.WRONG_FILE_FORMAT) {
+    if (
+      moleculeFileContentResponse === ERRORS.WRONG_FILE_FORMAT ||
+      moleculeFileContentResponse === ERRORS.FILE_READING_FAILURE
+    ) {
       throw new Error(ERROR_MESSAGES[moleculeFileContentResponse]);
     } else {
-      return await this._handleMoleculeChecking(moleculeFileContentResponse);
+      return [];
     }
   }
 
