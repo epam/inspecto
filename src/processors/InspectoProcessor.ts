@@ -5,6 +5,7 @@ import {
   IDataModelProcessor,
 } from "@infrastructure";
 import { inject, injectable } from "inversify";
+import { type Structure } from "../models";
 
 @injectable()
 export class InspectoProcessor implements IInspectoProcessor {
@@ -20,7 +21,10 @@ export class InspectoProcessor implements IInspectoProcessor {
       const ketMolecule =
         await this._converterProvider.convertToKetFormat(structure);
 
-      this._dataModelProcessor.createDataModel(ketMolecule);
+      const structureDataModel: Structure =
+        this._dataModelProcessor.createDataModel(ketMolecule);
+
+      console.log(JSON.stringify(structureDataModel.toJSON(), null, 2));
       return [];
     } catch (error) {
       // throw a proper exception
