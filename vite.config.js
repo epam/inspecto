@@ -7,6 +7,7 @@ export default defineConfig({
       '@infrastructure': resolve(__dirname, "src/infrastructure"),
       '@processors': resolve(__dirname, "src/processors"),
       '@providers': resolve(__dirname, "src/providers"),
+      '@models': resolve(__dirname, "src/models"),
     }
   },
   build: {

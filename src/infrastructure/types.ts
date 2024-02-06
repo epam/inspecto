@@ -1,3 +1,5 @@
+import { type Structure } from "../models";
+
 export interface IInspectoProcessor {
   applyRulesToMolecule: (structure: string) => Promise<string[]>;
 }
@@ -11,5 +13,9 @@ export interface IRulesProcessor {
 }
 
 export interface IDataModelProcessor {
-  createDataModel: (structure: string) => void;
+  createDataModel: (structure: string) => Structure;
+}
+
+export interface IPresentable {
+  toJSON: () => Record<string, unknown>;
 }
