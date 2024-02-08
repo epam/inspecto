@@ -1,4 +1,3 @@
-import { type IPresentable } from "../infrastructure/types";
 import { type Atom } from "./Atom";
 
 export enum BOND_TYPES {
@@ -8,7 +7,7 @@ export enum BOND_TYPES {
   AROMATIC = 4,
 }
 
-export class Bond implements IPresentable {
+export class Bond {
   constructor(
     private readonly type: BOND_TYPES,
     private readonly atoms: [Atom, Atom],
@@ -22,28 +21,6 @@ export class Bond implements IPresentable {
     return Math.sqrt(
       Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2),
     );
-  }
-
-  public toJSON(): Record<string, unknown> {
-    let type;
-
-    switch (this.type) {
-      case BOND_TYPES.SINGLE:
-        type = "Single";
-        break;
-      case BOND_TYPES.DOUBLE:
-        type = "Double";
-        break;
-      case BOND_TYPES.TRIPLE:
-        type = "Triple";
-        break;
-      default:
-        type = "Aromatic";
-    }
-    return {
-      type,
-      atoms: this.atoms.map((atom) => atom.toJSON()),
-    };
   }
 
   public toString(): string {
@@ -62,9 +39,6 @@ export class Bond implements IPresentable {
       default:
         type = "Aromatic";
     }
-    return `{
-      bondType: ${type},
-      atoms: ${this.atoms.map((atom) => atom.toString()).toString()}
-    }`;
+    return `{bond_type=${type} | atom_1=${this.atoms[0].toString()} | atom_2=${this.atoms[1].toString()}}`;
   }
 }
