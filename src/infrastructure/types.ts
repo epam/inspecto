@@ -1,15 +1,15 @@
-import { type Structure } from "../models";
+import { type Rule, type Structure } from "@models";
 
+export type InspectoResults = Record<string, string[]>;
 export interface IInspectoProcessor {
-  applyRulesToMolecule: (structure: string) => Promise<string[]>;
+  applyRulesToStructure: (
+    structure: string,
+    rules?: Rule[],
+  ) => Promise<InspectoResults>;
 }
 
 export interface IConverterProvider {
   convertToKetFormat: (structure: string) => Promise<string>;
-}
-
-export interface IRulesProcessor {
-  applyRulesToMolecule: (molecule: string) => Promise<string[]>;
 }
 
 export interface IDataModelProcessor {
@@ -19,3 +19,5 @@ export interface IDataModelProcessor {
 export interface IPresentable {
   toJSON: () => Record<string, unknown>;
 }
+
+export type RuleAlgoritm = (structure: Structure) => string[];
