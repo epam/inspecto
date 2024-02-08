@@ -4,15 +4,10 @@ import { Container } from "inversify";
 import {
   TOKENS,
   type IInspectoProcessor,
-  type IRulesProcessor,
   type IConverterProvider,
   type IDataModelProcessor,
 } from "@infrastructure";
-import {
-  DataModelProcessor,
-  InspectoProcessor,
-  RulesProcessor,
-} from "@processors";
+import { DataModelProcessor, InspectoProcessor } from "@processors";
 import { ConverterProvider } from "@providers";
 
 export const createContainer = (): Container => {
@@ -22,7 +17,6 @@ export const createContainer = (): Container => {
   container
     .bind<IInspectoProcessor>(TOKENS.INSPECTO_PROCESSOR)
     .to(InspectoProcessor);
-  container.bind<IRulesProcessor>(TOKENS.RULES_PROCESSOR).to(RulesProcessor);
   container
     .bind<IDataModelProcessor>(TOKENS.DATA_MODEL_PROCESSOR)
     .to(DataModelProcessor);
