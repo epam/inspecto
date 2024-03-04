@@ -26,7 +26,7 @@ As a result there is an updated package called 'inspecto' in the NPM dependecy g
 
 ### Inspecto API
 
-TODO: add API
+> See corresponded KB page to look through existing API.
 
 ## Development
 
@@ -60,3 +60,11 @@ This is an entity that is wrapper around API with physical I/O (file system and 
 - infrastrcture
 
 Contains required for the project structure entities, like, injection tokens, TS types and etc.
+
+- models
+
+Contains required entities for Data Modeling
+
+- utils
+
+Contain helping functions for calculations
