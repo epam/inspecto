@@ -8,6 +8,7 @@ export default defineConfig({
       '@processors': resolve(__dirname, "src/processors"),
       '@providers': resolve(__dirname, "src/providers"),
       '@models': resolve(__dirname, "src/models"),
+      '@utils': resolve(__dirname, "src/utils"),
     }
   },
   build: {

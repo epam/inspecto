@@ -1,12 +1,38 @@
-import { type IPresentable } from "../infrastructure/types";
 import { type Atom } from "./Atom";
-import { type Bond } from "./Bond";
+import { type BOND_TYPES, type Bond } from "./Bond";
+import { GRAPH_ERRORS, Graph } from "./Graph";
 
-export class Molecule implements IPresentable {
+export class Molecule {
+  private readonly _graphView: Graph<Atom, Bond>;
+
   constructor(
+    private readonly _molId: string,
     private readonly _atoms: Atom[],
     private readonly _bonds: Bond[],
-  ) {}
+  ) {
+    this._graphView = new Graph((atom) => atom.toString());
+
+    for (const atom of _atoms) {
+      this._graphView.addVertex(atom);
+    }
+
+    for (const bond of _bonds) {
+      this._graphView.addEdge(bond.from, bond.to, bond);
+    }
+  }
+
+  public get id(): string {
+    return this._molId;
+  }
+
+  /**
+   * It's used for for...of loops
+   */
+  public *atoms(): Generator<Atom> {
+    for (const atom of this._atoms) {
+      yield atom;
+    }
+  }
 
   /**
    * It's used for for...of loops
@@ -17,10 +43,29 @@ export class Molecule implements IPresentable {
     }
   }
 
-  public toJSON(): Record<string, unknown> {
-    return {
-      atoms: this._atoms.map((atom) => atom.toJSON()),
-      bonds: this._bonds.map((bond) => bond.toJSON()),
-    };
+  public filterBondsByType(bondType: BOND_TYPES): Bond[] {
+    return this._bonds.filter((bond) => bond.bondType === bondType);
+  }
+
+  public getAdjacentBonds(bond: Bond): Bond[] {
+    try {
+      const adjacentBondsFrom = this._graphView
+        .getAdjacentVertices(bond.from)
+        .filter(({ to: atom }) => atom !== bond.to)
+        .map((atom) => atom.edge);
+
+      const adjacentBondsTo = this._graphView
+        .getAdjacentVertices(bond.to)
+        .filter(({ to: atom }) => atom !== bond.from)
+        .map((atom) => atom.edge);
+
+      return [...adjacentBondsFrom, ...adjacentBondsTo];
+    } catch (error) {
+      if (error === GRAPH_ERRORS.VERTIX_IS_NOT_EXIST) {
+        throw new Error("Atom is not added to model");
+      }
+
+      throw error;
+    }
   }
 }

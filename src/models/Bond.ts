@@ -1,3 +1,4 @@
+import { getDistanceBetweenTwoAtoms } from "../utils/getDistanceBetweenTwoAtoms";
 import { type Atom } from "./Atom";
 
 export enum BOND_TYPES {
@@ -13,14 +14,20 @@ export class Bond {
     private readonly atoms: [Atom, Atom],
   ) {}
 
-  public getLength(): number {
-    const deltaX = this.atoms[0].x - this.atoms[1].x;
-    const deltaY = this.atoms[0].y - this.atoms[1].y;
-    const deltaZ = this.atoms[0].z - this.atoms[1].z;
+  public get from(): Atom {
+    return this.atoms[0];
+  }
 
-    return Math.sqrt(
-      Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaZ, 2),
-    );
+  public get to(): Atom {
+    return this.atoms[1];
+  }
+
+  public get bondType(): BOND_TYPES {
+    return this.type;
+  }
+
+  public getLength(): number {
+    return getDistanceBetweenTwoAtoms(...this.atoms);
   }
 
   public toString(): string {
