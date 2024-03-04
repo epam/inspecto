@@ -20,4 +20,4 @@ export interface IPresentable {
   toJSON: () => Record<string, unknown>;
 }
 
-export type RuleAlgoritm = (structure: Structure) => string[];
+export type RuleAlgorithm = (structure: Structure) => string[];

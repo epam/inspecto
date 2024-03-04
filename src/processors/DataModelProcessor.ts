@@ -18,7 +18,7 @@ export class DataModelProcessor implements IDataModelProcessor {
         const rawMoleculeKetData = rawKetData[molId] as RawKetMolecule;
         const atoms = this._createAtoms(rawMoleculeKetData.atoms);
         const bonds = this._createBonds(rawMoleculeKetData.bonds, atoms);
-        const molecule = new Molecule(atoms, bonds);
+        const molecule = new Molecule(molId, atoms, bonds);
 
         return [molId, molecule] as [string, Molecule];
       });
