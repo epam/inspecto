@@ -4,11 +4,12 @@ import {
   IConverterProvider,
   IDataModelProcessor,
   type InspectoResults,
+  ERROR_MESSAGES,
+  ERRORS,
 } from "@infrastructure";
 import { inject, injectable } from "inversify";
 import { type Structure } from "../models";
 import { type Rule } from "@models";
-import { defaultRules } from "../defaultRules";
 
 @injectable()
 export class InspectoProcessor implements IInspectoProcessor {
@@ -19,23 +20,44 @@ export class InspectoProcessor implements IInspectoProcessor {
     private readonly _dataModelProcessor: IDataModelProcessor,
   ) {}
 
-  public async applyRulesToStructure(
-    structure: string,
-    rules?: Rule[],
-  ): Promise<InspectoResults> {
+  public async convertFileContentToStructure(
+    fileContent: string | Buffer,
+  ): Promise<Structure> {
     try {
       const ketMolecule =
-        await this._converterProvider.convertToKetFormat(structure);
+        await this._converterProvider.convertToKetFormat(fileContent);
 
       const structureDataModel: Structure =
         this._dataModelProcessor.createDataModel(ketMolecule);
 
-      const targetRules = rules ?? defaultRules;
+      return structureDataModel;
+    } catch (error) {
+      // throw a proper exception
+      console.error(error);
+      throw error;
+    }
+  }
+
+  /**
+    @param rules: Rules[]
+  */
+  public async applyRulesToStructure(
+    rules: Rule[],
+    structure: Structure | string,
+  ): Promise<InspectoResults> {
+    try {
+      if (rules?.length === 0) {
+        throw new Error(ERROR_MESSAGES[ERRORS.RULES_ARE_REQUIRED_PROPERTY]);
+      }
+
+      if (typeof structure === "string" || Buffer.isBuffer(structure)) {
+        structure = await this.convertFileContentToStructure(structure);
+      }
 
       const output: InspectoResults = {};
 
-      for (const rule of targetRules) {
-        output[rule.name] = rule.applyRule(structureDataModel);
+      for (const rule of rules) {
+        output[rule.name] = rule.applyRule(structure);
       }
 
       return output;

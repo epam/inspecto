@@ -5,7 +5,7 @@ const container = createContainer();
 
 const Inspecto = container.get<IInspectoProcessor>(TOKENS.INSPECTO_PROCESSOR);
 
-export default Inspecto;
+export { Inspecto };
 
 export type { IInspectoProcessor };
 

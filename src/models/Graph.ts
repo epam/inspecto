@@ -1,5 +1,5 @@
 export enum GRAPH_ERRORS {
-  VERTIX_IS_NOT_EXIST = "There is no such vertex in graph",
+  VERTIX_DOES_NOT_EXIST = "There is no such vertex in graph",
 }
 
 export class Graph<TVertex extends object, TEdge extends object> {
@@ -46,6 +46,6 @@ export class Graph<TVertex extends object, TEdge extends object> {
       return output;
     }
 
-    throw new Error(GRAPH_ERRORS.VERTIX_IS_NOT_EXIST);
+    throw new Error(GRAPH_ERRORS.VERTIX_DOES_NOT_EXIST);
   }
 }
