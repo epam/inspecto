@@ -43,6 +43,10 @@ export class Molecule {
     }
   }
 
+  public getBondIndex(bond: Bond): number {
+    return this._bonds.indexOf(bond);
+  }
+
   public filterBondsByType(bondType: BOND_TYPES): Bond[] {
     return this._bonds.filter((bond) => bond.bondType === bondType);
   }
@@ -61,7 +65,7 @@ export class Molecule {
 
       return [...adjacentBondsFrom, ...adjacentBondsTo];
     } catch (error) {
-      if (error === GRAPH_ERRORS.VERTIX_IS_NOT_EXIST) {
+      if (error === GRAPH_ERRORS.VERTIX_DOES_NOT_EXIST) {
         throw new Error("Atom is not added to model");
       }
 

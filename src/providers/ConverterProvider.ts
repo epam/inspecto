@@ -4,7 +4,7 @@ import { type IConverterProvider } from "@infrastructure";
 
 @injectable()
 export class ConverterProvider implements IConverterProvider {
-  public async convertToKetFormat(structure: string): Promise<string> {
+  public async convertToKetFormat(structure: string | Buffer): Promise<string> {
     const indigo = await IndigoModule();
     const options = new indigo.MapStringString();
     const ket = indigo.convert(structure, "ket", options);
