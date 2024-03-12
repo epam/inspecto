@@ -2,15 +2,22 @@
 import { type Rule, type Structure } from "@models";
 
 export type RulesValidationResults = {
-  message: string;
+  message?: string;
   path: string;
 };
 
-export type InspectoResults = Record<string, RulesValidationResults[]>;
+export type InspectoResults = Record<
+  string,
+  {
+    hasErrors: boolean;
+    data: RulesValidationResults[];
+  }
+>;
+
 export interface IInspectoProcessor {
   convertFileContentToStructure: (fileContent: string) => Promise<Structure>;
   applyRulesToStructure: (
-    rules: Rule[],
+    rules: Array<Rule<any>>,
     structure: Structure,
   ) => Promise<InspectoResults>;
 }
@@ -27,4 +34,7 @@ export interface IPresentable {
   toJSON: () => Record<string, unknown>;
 }
 
-export type RuleAlgorithm = (structure: Structure) => RulesValidationResults[];
+export type RuleAlgorithm<TConfig> = (
+  structure: Structure,
+  config: TConfig,
+) => RulesValidationResults[];

@@ -38,11 +38,8 @@ export class InspectoProcessor implements IInspectoProcessor {
     }
   }
 
-  /**
-    @param rules: Rules[]
-  */
   public async applyRulesToStructure(
-    rules: Rule[],
+    rules: Array<Rule<any>>,
     structure: Structure | string,
   ): Promise<InspectoResults> {
     try {
@@ -57,7 +54,11 @@ export class InspectoProcessor implements IInspectoProcessor {
       const output: InspectoResults = {};
 
       for (const rule of rules) {
-        output[rule.name] = rule.applyRule(structure);
+        const data = rule.applyRule(structure);
+        output[rule.name] = {
+          hasErrors: !(data.length === 0),
+          data,
+        };
       }
 
       return output;
