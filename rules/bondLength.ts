@@ -1,17 +1,23 @@
-import { type RuleAlgorithm } from "@infrastructure";
-import { type Structure } from "@models";
+import { type RulesValidationResults, type RuleAlgorithm } from "@infrastructure";
 
-export const bondLengthAlgorithm: RuleAlgorithm = (structure: Structure) => {
-  const DEFAULT_LENGTH = 0.5;
-  const output: ReturnType<RuleAlgorithm> = [];
+export interface BondLengthAlgorithmType {
+  bondLength: number;
+  differenceError: number;
+}
+
+export const bondLengthAlgorithm: RuleAlgorithm<BondLengthAlgorithmType> = (
+  structure,
+  config,
+) => {
+  const output: RulesValidationResults[] = [];
 
   for (const molecule of structure) {
     for (const bond of molecule.bonds()) {
       const bondLength = bond.getLength();
 
-      if (Math.abs(bondLength - DEFAULT_LENGTH) > 0.01) {
+      if (Math.abs(bondLength - config.bondLength) > config.differenceError) {
         output.push({
-          message: "Bond Length Rule validation error",
+          message: `Bond Length Rule validation error`,
           path: `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`,
         });
       }

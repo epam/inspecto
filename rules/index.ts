@@ -1,6 +1,10 @@
 import { Rule } from "../src/models/Rule";
-import { bondLengthAlgorithm } from "./bondLength";
+import { bondLengthAlgorithm, type BondLengthAlgorithmType } from "./bondLength";
 
-const bondLengthRule = new Rule("Bond Length", bondLengthAlgorithm);
+const bondLengthRule = new Rule<BondLengthAlgorithmType>(
+  "Bond Length",
+  bondLengthAlgorithm,
+  { bondLength: 0.5, differenceError: 0.01 },
+);
 
 export { bondLengthRule };
