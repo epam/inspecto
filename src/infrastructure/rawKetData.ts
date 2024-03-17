@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
 // TODO: think about it once more time
-enum RawKetMoleculeType {
+export enum RawKetMoleculeType {
   MOLECULE = "molecule",
 }
 
@@ -17,7 +17,7 @@ export type RawKetBonds = {
 };
 
 export type RawKetMolecule = {
-  type: RawKetMoleculeType;
+  type: RawKetMoleculeType.MOLECULE;
   atoms: RawKetAtom[];
   bonds: RawKetBonds[];
 };
@@ -26,7 +26,9 @@ type Root = {
   nodes: Array<Record<"$ref", string>>;
 };
 
+export type RawKetChems = RawKetMolecule;
+
 export type RawKetData = {
   root: Root;
-  [key: string]: RawKetMolecule | Root;
+  [key: string]: RawKetChems | Root;
 };

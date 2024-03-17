@@ -1,15 +1,17 @@
+import { KetcherNode } from "./KetcherNode";
 import { type Atom } from "./Atom";
 import { type BOND_TYPES, type Bond } from "./Bond";
 import { GRAPH_ERRORS, Graph } from "./Graph";
 
-export class Molecule {
+export class Molecule extends KetcherNode {
   private readonly _graphView: Graph<Atom, Bond>;
 
   constructor(
-    private readonly _molId: string,
+    _molId: string,
     private readonly _atoms: Atom[],
     private readonly _bonds: Bond[],
   ) {
+    super(_molId);
     this._graphView = new Graph((atom) => atom.toString());
 
     for (const atom of _atoms) {
@@ -19,10 +21,6 @@ export class Molecule {
     for (const bond of _bonds) {
       this._graphView.addEdge(bond.from, bond.to, bond);
     }
-  }
-
-  public get id(): string {
-    return this._molId;
   }
 
   /**

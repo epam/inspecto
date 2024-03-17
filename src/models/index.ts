@@ -4,3 +4,4 @@ export * from "./Location";
 export * from "./Molecule";
 export * from "./Rule";
 export * from "./Structure";
+export * from "./KetcherNode";
