@@ -19,7 +19,10 @@ export interface IInspectoProcessor {
   applyRulesToStructure: (
     rules: Array<Rule<any>>,
     structure: Structure,
-  ) => Promise<InspectoResults>;
+  ) => Promise<{
+    validation: InspectoResults;
+    structure: Structure;
+  }>;
 }
 
 export interface IConverterProvider {

@@ -5,6 +5,7 @@ import {
   type RawKetBonds,
   RawKetMoleculeType,
   type RawKetChems,
+  type RawKetMolecule,
 } from "@infrastructure";
 import { injectable } from "inversify";
 import {
@@ -27,11 +28,7 @@ export class DataModelProcessor implements IDataModelProcessor {
 
         // TODO: create smart type definitions
         if (rawNodeData.type === RawKetMoleculeType.MOLECULE) {
-          const atoms = this._createAtoms(rawNodeData.atoms);
-          const bonds = this._createBonds(rawNodeData.bonds, atoms);
-          const molecule = new Molecule(nodeId, atoms, bonds);
-
-          return [nodeId, molecule] as [string, KetcherNode];
+          return this._createMolecule(nodeId, rawNodeData);
         }
 
         return [nodeId, null] as [string, null];
@@ -42,6 +39,17 @@ export class DataModelProcessor implements IDataModelProcessor {
       console.error(error);
       throw error;
     }
+  }
+
+  private _createMolecule(
+    nodeId: string,
+    rawNodeData: RawKetMolecule,
+  ): [string, KetcherNode] {
+    const atoms = this._createAtoms(rawNodeData.atoms);
+    const bonds = this._createBonds(rawNodeData.bonds, atoms);
+    const molecule = new Molecule(nodeId, atoms, bonds);
+
+    return [nodeId, molecule] as [string, KetcherNode];
   }
 
   private _createAtoms(rawKetAtoms: RawKetAtom[]): Atom[] {

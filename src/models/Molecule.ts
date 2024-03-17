@@ -2,6 +2,7 @@ import { KetcherNode } from "./KetcherNode";
 import { type Atom } from "./Atom";
 import { type BOND_TYPES, type Bond } from "./Bond";
 import { GRAPH_ERRORS, Graph } from "./Graph";
+import { RawKetMoleculeType } from "@infrastructure";
 
 export class Molecule extends KetcherNode {
   private readonly _graphView: Graph<Atom, Bond>;
@@ -11,7 +12,7 @@ export class Molecule extends KetcherNode {
     private readonly _atoms: Atom[],
     private readonly _bonds: Bond[],
   ) {
-    super(_molId);
+    super(_molId, RawKetMoleculeType.MOLECULE);
     this._graphView = new Graph((atom) => atom.toString());
 
     for (const atom of _atoms) {
