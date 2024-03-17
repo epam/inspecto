@@ -14,7 +14,7 @@ export const bondLengthAlgorithm: RuleAlgorithm<BondLengthAlgorithmType> = (
 ) => {
   const output: RulesValidationResults[] = [];
 
-  for (const molecule of structure) {
+  for (const molecule of structure.molecules()) {
     for (const bond of molecule.bonds()) {
       const bondLength = bond.getLength();
 

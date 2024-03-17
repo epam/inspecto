@@ -14,7 +14,7 @@ export const trippleBondAngleAlgorithm: RuleAlgorithm<
 > = (structure, config) => {
   const output: RulesValidationResults[] = [];
 
-  for (const molecule of structure) {
+  for (const molecule of structure.molecules()) {
     const trippleBonds = molecule.filterBondsByType(BOND_TYPES.TRIPLE);
 
     if (trippleBonds.length > 0) {
