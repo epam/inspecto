@@ -1,4 +1,7 @@
-import { type RulesValidationResults, type RuleAlgorithm } from "@infrastructure";
+import {
+  type RulesValidationResults,
+  type RuleAlgorithm,
+} from "@infrastructure";
 
 export interface BondLengthAlgorithmType {
   bondLength: number;

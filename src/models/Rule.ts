@@ -1,7 +1,7 @@
 import { type RuleAlgorithm } from "@infrastructure";
 import { type Structure } from "@models";
 
-export class Rule<TConfig extends Record<string, unknown>> {
+export class Rule<TConfig extends object> {
   private readonly _name: string;
   private readonly _algorithm: RuleAlgorithm<TConfig>;
   private _config: TConfig;
