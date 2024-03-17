@@ -1,24 +1,26 @@
 import { Molecule, type KetcherNode } from "@models";
 
 export class Structure {
-  private readonly nodes: Map<string, KetcherNode>;
+  private readonly _nodes: Map<string, KetcherNode>;
 
   constructor(moleculesMap: Array<[string, KetcherNode | null]>) {
     const filteredMoleculesMap = moleculesMap.filter(
       ([_, node]) => node !== null,
     ) as Array<[string, KetcherNode]>;
-    this.nodes = new Map(filteredMoleculesMap);
+    this._nodes = new Map(filteredMoleculesMap);
   }
 
   [Symbol.iterator](): Iterator<KetcherNode> {
-    return this.nodes.values();
+    return this._nodes.values();
   }
 
   public *molecules(): Generator<Molecule> {
-    for (const molecule of this.nodes.values()) {
-      if (molecule instanceof Molecule) {
-        yield molecule;
+    for (const node of this._nodes.values()) {
+      if (node instanceof Molecule) {
+        yield node;
       }
     }
   }
+
+  // public convertToKetFormat(): RawKetData {}
 }

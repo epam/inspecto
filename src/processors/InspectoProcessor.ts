@@ -41,7 +41,10 @@ export class InspectoProcessor implements IInspectoProcessor {
   public async applyRulesToStructure(
     rules: Array<Rule<any>>,
     structure: Structure | string,
-  ): Promise<InspectoResults> {
+  ): Promise<{
+    validation: InspectoResults;
+    structure: Structure;
+  }> {
     try {
       if (rules?.length === 0) {
         throw new Error(ERROR_MESSAGES[ERRORS.RULES_ARE_REQUIRED_PROPERTY]);
@@ -61,7 +64,10 @@ export class InspectoProcessor implements IInspectoProcessor {
         };
       }
 
-      return output;
+      return {
+        validation: output,
+        structure,
+      };
     } catch (error) {
       // throw a proper exception
       console.error(error);
