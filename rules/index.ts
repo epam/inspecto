@@ -1,5 +1,12 @@
 import { Rule } from "../src/models/Rule";
-import { bondLengthAlgorithm, type BondLengthAlgorithmType } from "./bondLength";
+import {
+  bondLengthAlgorithm,
+  type BondLengthAlgorithmType,
+} from "./bondLength";
+import {
+  trippleBondAngleAlgorithm,
+  type trippleBondAngleAlgorithmType,
+} from "./trippleBondAngle";
 
 const bondLengthRule = new Rule<BondLengthAlgorithmType>(
   "Bond Length",
@@ -7,4 +14,10 @@ const bondLengthRule = new Rule<BondLengthAlgorithmType>(
   { bondLength: 0.5, differenceError: 0.01 },
 );
 
-export { bondLengthRule };
+const trippleBondAngleRule = new Rule<trippleBondAngleAlgorithmType>(
+  "Tripple Bond Angle",
+  trippleBondAngleAlgorithm,
+  { angleDiffError: 0.5 },
+);
+
+export { bondLengthRule, trippleBondAngleRule };
