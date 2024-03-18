@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inspecto Demo</title>
+  </head>
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+    }
+    .wrapper {
+      display: flex;
+      gap: 12px;
+    }
+  </style>
+  <body>
+    <div class="wrapper">
+      <iframe
+        id="ketcher"
+        width="800"
+        height="600"
+        src="./ketcher/index.html"
+        frameborder="0"
+      ></iframe>
+      <section class="inspecto">
+        <h1>Inspecto</h1>
+        <button id="inspecto">Apply Rules</button>
+        <section class="validation-results"></section>
+      </section>
+    </div>
+
+    <script type="module">
+      import { Inspecto } from "../build/inspecto.js";
+      import { trippleBondAngleRule } from "../build/rules.js";
+
+      const button = document.getElementById('inspecto');
+      const ketcher = document.getElementById('ketcher').contentWindow.ketcher;
+
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        const ketFile = await ketcher.getKet();
+
+        const result = await Inspecto.applyRulesToStructure(
+          [trippleBondAngleRule],
+          ketFile
+        );
+
+        console.log(result);
+
+        button.disabled = false;
+      });
+    </script>
+  </body>
+</html>
