@@ -21,7 +21,8 @@
     "build": "npm run build:bundle",
     "build:bundle": "vite build",
     "lint": "eslint index.ts src/**/*.ts",
-    "prepare": "husky && husky install"
+    "prepare": "husky && husky install",
+    "demo": "vite --port 8000"
   },
   "repository": {
     "type": "git",
