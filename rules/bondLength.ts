@@ -20,7 +20,7 @@ export const bondLengthAlgorithm: RuleAlgorithm<BondLengthAlgorithmType> = (
 
       if (Math.abs(bondLength - config.bondLength) > config.differenceError) {
         output.push({
-          message: `Bond Length Rule validation error`,
+          message: `Bond Length Rule validation error: ${bond.getLength()}`,
           path: `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`,
         });
       }

@@ -8,16 +8,14 @@ import {
   type trippleBondAngleAlgorithmType,
 } from "./trippleBondAngle";
 
-const bondLengthRule = new Rule<BondLengthAlgorithmType>(
+export const bondLengthRule = new Rule<BondLengthAlgorithmType>(
   "Bond Length",
   bondLengthAlgorithm,
-  { bondLength: 0.5, differenceError: 0.01 },
+  { bondLength: 1, differenceError: 0.01 },
 );
 
-const trippleBondAngleRule = new Rule<trippleBondAngleAlgorithmType>(
+export const trippleBondAngleRule = new Rule<trippleBondAngleAlgorithmType>(
   "Tripple Bond Angle",
   trippleBondAngleAlgorithm,
   { angleDiffError: 0.5 },
 );
-
-export { bondLengthRule, trippleBondAngleRule };

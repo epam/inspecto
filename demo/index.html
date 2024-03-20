@@ -1,56 +1,121 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inspecto Demo</title>
-  </head>
-  <style>
-    body {
-      height: 100vh;
-      margin: 0;
-    }
-    .wrapper {
-      display: flex;
-      gap: 12px;
-    }
-  </style>
-  <body>
-    <div class="wrapper">
-      <iframe
-        id="ketcher"
-        width="800"
-        height="600"
-        src="./ketcher/index.html"
-        frameborder="0"
-      ></iframe>
-      <section class="inspecto">
-        <h1>Inspecto</h1>
-        <button id="inspecto">Apply Rules</button>
-        <section class="validation-results"></section>
-      </section>
-    </div>
 
-    <script type="module">
-      import { Inspecto } from "../build/inspecto.js";
-      import { trippleBondAngleRule } from "../build/rules.js";
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inspecto Demo</title>
+</head>
+<style>
+  body {
+    height: 100vh;
+    margin: 0;
+  }
 
-      const button = document.getElementById('inspecto');
+  .wrapper {
+    display: flex;
+    gap: 12px;
+  }
+
+  .success {
+    color: green;
+  }
+
+  #inspecto {
+    margin: 12px 0;
+    display: block;
+  }
+
+  .rule-config {
+    margin-bottom: 12px;
+  }
+</style>
+
+<body>
+  <div class="wrapper">
+    <iframe id="ketcher" width="800" height="600" src="./ketcher/index.html" frameborder="0"></iframe>
+    <section class="inspecto">
+      <h1>Inspecto</h1>
+      <h2>Rules Configuration</h2>
+
+      <h3>Tripple Bond Angle</h3>
+      <label for="angleDiffError">Angle Difference Error</label>
+      <input type="text" id="angleDiffError" value="0.5">
+
+      <h3>Bond Length</h3>
+      <div class="rule-config">
+        <label for="angleDiffError">Bond Length Difference Error</label>
+        <input type="text" id="bondLengthDifferenceError" value="0.01">
+      </div>
+      <div class="rule-config">
+        <label for="angleDiffError">Default Bond Length </label>
+        <input type="text" id="defaultBondLength" value="1">
+      </div>
+
+      <button id="inspecto">Apply Rules</button>
+      <section class="validation-results"></section>
+    </section>
+  </div>
+
+  <script type="module">
+    // TODO: refactor it
+    import { Inspecto } from "../build/inspecto.js";
+    import { trippleBondAngleRule, bondLengthRule } from "../build/rules.js";
+
+    const button = document.getElementById('inspecto');
+
+    button.addEventListener('click', async () => {
+      const results = document.querySelector('.validation-results');
       const ketcher = document.getElementById('ketcher').contentWindow.ketcher;
+      const ketFile = await ketcher.getKet();
 
-      button.addEventListener('click', async () => {
-        button.disabled = true;
-        const ketFile = await ketcher.getKet();
+      results.innerHTML = '';
+      button.disabled = true;
 
-        const result = await Inspecto.applyRulesToStructure(
-          [trippleBondAngleRule],
-          ketFile
-        );
-
-        console.log(result);
-
-        button.disabled = false;
+      trippleBondAngleRule.updateConfig({
+        angleDiffError: document.querySelector('#angleDiffError').value,
       });
-    </script>
-  </body>
+
+      bondLengthRule.updateConfig({
+        bondLength: document.querySelector('#defaultBondLength').value, 
+        differenceError: document.querySelector('#bondLengthDifferenceError').value
+      });
+
+      const result = await Inspecto.applyRulesToStructure(
+        [trippleBondAngleRule, bondLengthRule],
+        ketFile
+      );
+
+      for (const ruleName of Object.keys(result.validation)) {
+        const ruleValidationNode = document.createElement('div');
+        const ruleNameNode = document.createElement('h2');
+        ruleNameNode.textContent = ruleName;
+        ruleValidationNode.appendChild(ruleNameNode);
+
+        const { data, hasErrors } = result.validation[ruleName];
+
+        if (hasErrors) {
+          const dataNode = document.createElement('div');
+
+          for (const { message, path } of data) {
+            dataNode.innerHTML += `<b>Path:</b> ${path}<br/>`;
+            dataNode.innerHTML += `<b>Message:</b> ${message}<br/>`;
+            dataNode.innerHTML += `<br/>`;
+          }
+          ruleValidationNode.appendChild(dataNode);
+        } else {
+          const success = document.createElement('div');
+          success.classList.add('success');
+          success.textContent = 'Inspecto rules are satisfied'
+          ruleValidationNode.appendChild(success);
+        }
+
+        results.appendChild(ruleValidationNode);
+      }
+
+      button.disabled = false;
+    });
+  </script>
+</body>
+
 </html>
