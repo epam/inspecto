@@ -1,4 +1,4 @@
-import { Rule } from "../src/models/Rule";
+import { Rule } from "./models";
 import {
   bondLengthAlgorithm,
   type BondLengthAlgorithmType,
@@ -19,3 +19,5 @@ export const trippleBondAngleRule = new Rule<trippleBondAngleAlgorithmType>(
   trippleBondAngleAlgorithm,
   { angleDiffError: 0.5 },
 );
+
+export { Rule };

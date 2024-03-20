@@ -9,6 +9,6 @@ export { Inspecto };
 
 export type { IInspectoProcessor };
 
-export { Rule, Structure, BOND_TYPES } from "@models";
+export { Structure, BOND_TYPES } from "@models";
 
 export * from "@utils";

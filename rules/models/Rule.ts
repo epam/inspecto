@@ -30,4 +30,8 @@ export class Rule<TConfig extends object> {
       ...config,
     };
   }
+
+  public get config(): TConfig {
+    return JSON.parse(JSON.stringify(this._config));
+  }
 }

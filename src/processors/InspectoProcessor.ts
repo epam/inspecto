@@ -9,7 +9,7 @@ import {
 } from "@infrastructure";
 import { inject, injectable } from "inversify";
 import { type Structure } from "../models";
-import { type Rule } from "@models";
+import { type Rule } from "@rules";
 
 @injectable()
 export class InspectoProcessor implements IInspectoProcessor {

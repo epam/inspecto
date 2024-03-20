@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { type Rule, type Structure } from "@models";
+import { type Structure } from "@models";
+import { type Rule } from "@rules";
 
 export type RulesValidationResults = {
   message?: string;
