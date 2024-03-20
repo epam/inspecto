@@ -9,6 +9,7 @@ export default defineConfig({
       "@providers": resolve(__dirname, "src/providers"),
       "@models": resolve(__dirname, "src/models"),
       "@utils": resolve(__dirname, "src/utils"),
+      "@rules": resolve(__dirname, "rules"),
     },
   },
   build: {

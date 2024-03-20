@@ -40,7 +40,7 @@
 
       <h3>Tripple Bond Angle</h3>
       <label for="angleDiffError">Angle Difference Error</label>
-      <input type="text" id="angleDiffError" value="0.5">
+      <input type="text" id="angleDiffError">
 
       <h3>Bond Length</h3>
       <div class="rule-config">
@@ -61,6 +61,9 @@
     // TODO: refactor it
     import { Inspecto } from "../build/inspecto.js";
     import { trippleBondAngleRule, bondLengthRule } from "../build/rules.js";
+
+    // setup default values
+    document.querySelector('#angleDiffError').value = trippleBondAngleRule.config.angleDiffError;
 
     const button = document.getElementById('inspecto');
 
