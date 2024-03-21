@@ -39,16 +39,22 @@
       <h2>Rules Configuration</h2>
 
       <h3>Tripple Bond Angle</h3>
-      <label for="angleDiffError">Angle Difference Error</label>
-      <input type="text" id="angleDiffError">
+      <div class="rule-config">
+        <label for="angleDiffError">Angle Difference Error</label>
+        <input type="text" id="angleDiffError">
+      </div>
+      <div class="rule-config">
+        <label for="fixingRule">Fixing Rule?</label>
+        <input type="checkbox" id="fixingRule">
+      </div>
 
       <h3>Bond Length</h3>
       <div class="rule-config">
-        <label for="angleDiffError">Bond Length Difference Error</label>
+        <label for="bondLengthDifferenceError">Bond Length Difference Error</label>
         <input type="text" id="bondLengthDifferenceError" value="0.01">
       </div>
       <div class="rule-config">
-        <label for="angleDiffError">Default Bond Length </label>
+        <label for="defaultBondLength">Default Bond Length </label>
         <input type="text" id="defaultBondLength" value="1">
       </div>
 
@@ -64,6 +70,11 @@
 
     // setup default values
     document.querySelector('#angleDiffError').value = trippleBondAngleRule.config.angleDiffError;
+    document.querySelector('#fixingRule').checked = trippleBondAngleRule.config.fixingRule;
+
+    document.querySelector('#bondLengthDifferenceError').value = bondLengthRule.config.differenceError;
+    document.querySelector('#defaultBondLength').value = bondLengthRule.config.bondLength;
+
 
     const button = document.getElementById('inspecto');
 
@@ -77,6 +88,7 @@
 
       trippleBondAngleRule.updateConfig({
         angleDiffError: document.querySelector('#angleDiffError').value,
+        fixingRule: document.querySelector('#fixingRule').checked
       });
 
       bondLengthRule.updateConfig({
@@ -114,6 +126,11 @@
         }
 
         results.appendChild(ruleValidationNode);
+      }
+
+      if (document.querySelector('#fixingRule').checked) {
+        const fragment = JSON.stringify(result.structure.convertToKetFormat());
+        ketcher.setMolecule(fragment);
       }
 
       button.disabled = false;
