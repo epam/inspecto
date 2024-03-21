@@ -2,7 +2,7 @@ import { KetcherNode } from "./KetcherNode";
 import { type Atom } from "./Atom";
 import { type BOND_TYPES, type Bond } from "./Bond";
 import { GRAPH_ERRORS, Graph } from "./Graph";
-import { type RawKetMolecule, RawKetMoleculeType } from "@infrastructure";
+import { RawKetMoleculeType } from "@infrastructure";
 
 export class Molecule extends KetcherNode {
   private readonly _graphView: Graph<Atom, Bond>;
@@ -70,13 +70,5 @@ export class Molecule extends KetcherNode {
 
       throw error;
     }
-  }
-
-  public toKetFormat(): RawKetMolecule {
-    return {
-      type: this._type,
-      atoms: this._atoms.map((atom) => atom.toKetFormat()),
-      bonds: this._bonds.map((bond) => bond.toKetFormat()),
-    };
   }
 }

@@ -1,4 +1,3 @@
-import { type RawKetAtom } from "@infrastructure";
 import { Location } from "./Location";
 
 export enum CHARGE {
@@ -23,6 +22,10 @@ export class Atom {
 
   public get z(): number {
     return this._location.z;
+  }
+
+  public get label(): string {
+    return this._label;
   }
 
   public get vector(): [number, number, number] {
@@ -50,12 +53,5 @@ export class Atom {
       z ?? this._location.z,
     );
     this._location = newLocation;
-  }
-
-  public toKetFormat(): RawKetAtom {
-    return {
-      label: this._label,
-      location: this.vector,
-    };
   }
 }

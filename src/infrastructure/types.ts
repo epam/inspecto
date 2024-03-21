@@ -24,6 +24,7 @@ export interface IInspectoProcessor {
     validation: InspectoResults;
     structure: Structure;
   }>;
+  structureToKet: (structure: Structure) => string;
 }
 
 export interface IConverterProvider {
@@ -32,6 +33,7 @@ export interface IConverterProvider {
 
 export interface IDataModelProcessor {
   createDataModel: (structure: string) => Structure;
+  dataModelToKet: (structure: Structure) => string;
 }
 
 export interface IPresentable {

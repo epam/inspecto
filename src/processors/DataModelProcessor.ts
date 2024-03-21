@@ -41,6 +41,20 @@ export class DataModelProcessor implements IDataModelProcessor {
     }
   }
 
+  public dataModelToKet(structure: Structure): string {
+    const result: RawKetData = {
+      root: { nodes: [] },
+    };
+
+    for (const node of structure.nodes()) {
+      const [$ref, ketcherNode] = node;
+      result.root.nodes.push({ $ref });
+      result[$ref] = this._ketcherNodeToKet(ketcherNode);
+    }
+
+    return JSON.stringify(result);
+  }
+
   private _createMolecule(
     nodeId: string,
     rawNodeData: RawKetMolecule,
@@ -67,5 +81,32 @@ export class DataModelProcessor implements IDataModelProcessor {
         atomsIndexes,
       );
     });
+  }
+
+  private _ketcherNodeToKet(ketcherNode: KetcherNode): RawKetChems {
+    // Hack, fix it
+    const result = { type: ketcherNode.type } as unknown as RawKetChems;
+    // TODO: add proper types coersion
+    if (ketcherNode.type === RawKetMoleculeType.MOLECULE) {
+      const atoms: RawKetAtom[] = [];
+      const bonds: RawKetBonds[] = [];
+
+      for (const atom of (ketcherNode as Molecule).atoms()) {
+        atoms.push({
+          label: atom.label,
+          location: atom.vector,
+        });
+      }
+
+      for (const bond of (ketcherNode as Molecule).bonds()) {
+        bonds.push({
+          type: bond.bondType,
+          atoms: bond.atomsIndexes,
+        });
+      }
+      return { type: ketcherNode.type, atoms, bonds };
+    }
+
+    return result;
   }
 }

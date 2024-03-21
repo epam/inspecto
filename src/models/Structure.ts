@@ -1,4 +1,3 @@
-import { type RawKetData } from "@infrastructure";
 import { Molecule, type KetcherNode } from "@models";
 
 export class Structure {
@@ -15,25 +14,15 @@ export class Structure {
     return this._nodes.values();
   }
 
+  public nodes(): IterableIterator<[string, KetcherNode]> {
+    return this._nodes.entries();
+  }
+
   public *molecules(): Generator<Molecule> {
     for (const node of this._nodes.values()) {
       if (node instanceof Molecule) {
         yield node;
       }
     }
-  }
-
-  public convertToKetFormat(): RawKetData {
-    const result: RawKetData = {
-      root: { nodes: [] },
-    };
-
-    Array.from(this._nodes.entries()).forEach((entry) => {
-      const [$ref, ketcherNode] = entry;
-      result.root.nodes.push({ $ref });
-      result[$ref] = ketcherNode.toKetFormat();
-    });
-
-    return result;
   }
 }

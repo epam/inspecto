@@ -129,8 +129,9 @@
       }
 
       if (document.querySelector('#fixingRule').checked) {
-        const fragment = JSON.stringify(result.structure.convertToKetFormat());
-        ketcher.setMolecule(fragment);
+        const molecule = Inspecto.structureToKet(result.structure);
+        console.log(molecule);
+        ketcher.setMolecule(molecule);
       }
 
       button.disabled = false;
