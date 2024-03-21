@@ -1,4 +1,4 @@
-import { type RawKetChems, type RawKetMoleculeType } from "@infrastructure";
+import { type RawKetMoleculeType } from "@infrastructure";
 
 export abstract class KetcherNode {
   protected readonly _id: string;
@@ -16,6 +16,4 @@ export abstract class KetcherNode {
   public get type(): RawKetMoleculeType {
     return this._type;
   }
-
-  public abstract toKetFormat(): RawKetChems;
 }

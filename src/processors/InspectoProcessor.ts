@@ -74,4 +74,8 @@ export class InspectoProcessor implements IInspectoProcessor {
       throw error;
     }
   }
+
+  public structureToKet(structure: Structure): string {
+    return this._dataModelProcessor.dataModelToKet(structure);
+  }
 }

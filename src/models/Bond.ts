@@ -1,4 +1,3 @@
-import { type RawKetBonds } from "../infrastructure/rawKetData";
 import { getDistanceBetweenTwoAtoms } from "../utils/getDistanceBetweenTwoAtoms";
 import { type Atom } from "./Atom";
 
@@ -32,6 +31,10 @@ export class Bond {
     return getDistanceBetweenTwoAtoms(...this.atoms);
   }
 
+  public get atomsIndexes(): [number, number] {
+    return this._atomsIndexes;
+  }
+
   public toString(): string {
     let type;
 
@@ -49,12 +52,5 @@ export class Bond {
         type = "Aromatic";
     }
     return `{bond_type=${type} | atom_1=${this.atoms[0].toString()} | atom_2=${this.atoms[1].toString()}}`;
-  }
-
-  public toKetFormat(): RawKetBonds {
-    return {
-      type: this.bondType,
-      atoms: this._atomsIndexes,
-    };
   }
 }
