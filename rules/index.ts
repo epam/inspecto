@@ -17,7 +17,7 @@ export const bondLengthRule = new Rule<BondLengthAlgorithmType>(
 export const trippleBondAngleRule = new Rule<trippleBondAngleAlgorithmType>(
   "Tripple Bond Angle",
   trippleBondAngleAlgorithm,
-  { angleDiffError: 0.5 },
+  { angleDiffError: 0.5, fixingRule: false },
 );
 
 export { Rule };

@@ -1,4 +1,5 @@
-import { type Location } from "./Location";
+import { type RawKetAtom } from "@infrastructure";
+import { Location } from "./Location";
 
 export enum CHARGE {
   POSITIVE = 1,
@@ -8,7 +9,7 @@ export enum CHARGE {
 export class Atom {
   constructor(
     private readonly _label: string,
-    private readonly _location: Location,
+    private _location: Location,
     private readonly charge?: CHARGE,
   ) {}
 
@@ -37,5 +38,24 @@ export class Atom {
         : "neutral";
 
     return `{label=${this._label};location=${this._location.toString()};charge=${charge}}`;
+  }
+
+  public changePosition(x: number): void;
+  public changePosition(x: number, y: number): void;
+  public changePosition(x: number, y: number, z: number): void;
+  public changePosition(x: number, y?: number, z?: number): void {
+    const newLocation = new Location(
+      x,
+      y ?? this._location.y,
+      z ?? this._location.z,
+    );
+    this._location = newLocation;
+  }
+
+  public toKetFormat(): RawKetAtom {
+    return {
+      label: this._label,
+      location: this.vector,
+    };
   }
 }

@@ -3,10 +3,11 @@ import {
   type RuleAlgorithm,
 } from "@infrastructure";
 import { BOND_TYPES } from "@models";
-import { getAngleBetweenBonds } from "@utils";
+import { getAngleBetweenBonds, getCommonAtomInAdjacentBonds } from "@utils";
 
 export interface trippleBondAngleAlgorithmType {
   angleDiffError: number;
+  fixingRule?: boolean;
 }
 
 export const trippleBondAngleAlgorithm: RuleAlgorithm<
@@ -30,6 +31,29 @@ export const trippleBondAngleAlgorithm: RuleAlgorithm<
                 `${molecule.id}->bonds->${molecule.getBondIndex(adjacentBond)}`,
               path: `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`,
             });
+
+            if (config.fixingRule ?? false) {
+              const commonAtom = getCommonAtomInAdjacentBonds(
+                bond,
+                adjacentBond,
+              );
+
+              if (commonAtom != null) {
+                const coordsOrigin =
+                  bond.to === commonAtom ? bond.from : bond.to;
+                const x1 = commonAtom.x - coordsOrigin.x;
+                const y1 = commonAtom.y - coordsOrigin.y;
+                const l1 = bond.getLength();
+                const l2 = adjacentBond.getLength();
+                const x2 = x1 * (1 + l2 / l1) + coordsOrigin.x;
+                const y2 = y1 * (1 + l2 / l1) + coordsOrigin.y;
+                const targetAtom =
+                  adjacentBond.to === commonAtom
+                    ? adjacentBond.from
+                    : adjacentBond.to;
+                targetAtom.changePosition(x2, y2);
+              }
+            }
           }
         }
       }

@@ -61,7 +61,11 @@ export class DataModelProcessor implements IDataModelProcessor {
 
   private _createBonds(rawKetBonds: RawKetBonds[], atoms: Atom[]): Bond[] {
     return rawKetBonds.map(({ type, atoms: atomsIndexes }) => {
-      return new Bond(type, [atoms[atomsIndexes[0]], atoms[atomsIndexes[1]]]);
+      return new Bond(
+        type,
+        [atoms[atomsIndexes[0]], atoms[atomsIndexes[1]]],
+        atomsIndexes,
+      );
     });
   }
 }
