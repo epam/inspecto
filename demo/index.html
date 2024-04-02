@@ -66,7 +66,7 @@
   <script type="module">
     // TODO: refactor it
     import { Inspecto } from "../build/inspecto.js";
-    import { trippleBondAngleRule, bondLengthRule } from "../build/rules.js";
+    import { trippleBondAngleRule, bondLengthRule, overlappingBonds } from "../build/rules.js";
 
     // setup default values
     document.querySelector('#angleDiffError').value = trippleBondAngleRule.config.angleDiffError;
@@ -97,7 +97,7 @@
       });
 
       const result = await Inspecto.applyRulesToStructure(
-        [trippleBondAngleRule, bondLengthRule],
+        [trippleBondAngleRule, bondLengthRule, overlappingBonds],
         ketFile
       );
 
