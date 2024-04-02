@@ -7,6 +7,10 @@ import {
   trippleBondAngleAlgorithm,
   type trippleBondAngleAlgorithmType,
 } from "./trippleBondAngle";
+import {
+  overlappingBondsAlgorithm,
+  type OverlappingBondsConfigType,
+} from "./overlappingBonds";
 
 export const bondLengthRule = new Rule<BondLengthAlgorithmType>(
   "Bond Length",
@@ -18,6 +22,12 @@ export const trippleBondAngleRule = new Rule<trippleBondAngleAlgorithmType>(
   "Tripple Bond Angle",
   trippleBondAngleAlgorithm,
   { angleDiffError: 0.5, fixingRule: false },
+);
+
+export const overlappingBonds = new Rule<OverlappingBondsConfigType>(
+  "Overlapping Bonds",
+  overlappingBondsAlgorithm,
+  {},
 );
 
 export { Rule };
