@@ -4,11 +4,11 @@ import { resolve } from "node:path";
 export default defineConfig({
   resolve: {
     alias: {
-      "@infrastructure": resolve(__dirname, "src/infrastructure"),
-      "@processors": resolve(__dirname, "src/processors"),
-      "@providers": resolve(__dirname, "src/providers"),
-      "@models": resolve(__dirname, "src/models"),
-      "@utils": resolve(__dirname, "src/utils"),
+      "@infrastructure": resolve(__dirname, "inspecto/infrastructure"),
+      "@processors": resolve(__dirname, "inspecto/processors"),
+      "@providers": resolve(__dirname, "inspecto/providers"),
+      "@models": resolve(__dirname, "inspecto/models"),
+      "@utils": resolve(__dirname, "inspecto/utils"),
       "@rules": resolve(__dirname, "rules"),
     },
   },
