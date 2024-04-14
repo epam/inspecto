@@ -1,132 +1,238 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inspecto Demo</title>
+  <!-- Link Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Adjust height of the halves */
+    .half-screen {
+      height: 100vh;
+    }
+
+    /* Make collapsible sections */
+    .collapsible {
+      cursor: pointer;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      background-color: #e8e8e8;
+      /* Light gray */
+      transition: 0.4s;
+      display: flex;
+      align-items: center;
+      /* Align checkbox at center */
+    }
+
+    /* Style the collapsible content. Default is hidden */
+    .content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      background-color: #f9f9f9;
+    }
+
+    /* Adjust right half height */
+    .right-half {
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    /* Output section */
+    .output-section {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #464547;
+      /* Dark gray border */
+      background-color: #ffffff;
+      /* White background */
+      border-radius: 10px;
+      color: #a3a3a3;
+      /* Light gray text */
+    }
+
+    /* Placeholder style */
+    .placeholder {
+      color: #a3a3a3;
+      /* Light gray text */
+    }
+
+    /* Toggle buttons */
+    .btn-group-toggle label.btn {
+      background-color: transparent;
+      color: #464547;
+      /* Dark gray text */
+      border: 1px solid #464547;
+      /* Dark gray border */
+    }
+
+    .btn-group-toggle label.btn.active {
+      background-color: #a3c644;
+      /* Secondary color */
+      color: #ffffff;
+      /* White text */
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  </style>
 </head>
-<style>
-  body {
-    height: 100vh;
-    margin: 0;
-  }
 
-  .wrapper {
-    display: flex;
-    gap: 12px;
-  }
+<body style="overflow: hidden;">
 
-  .success {
-    color: green;
-  }
-
-  #inspecto {
-    margin: 12px 0;
-    display: block;
-  }
-
-  .rule-config {
-    margin-bottom: 12px;
-  }
-</style>
-
-<body>
-  <div class="wrapper">
-    <iframe id="ketcher" width="800" height="600" src="./ketcher/index.html" frameborder="0"></iframe>
-    <section class="inspecto">
-      <h1>Inspecto</h1>
-      <h2>Rules Configuration</h2>
-
-      <h3>Tripple Bond Angle</h3>
-      <div class="rule-config">
-        <label for="angleDiffError">Angle Difference Error</label>
-        <input type="text" id="angleDiffError">
-      </div>
-      <div class="rule-config">
-        <label for="fixingRule">Fixing Rule?</label>
-        <input type="checkbox" id="fixingRule">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- First half with iframe -->
+      <div class="col-md-6 p-0 half-screen">
+        <iframe src="./ketcher/index.html" id="ketcher" style="width:100%; height:100%;" frameborder="0"></iframe>
       </div>
 
-      <h3>Bond Length</h3>
-      <div class="rule-config">
-        <label for="bondLengthDifferenceError">Bond Length Difference Error</label>
-        <input type="text" id="bondLengthDifferenceError" value="0.01">
+      <!-- Second half with collapsible content and output section -->
+      <div class="col-md-6 p-0 half-screen">
+        <div class="container-fluid right-half" style="display: flex; flex-direction: column; flex: 1;">
+          <!-- h1 title -->
+          <h1 class="text-center" style="color: #39c2d7;">Inspecto Demo</h1>
+          <div class="row">
+            <div class="col">
+              <!-- Collapsible sections with checkboxes -->
+              <div class="form-check">
+                <input class="form-check-input" data-type="ruleSwitcher" data-rule-name="trippleBondAngleRule"
+                  type="checkbox" value="" id="tripleBondAngleSwithcer">
+                <label class="form-check-label collapsible">Triple Bond Angle</label>
+                <div class="content">
+                  <form>
+                    <div class="form-group">
+                      <label for="angleDifferenceError">Angle Difference Error</label>
+                      <input type="text" class="form-control" id="angleDifferenceError">
+                    </div>
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" id="fixingRule">
+                      <label class="form-check-label" for="fixingRule">Fixing Rule?</label>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" data-type="ruleSwitcher" data-rule-name="bondLengthRule" type="checkbox"
+                  value="" id="bondLengthSwithcer">
+                <label class="form-check-label collapsible">Bond Length</label>
+                <div class="content">
+                  <form>
+                    <div class="form-group">
+                      <label for="bondLengthDifferenceError">Bond Length Difference Error</label>
+                      <input type="number" class="form-control" id="bondLengthDifferenceError">
+                    </div>
+                    <div class="form-group">
+                      <label for="defaultBondLength">Default Bond Length</label>
+                      <input type="number" class="form-control" id="defaultBondLength">
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Output section -->
+          <div class="row mt-4">
+            <div class="col controls">
+              <!-- Toggle buttons for output options -->
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn active">
+                  <input type="radio" name="outputOption" id="rawOption" autocomplete="off" checked> Raw
+                </label>
+                <!-- <label class="btn">
+                  <input type="radio" name="outputOption" id="prettyOption" autocomplete="off"> Pretty
+                </label> -->
+              </div>
+              <!-- Apply Rules button -->
+              <button class="btn btn-primary apply-rules-button">Apply Rules</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col" style="display: flex; flex: 1;">
+              <!-- Output section -->
+              <pre class="output-section placeholder" style="flex: 1;">
+                Inspecto results goes here
+              </pre>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="rule-config">
-        <label for="defaultBondLength">Default Bond Length </label>
-        <input type="text" id="defaultBondLength" value="1">
-      </div>
-
-      <button id="inspecto">Apply Rules</button>
-      <section class="validation-results"></section>
-    </section>
+    </div>
   </div>
 
+  <!-- Link Bootstrap JS (for dropdown functionality) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    // Add event listeners to collapsible buttons to toggle content visibility
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function () {
+        // Prevent checkboxes from being checked when the user clicks on the section title
+        if (event.target.nodeName !== 'INPUT') {
+          this.classList.toggle("active");
+          var content = this.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+        }
+      });
+    }
+  </script>
+
   <script type="module">
-    // TODO: refactor it
     import { Inspecto } from "../build/inspecto.js";
     import { trippleBondAngleRule, bondLengthRule, overlappingBonds } from "../build/rules.js";
 
-    // setup default values
-    document.querySelector('#angleDiffError').value = trippleBondAngleRule.config.angleDiffError;
-    document.querySelector('#fixingRule').checked = trippleBondAngleRule.config.fixingRule;
+    const rulesMap = { trippleBondAngleRule, bondLengthRule };
 
+    // setup initial values
+    document.querySelector('#angleDifferenceError').value = trippleBondAngleRule.config.angleDiffError;
+    document.querySelector('#fixingRule').checked = trippleBondAngleRule.config.fixingRule;
     document.querySelector('#bondLengthDifferenceError').value = bondLengthRule.config.differenceError;
     document.querySelector('#defaultBondLength').value = bondLengthRule.config.bondLength;
 
-
-    const button = document.getElementById('inspecto');
-
-    button.addEventListener('click', async () => {
-      const results = document.querySelector('.validation-results');
+    document.querySelector('.apply-rules-button').addEventListener('click', async () => {
       const ketcher = document.getElementById('ketcher').contentWindow.ketcher;
       const ketFile = await ketcher.getKet();
 
-      results.innerHTML = '';
-      button.disabled = true;
+      console.log(document.querySelector('#fixingRule').checked);
 
       trippleBondAngleRule.updateConfig({
-        angleDiffError: document.querySelector('#angleDiffError').value,
+        angleDiffError: document.querySelector('#angleDifferenceError').value,
         fixingRule: document.querySelector('#fixingRule').checked
       });
 
       bondLengthRule.updateConfig({
-        bondLength: document.querySelector('#defaultBondLength').value, 
+        bondLength: document.querySelector('#defaultBondLength').value,
         differenceError: document.querySelector('#bondLengthDifferenceError').value
       });
 
+      const rules = Array.from(document.querySelectorAll('[data-type="ruleSwitcher"]'))
+        .filter(checkBox => checkBox.checked)
+        .map(checkBox => rulesMap[checkBox.dataset['ruleName']]);
+
       const result = await Inspecto.applyRulesToStructure(
-        [trippleBondAngleRule, bondLengthRule, overlappingBonds],
+        rules,
         ketFile
       );
 
-      for (const ruleName of Object.keys(result.validation)) {
-        const ruleValidationNode = document.createElement('div');
-        const ruleNameNode = document.createElement('h2');
-        ruleNameNode.textContent = ruleName;
-        ruleValidationNode.appendChild(ruleNameNode);
-
-        const { data, hasErrors } = result.validation[ruleName];
-
-        if (hasErrors) {
-          const dataNode = document.createElement('div');
-
-          for (const { message, path } of data) {
-            dataNode.innerHTML += `<b>Path:</b> ${path}<br/>`;
-            dataNode.innerHTML += `<b>Message:</b> ${message}<br/>`;
-            dataNode.innerHTML += `<br/>`;
-          }
-          ruleValidationNode.appendChild(dataNode);
-        } else {
-          const success = document.createElement('div');
-          success.classList.add('success');
-          success.textContent = 'Inspecto rules are satisfied'
-          ruleValidationNode.appendChild(success);
-        }
-
-        results.appendChild(ruleValidationNode);
-      }
+      document.querySelector('.output-section').textContent = JSON.stringify(result.validation, undefined, 2);
+      console.log(result);
 
       if (document.querySelector('#fixingRule').checked) {
         const molecule = Inspecto.structureToKet(result.structure);
@@ -134,9 +240,9 @@
         ketcher.setMolecule(molecule);
       }
 
-      button.disabled = false;
     });
   </script>
+
 </body>
 
 </html>
