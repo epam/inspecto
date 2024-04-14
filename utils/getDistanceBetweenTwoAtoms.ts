@@ -1,4 +1,4 @@
-import { type Atom } from "../models/Atom";
+import { type Atom } from "../inspecto/models/Atom";
 
 type GetDistanceBetweenTwoAtoms = (atom1: Atom, atom: Atom) => number;
 

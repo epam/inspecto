@@ -8,7 +8,7 @@ export default defineConfig({
       "@processors": resolve(__dirname, "inspecto/processors"),
       "@providers": resolve(__dirname, "inspecto/providers"),
       "@models": resolve(__dirname, "inspecto/models"),
-      "@utils": resolve(__dirname, "inspecto/utils"),
+      "@utils": resolve(__dirname, "utils"),
       "@rules": resolve(__dirname, "rules"),
     },
   },
