@@ -1,4 +1,4 @@
-import { createContainer } from "./src/container";
+import { createContainer } from "./inspecto/container";
 import { TOKENS, type IInspectoProcessor } from "@infrastructure";
 
 const container = createContainer();
