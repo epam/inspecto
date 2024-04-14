@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { type Structure } from "@models";
-import { type Rule } from "@rules";
+import { type Rule } from "@rules/models";
 
 export type RulesValidationResults = {
   message?: string;
@@ -35,12 +35,3 @@ export interface IDataModelProcessor {
   createDataModel: (structure: string) => Structure;
   dataModelToKet: (structure: Structure) => string;
 }
-
-export interface IPresentable {
-  toJSON: () => Record<string, unknown>;
-}
-
-export type RuleAlgorithm<TConfig> = (
-  structure: Structure,
-  config: TConfig,
-) => RulesValidationResults[];

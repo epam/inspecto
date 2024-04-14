@@ -15,6 +15,10 @@
     "./rules": {
       "import": "./build/rules.js",
       "require": "./build/rules.cjs"
+    },
+    "./utils": {
+      "import": "./build/utils.js",
+      "require": "./build/utils.cjs"
     }
   },
   "scripts": {

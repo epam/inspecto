@@ -10,6 +10,7 @@ export default defineConfig({
       "@models": resolve(__dirname, "inspecto/models"),
       "@utils": resolve(__dirname, "utils"),
       "@rules": resolve(__dirname, "rules"),
+      "@inspecto": resolve(__dirname, "inspecto"),
     },
   },
   build: {
@@ -17,6 +18,7 @@ export default defineConfig({
       entry: {
         inspecto: resolve(__dirname, "index.ts"),
         rules: resolve(__dirname, "rules", "index.ts"),
+        utils: resolve(__dirname, "utils", "index.ts"),
       },
       name: "inspecto",
     },

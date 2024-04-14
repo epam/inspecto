@@ -1,3 +1,5 @@
+import { inject, injectable } from "inversify";
+
 import {
   TOKENS,
   type IInspectoProcessor,
@@ -7,9 +9,9 @@ import {
   ERROR_MESSAGES,
   ERRORS,
 } from "@infrastructure";
-import { inject, injectable } from "inversify";
 import { type Structure } from "../models";
-import { type Rule } from "@rules";
+import { type Rule } from "@rules/models";
+import { RulesManager } from "@rules";
 
 @injectable()
 export class InspectoProcessor implements IInspectoProcessor {
@@ -57,7 +59,7 @@ export class InspectoProcessor implements IInspectoProcessor {
       const output: InspectoResults = {};
 
       for (const rule of rules) {
-        const data = rule.applyRule(structure);
+        const data = RulesManager.applyRule(rule, structure);
         output[rule.name] = {
           hasErrors: !(data.length === 0),
           data,

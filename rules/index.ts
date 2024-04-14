@@ -1,33 +1,41 @@
-import { Rule } from "./models";
+import { container } from "@rules/inversify.config";
+import { type IRulesManager, RULES_TOKENS } from "@rules/infrastructure";
 import {
   bondLengthAlgorithm,
-  type BondLengthAlgorithmType,
-} from "./bondLength";
-import {
   trippleBondAngleAlgorithm,
-  type trippleBondAngleAlgorithmType,
-} from "./trippleBondAngle";
-import {
   overlappingBondsAlgorithm,
   type OverlappingBondsConfigType,
-} from "./overlappingBonds";
+  type trippleBondAngleAlgorithmType,
+  type BondLengthAlgorithmType,
+} from "@rules/algorithms";
 
-export const bondLengthRule = new Rule<BondLengthAlgorithmType>(
+const RulesManager = container.get<IRulesManager>(RULES_TOKENS.RULES_MANAGER);
+
+RulesManager.createRule<BondLengthAlgorithmType>(
   "Bond Length",
   bondLengthAlgorithm,
   { bondLength: 1, differenceError: 0.01 },
+  ["tag1", "tag2"],
 );
 
-export const trippleBondAngleRule = new Rule<trippleBondAngleAlgorithmType>(
+RulesManager.createRule<trippleBondAngleAlgorithmType>(
   "Tripple Bond Angle",
   trippleBondAngleAlgorithm,
   { angleDiffError: 0.5, fixingRule: false },
+  ["tag2", "tag3"],
 );
 
-export const overlappingBonds = new Rule<OverlappingBondsConfigType>(
+RulesManager.createRule<OverlappingBondsConfigType>(
   "Overlapping Bonds",
   overlappingBondsAlgorithm,
   {},
+  ["tag3", "tag4"],
 );
 
-export { Rule };
+export {
+  RulesManager,
+  type IRulesManager,
+  type OverlappingBondsConfigType,
+  type trippleBondAngleAlgorithmType,
+  type BondLengthAlgorithmType,
+};

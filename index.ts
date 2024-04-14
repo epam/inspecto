@@ -10,5 +10,3 @@ export { Inspecto };
 export type { IInspectoProcessor };
 
 export { Structure, BOND_TYPES } from "@models";
-
-export * from "@utils";
