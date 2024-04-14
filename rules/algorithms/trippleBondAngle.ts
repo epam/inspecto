@@ -1,9 +1,7 @@
-import {
-  type RulesValidationResults,
-  type RuleAlgorithm,
-} from "@infrastructure";
+import { type RulesValidationResults } from "@infrastructure";
 import { BOND_TYPES } from "@models";
 import { getAngleBetweenBonds, getCommonAtomInAdjacentBonds } from "@utils";
+import { type RuleAlgorithm } from "@rules/infrastructure";
 
 export interface trippleBondAngleAlgorithmType {
   angleDiffError: number;

@@ -1,7 +1,5 @@
-import {
-  type RulesValidationResults,
-  type RuleAlgorithm,
-} from "../inspecto/infrastructure/types";
+import { type RulesValidationResults } from "@infrastructure";
+import { type RuleAlgorithm } from "@rules/infrastructure";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface OverlappingBondsConfigType {}

@@ -37,7 +37,9 @@
       "@providers": ["./inspecto/providers"],
       "@models": ["./inspecto/models"],
       "@utils": ["./utils"],
-      "@rules": ["./rules"]
+      "@rules": ["./rules"],
+      "@rules/*": ["./rules/*"],
+      "@inspecto/*": ["./inspecto/*"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
