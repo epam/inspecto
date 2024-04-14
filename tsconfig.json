@@ -36,7 +36,7 @@
       "@processors": ["./inspecto/processors"],
       "@providers": ["./inspecto/providers"],
       "@models": ["./inspecto/models"],
-      "@utils": ["./inspecto/utils"],
+      "@utils": ["./utils"],
       "@rules": ["./rules"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */

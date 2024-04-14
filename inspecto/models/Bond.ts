@@ -1,4 +1,4 @@
-import { getDistanceBetweenTwoAtoms } from "../utils/getDistanceBetweenTwoAtoms";
+import { getDistanceBetweenTwoAtoms } from "../../utils/getDistanceBetweenTwoAtoms";
 import { type Atom } from "./Atom";
 
 export enum BOND_TYPES {

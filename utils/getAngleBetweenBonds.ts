@@ -1,5 +1,5 @@
 import { getDistanceBetweenTwoAtoms } from "@utils";
-import { type Bond } from "../models/Bond";
+import { type Bond } from "../inspecto/models/Bond";
 
 type GetAngleBetweenBonds = (bond1: Bond, bond2: Bond) => number;
 export const getAngleBetweenBonds: GetAngleBetweenBonds = (bond1, bond2) => {
