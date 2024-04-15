@@ -47,7 +47,13 @@ As a result there is an updated package called 'inspecto' in the NPM dependecy g
 
 #### Package structure
 
-The package is built using IoC design principle to provide low coupling for dependencies (using DI technique).
+There are 3 main modules of the Inspecto
+
+- inspecto - source code for Inspecto API;
+- rules - source code for RulesManager and rules;
+- utils - set of useful functions to support calculations;
+
+The modules "inspecto" and "rules" are built using IoC design principle to provide low coupling for dependencies (using DI technique).
 
 - processor
 
@@ -64,7 +70,3 @@ Contains required for the project structure entities, like, injection tokens, TS
 - models
 
 Contains required entities for Data Modeling
-
-- utils
-
-Contain helping functions for calculations
