@@ -3,9 +3,11 @@ import {
   type IDataModelProcessor,
   type RawKetAtom,
   type RawKetBonds,
-  RawKetMoleculeType,
+  RawKetType,
   type RawKetChems,
   type RawKetMolecule,
+  type RawKetMonomer,
+  type RawKetMonomerTemplate,
 } from "@infrastructure";
 import { injectable } from "inversify";
 import {
@@ -15,6 +17,8 @@ import {
   Bond,
   Molecule,
   type KetcherNode,
+  MonomerTemplate,
+  Monomer,
 } from "@models";
 
 @injectable()
@@ -27,8 +31,15 @@ export class DataModelProcessor implements IDataModelProcessor {
         const rawNodeData = rawKetData[nodeId] as RawKetChems;
 
         // TODO: create smart type definitions
-        if (rawNodeData.type === RawKetMoleculeType.MOLECULE) {
+        if (rawNodeData.type === RawKetType.MOLECULE) {
           return this._createMolecule(nodeId, rawNodeData);
+        }
+
+        if (rawNodeData.type === RawKetType.MONOMER) {
+          const rawMonomerTemplate: RawKetMonomerTemplate = rawKetData[
+            `monomerTemplate-${rawNodeData.templateId}`
+          ] as unknown as RawKetMonomerTemplate;
+          return this._createMonomer(nodeId, rawNodeData, rawMonomerTemplate);
         }
 
         return [nodeId, null] as [string, null];
@@ -66,6 +77,29 @@ export class DataModelProcessor implements IDataModelProcessor {
     return [nodeId, molecule] as [string, KetcherNode];
   }
 
+  private _createMonomer(
+    nodeId: string,
+    rawNodeData: RawKetMonomer,
+    rawMonomerTemplate: RawKetMonomerTemplate,
+  ): [string, KetcherNode] {
+    const atoms = this._createAtoms(rawMonomerTemplate.atoms);
+    const bonds = this._createBonds(rawMonomerTemplate.bonds, atoms);
+    const monomerTemplate = new MonomerTemplate(
+      `monomerTemplate-${rawMonomerTemplate.id}`,
+      rawMonomerTemplate.id,
+      atoms,
+      bonds,
+    );
+    const monomer = new Monomer(
+      nodeId,
+      rawNodeData.id,
+      new Location(rawNodeData.position.x, rawNodeData.position.y, 0),
+      monomerTemplate,
+    );
+
+    return [nodeId, monomer] as [string, KetcherNode];
+  }
+
   private _createAtoms(rawKetAtoms: RawKetAtom[]): Atom[] {
     return rawKetAtoms.map(({ location: rawLocation, label, charge }) => {
       const location = new Location(...rawLocation);
@@ -87,7 +121,7 @@ export class DataModelProcessor implements IDataModelProcessor {
     // Hack, fix it
     const result = { type: ketcherNode.type } as unknown as RawKetChems;
     // TODO: add proper types coersion
-    if (ketcherNode.type === RawKetMoleculeType.MOLECULE) {
+    if (ketcherNode.type === RawKetType.MOLECULE) {
       const atoms: RawKetAtom[] = [];
       const bonds: RawKetBonds[] = [];
 

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
-// TODO: think about it once more time
-export enum RawKetMoleculeType {
+export enum RawKetType {
   MOLECULE = "molecule",
+  MONOMER = "monomer",
+  MONOMER_TEMPLATE = "monomerTemplate",
 }
 
 export type RawKetAtom = {
@@ -17,16 +18,33 @@ export type RawKetBonds = {
 };
 
 export type RawKetMolecule = {
-  type: RawKetMoleculeType.MOLECULE;
+  type: RawKetType.MOLECULE;
   atoms: RawKetAtom[];
   bonds: RawKetBonds[];
+};
+
+export type RawKetMonomer = {
+  type: RawKetType.MONOMER;
+  id: string;
+  position: Record<"x" | "y", number>;
+  alias: string;
+  templateId: string;
+};
+
+export type RawKetMonomerTemplate = {
+  type: RawKetType.MONOMER_TEMPLATE;
+  atoms: RawKetAtom[];
+  bonds: RawKetBonds[];
+  id: string;
+  fullName: string;
+  alias: string;
 };
 
 type Root = {
   nodes: Array<Record<"$ref", string>>;
 };
 
-export type RawKetChems = RawKetMolecule;
+export type RawKetChems = RawKetMolecule | RawKetMonomer;
 
 export type RawKetData = {
   root: Root;
