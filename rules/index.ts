@@ -15,21 +15,21 @@ RulesManager.createRule<BondLengthAlgorithmType>(
   "Bond Length",
   bondLengthAlgorithm,
   { bondLength: 1, differenceError: 0.01 },
-  ["tag1", "tag2"],
+  [],
 );
 
 RulesManager.createRule<trippleBondAngleAlgorithmType>(
   "Tripple Bond Angle",
   trippleBondAngleAlgorithm,
   { angleDiffError: 0.5, fixingRule: false },
-  ["tag2", "tag3"],
+  [],
 );
 
 RulesManager.createRule<OverlappingBondsConfigType>(
   "Overlapping Bonds",
   overlappingBondsAlgorithm,
   {},
-  ["tag3", "tag4"],
+  [],
 );
 
 export {

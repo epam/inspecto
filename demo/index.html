@@ -196,7 +196,10 @@
 
   <script type="module">
     import { Inspecto } from "../build/inspecto.js";
-    import { trippleBondAngleRule, bondLengthRule, overlappingBonds } from "../build/rules.js";
+    import { RulesManager } from "../build/rules.js";
+
+    const trippleBondAngleRule = RulesManager.getRuleByName("Tripple Bond Angle");
+    const bondLengthRule = RulesManager.getRuleByName("Bond Length");
 
     const rulesMap = { trippleBondAngleRule, bondLengthRule };
 
@@ -210,14 +213,12 @@
       const ketcher = document.getElementById('ketcher').contentWindow.ketcher;
       const ketFile = await ketcher.getKet();
 
-      console.log(document.querySelector('#fixingRule').checked);
-
-      trippleBondAngleRule.updateConfig({
+      RulesManager.updateConfig(trippleBondAngleRule, {
         angleDiffError: document.querySelector('#angleDifferenceError').value,
         fixingRule: document.querySelector('#fixingRule').checked
       });
 
-      bondLengthRule.updateConfig({
+      RulesManager.updateConfig(bondLengthRule, {
         bondLength: document.querySelector('#defaultBondLength').value,
         differenceError: document.querySelector('#bondLengthDifferenceError').value
       });
