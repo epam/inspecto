@@ -8,6 +8,7 @@ import {
   type trippleBondAngleAlgorithmType,
   type BondLengthAlgorithmType,
 } from "@rules/algorithms";
+export { Rule } from "./models/Rule";
 
 const RulesManager = container.get<IRulesManager>(RULES_TOKENS.RULES_MANAGER);
 

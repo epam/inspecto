@@ -35,6 +35,7 @@
       "@infrastructure": ["./inspecto/infrastructure"],
       "@processors": ["./inspecto/processors"],
       "@providers": ["./inspecto/providers"],
+      "@testing": ["./inspecto/testing"],
       "@models": ["./inspecto/models"],
       "@utils": ["./utils"],
       "@rules": ["./rules"],
