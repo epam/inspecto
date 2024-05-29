@@ -22,7 +22,7 @@ export class RulesManagerProcessor implements IRulesManager {
 
   public updateRuleConfig<TConfig extends object>(
     rule: Rule<TConfig>,
-    config: TConfig,
+    config: Partial<TConfig>,
   ): void {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     rule["_config"] = { ...rule["_config"], ...config };
