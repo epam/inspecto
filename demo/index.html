@@ -213,12 +213,12 @@
       const ketcher = document.getElementById('ketcher').contentWindow.ketcher;
       const ketFile = await ketcher.getKet();
 
-      RulesManager.updateConfig(trippleBondAngleRule, {
+      RulesManager.updateRuleConfig(trippleBondAngleRule, {
         angleDiffError: document.querySelector('#angleDifferenceError').value,
         fixingRule: document.querySelector('#fixingRule').checked
       });
 
-      RulesManager.updateConfig(bondLengthRule, {
+      RulesManager.updateRuleConfig(bondLengthRule, {
         bondLength: document.querySelector('#defaultBondLength').value,
         differenceError: document.querySelector('#bondLengthDifferenceError').value
       });
