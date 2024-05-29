@@ -6,7 +6,9 @@
   "source": "index.ts",
   "type": "module",
   "module": "build/inspecto.js",
-  "files": ["build"],
+  "files": [
+    "build"
+  ],
   "exports": {
     ".": {
       "import": "./build/inspecto.js",
@@ -26,13 +28,18 @@
     "build:bundle": "vite build",
     "lint": "eslint index.ts src/**/*.ts",
     "prepare": "husky && husky install",
-    "demo": "vite --port 8000"
+    "demo": "vite --port 8000",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
     "url": "https://git.epam.com/epm-lstr/epm-lstr-chc/inspecto/-/tree/Trunk"
   },
-  "keywords": ["epam", "inspecto", "molecules"],
+  "keywords": [
+    "epam",
+    "inspecto",
+    "molecules"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -56,7 +63,8 @@
   "dependencies": {
     "indigo-ketcher": "^1.16.0",
     "reflect-metadata": "^0.2.1",
-    "vite": "^5.0.12"
+    "vite": "^5.0.12",
+    "vitest": "^1.6.0"
   },
   "lint-staged": {
     "*.ts": "eslint --fix",
