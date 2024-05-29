@@ -22,7 +22,7 @@ export interface IRulesManager {
   ) => Rule<TConfig>;
   updateRuleConfig: <TConfig extends object>(
     rule: Rule<TConfig>,
-    config: TConfig,
+    config: Partial<TConfig>,
   ) => void;
   getRuleByName: (ruleName: string) => Rule<any> | null;
   getRulesByTags: (tags: string[]) => Array<Rule<any>>;

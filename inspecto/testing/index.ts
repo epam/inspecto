@@ -52,7 +52,7 @@ class TestRuleWrapper<T extends RuleNames> {
     return RulesManager.applyRule(this.rule, structure);
   }
 
-  configure(config: RuleTypes[T]): this {
+  configure(config: Partial<RuleTypes[T]>): this {
     RulesManager.updateRuleConfig(this.rule, config);
     return this;
   }
