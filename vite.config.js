@@ -6,6 +6,7 @@ export default defineConfig({
     alias: {
       "@infrastructure": resolve(__dirname, "inspecto/infrastructure"),
       "@processors": resolve(__dirname, "inspecto/processors"),
+      "@testing": resolve(__dirname, "inspecto/testing"),
       "@providers": resolve(__dirname, "inspecto/providers"),
       "@models": resolve(__dirname, "inspecto/models"),
       "@utils": resolve(__dirname, "utils"),

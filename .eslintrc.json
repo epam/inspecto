@@ -8,5 +8,7 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "rules": {}
+  "rules": {
+    "@typescript-eslint/no-unsafe-argument": "off"
+  }
 }
