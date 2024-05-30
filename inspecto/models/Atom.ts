@@ -9,8 +9,12 @@ export class Atom {
   constructor(
     private readonly _label: string,
     private _location: Location,
-    private readonly charge?: CHARGE,
+    private readonly _charge?: CHARGE,
   ) {}
+
+  get charge(): CHARGE | 0 {
+    return this._charge ?? 0;
+  }
 
   public get x(): number {
     return this._location.x;

@@ -14,7 +14,6 @@ export class Molecule extends KetcherNode {
   ) {
     super(_molId, RawKetType.MOLECULE);
     this._graphView = new Graph((atom) => atom.toString());
-
     for (const atom of _atoms) {
       this._graphView.addVertex(atom);
     }
@@ -40,6 +39,10 @@ export class Molecule extends KetcherNode {
     for (const bond of this._bonds) {
       yield bond;
     }
+  }
+
+  public getAtomIndex(atom: Atom): number {
+    return this._atoms.indexOf(atom);
   }
 
   public getBondIndex(bond: Bond): number {

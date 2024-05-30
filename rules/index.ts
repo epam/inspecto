@@ -4,13 +4,22 @@ import {
   bondLengthAlgorithm,
   trippleBondAngleAlgorithm,
   overlappingBondsAlgorithm,
+  valenceAlgorithm,
   type OverlappingBondsConfigType,
   type trippleBondAngleAlgorithmType,
   type BondLengthAlgorithmType,
 } from "@rules/algorithms";
+import type { ValenceAlgorithmType } from "./algorithms/valence";
 export { Rule } from "./models/Rule";
 
 const RulesManager = container.get<IRulesManager>(RULES_TOKENS.RULES_MANAGER);
+
+RulesManager.createRule<ValenceAlgorithmType>(
+  "Valence",
+  valenceAlgorithm,
+  { fixingRule: false },
+  [],
+);
 
 RulesManager.createRule<BondLengthAlgorithmType>(
   "Bond Length",
