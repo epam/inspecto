@@ -104,6 +104,10 @@
             <div class="col">
               <!-- Collapsible sections with checkboxes -->
               <div class="form-check">
+                <input class="form-check-input" data-type="ruleSwitcher" data-rule-name="valenceRule" type="checkbox" value="" id="valenceSwitcher">
+                <label class="form-check-label collapsible">Valence</label>
+              </div>
+              <div class="form-check">
                 <input class="form-check-input" data-type="ruleSwitcher" data-rule-name="trippleBondAngleRule"
                   type="checkbox" value="" id="tripleBondAngleSwithcer">
                 <label class="form-check-label collapsible">Triple Bond Angle</label>
@@ -200,8 +204,9 @@
 
     const trippleBondAngleRule = RulesManager.getRuleByName("Tripple Bond Angle");
     const bondLengthRule = RulesManager.getRuleByName("Bond Length");
+    const valenceRule = RulesManager.getRuleByName("Valence");
 
-    const rulesMap = { trippleBondAngleRule, bondLengthRule };
+    const rulesMap = { trippleBondAngleRule, bondLengthRule, valenceRule };
 
     // setup initial values
     document.querySelector('#angleDifferenceError').value = trippleBondAngleRule.config.angleDiffError;

@@ -8,9 +8,18 @@ import {
 import { Rule } from "@rules/models/Rule";
 import { RulesManager } from "@rules";
 import { type RulesValidationResults } from "@infrastructure";
+import {
+  valenceAlgorithm,
+  type ValenceAlgorithmType,
+} from "@rules/algorithms/valence";
 
 const indigoModule = IndigoModule();
 const dataProcessor = new DataModelProcessor();
+
+export function ketToStructure(ketcher: string): Structure {
+  const structure: Structure = dataProcessor.createDataModel(ketcher);
+  return structure;
+}
 
 export async function toStructure(str: string): Promise<Structure> {
   const indigo = await indigoModule;
@@ -24,12 +33,16 @@ export async function toStructure(str: string): Promise<Structure> {
 
 export enum RuleNames {
   BondLength = "Bond Length",
+  Valence = "Valence",
 }
 
 interface RuleTypes {
   [RuleNames.BondLength]: BondLengthAlgorithmType;
+  [RuleNames.Valence]: ValenceAlgorithmType;
 }
-const RULES = {
+const RULES: {
+  [key in RuleNames]: (config?: RuleTypes[key]) => Rule<RuleTypes[key]>;
+} = {
   [RuleNames.BondLength]: (config?: BondLengthAlgorithmType) => {
     return new Rule<BondLengthAlgorithmType>(
       "Bond Length",
@@ -38,6 +51,13 @@ const RULES = {
         bondLength: 2,
         differenceError: 0.1,
       },
+    );
+  },
+  [RuleNames.Valence]: (config?: ValenceAlgorithmType) => {
+    return new Rule<ValenceAlgorithmType>(
+      "Valence",
+      valenceAlgorithm,
+      config ?? {},
     );
   },
 };

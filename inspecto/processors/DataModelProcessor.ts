@@ -71,7 +71,7 @@ export class DataModelProcessor implements IDataModelProcessor {
     rawNodeData: RawKetMolecule,
   ): [string, KetcherNode] {
     const atoms = this._createAtoms(rawNodeData.atoms);
-    const bonds = this._createBonds(rawNodeData.bonds, atoms);
+    const bonds = this._createBonds(rawNodeData.bonds ?? [], atoms);
     const molecule = new Molecule(nodeId, atoms, bonds);
 
     return [nodeId, molecule] as [string, KetcherNode];
@@ -83,7 +83,7 @@ export class DataModelProcessor implements IDataModelProcessor {
     rawMonomerTemplate: RawKetMonomerTemplate,
   ): [string, KetcherNode] {
     const atoms = this._createAtoms(rawMonomerTemplate.atoms);
-    const bonds = this._createBonds(rawMonomerTemplate.bonds, atoms);
+    const bonds = this._createBonds(rawMonomerTemplate.bonds ?? [], atoms);
     const monomerTemplate = new MonomerTemplate(
       `monomerTemplate-${rawMonomerTemplate.id}`,
       rawMonomerTemplate.id,
