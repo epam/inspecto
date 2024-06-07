@@ -51,8 +51,10 @@ const METHALS = [
   "Mo",
 ];
 const DEFAULT_HYDROGENES: Record<string, number> = {
-  // N: 3,
+  N: 3,
   C: 4,
+  F: 1,
+  O: 2,
   // S: 2,
   // P: 3,
   // Se: 2,
@@ -77,6 +79,11 @@ export const valenceAlgorithm: RuleAlgorithm<ValenceAlgorithmType> = (
       }
       let hydrogenCount =
         atomName in DEFAULT_HYDROGENES ? DEFAULT_HYDROGENES[atomName] : 0;
+
+      if (atom.charge < 0 && hydrogenCount > 0) {
+        hydrogenCount = 0;
+        // exclude atoms with negative charge and hydrogenes
+      }
 
       const absCharge = Math.abs(atom.charge);
       const relatedBonds: Bond[] = [];
