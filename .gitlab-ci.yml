@@ -3,6 +3,7 @@ image: node:16 # or any other specific version of Node.js you prefer
 stages:
   - build
   - test
+  - lint
 
 cache:
   paths:
@@ -29,6 +30,11 @@ test:
       junit: test-results.xml
     paths:
       - test-results.xml
+
+lint:
+  stage: lint
+  script:
+    - npm run lint
 
 # Optionally, you can add a deploy stage if needed
 # deploy:

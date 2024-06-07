@@ -26,7 +26,7 @@
   "scripts": {
     "build": "npm run build:bundle",
     "build:bundle": "vite build",
-    "lint": "eslint index.ts src/**/*.ts",
+    "lint": "eslint index.ts '{inspecto,rules,tests,types,utils}/**/*.ts'",
     "prepare": "husky && husky install",
     "demo": "vite --port 8000",
     "test": "vitest"
