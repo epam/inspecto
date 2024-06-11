@@ -1,17 +1,12 @@
 import type { Structure } from "../..";
 import IndigoModule from "indigo-ketcher";
 import { DataModelProcessor } from "@processors";
-import {
-  type BondLengthAlgorithmType,
-  bondLengthAlgorithm,
-} from "@rules/algorithms/bondLength";
+import { type BondLengthAlgorithmType, bondLengthAlgorithm } from "@rules/algorithms/bondLength";
 import { Rule } from "@rules/models/Rule";
-import { RulesManager } from "@rules";
+import { RulesManager, type alkaliBondsAlgorithmType } from "@rules";
 import { type RulesValidationResults } from "@infrastructure";
-import {
-  valenceAlgorithm,
-  type ValenceAlgorithmType,
-} from "@rules/algorithms/valence";
+import { valenceAlgorithm, type ValenceAlgorithmType } from "@rules/algorithms/valence";
+import { alkaliBondsAlgorithm } from "@rules/algorithms";
 
 const indigoModule = IndigoModule();
 const dataProcessor = new DataModelProcessor();
@@ -34,11 +29,13 @@ export async function toStructure(str: string): Promise<Structure> {
 export enum RuleNames {
   BondLength = "Bond Length",
   Valence = "Valence",
+  AlkaliBonds = "Alkali Bonds",
 }
 
 interface RuleTypes {
   [RuleNames.BondLength]: BondLengthAlgorithmType;
   [RuleNames.Valence]: ValenceAlgorithmType;
+  [RuleNames.AlkaliBonds]: alkaliBondsAlgorithmType;
 }
 const RULES: {
   [key in RuleNames]: (config?: RuleTypes[key]) => Rule<RuleTypes[key]>;
@@ -50,15 +47,14 @@ const RULES: {
       config ?? {
         bondLength: 2,
         differenceError: 0.1,
-      },
+      }
     );
   },
   [RuleNames.Valence]: (config?: ValenceAlgorithmType) => {
-    return new Rule<ValenceAlgorithmType>(
-      "Valence",
-      valenceAlgorithm,
-      config ?? {},
-    );
+    return new Rule<ValenceAlgorithmType>("Valence", valenceAlgorithm, config ?? {});
+  },
+  [RuleNames.AlkaliBonds]: (config?: alkaliBondsAlgorithmType) => {
+    return new Rule<alkaliBondsAlgorithmType>("Alkali Bonds", alkaliBondsAlgorithm, config ?? {});
   },
 };
 
@@ -78,9 +74,6 @@ class TestRuleWrapper<T extends RuleNames> {
   }
 }
 
-export function getRule<T extends RuleNames>(
-  ruleName: T,
-  config?: RuleTypes[T],
-): TestRuleWrapper<T> {
+export function getRule<T extends RuleNames>(ruleName: T, config?: RuleTypes[T]): TestRuleWrapper<T> {
   return new TestRuleWrapper(RULES[ruleName](config));
 }

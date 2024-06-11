@@ -1,254 +1,282 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inspecto Demo</title>
+    <!-- Link Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+      /* Adjust height of the halves */
+      .half-screen {
+        height: 100vh;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inspecto Demo</title>
-  <!-- Link Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <style>
-    /* Adjust height of the halves */
-    .half-screen {
-      height: 100vh;
-    }
+      /* Make collapsible sections */
+      .collapsible {
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        text-align: left;
+        outline: none;
+        background-color: #e8e8e8;
+        /* Light gray */
+        transition: 0.4s;
+        display: flex;
+        align-items: center;
+        /* Align checkbox at center */
+      }
 
-    /* Make collapsible sections */
-    .collapsible {
-      cursor: pointer;
-      padding: 10px;
-      width: 100%;
-      border: none;
-      text-align: left;
-      outline: none;
-      background-color: #e8e8e8;
-      /* Light gray */
-      transition: 0.4s;
-      display: flex;
-      align-items: center;
-      /* Align checkbox at center */
-    }
+      /* Style the collapsible content. Default is hidden */
+      .content {
+        padding: 0 18px;
+        display: none;
+        overflow: hidden;
+        background-color: #f9f9f9;
+      }
 
-    /* Style the collapsible content. Default is hidden */
-    .content {
-      padding: 0 18px;
-      display: none;
-      overflow: hidden;
-      background-color: #f9f9f9;
-    }
+      /* Adjust right half height */
+      .right-half {
+        height: 100%;
+        overflow-y: auto;
+      }
 
-    /* Adjust right half height */
-    .right-half {
-      height: 100%;
-      overflow-y: auto;
-    }
+      /* Output section */
+      .output-section {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #464547;
+        /* Dark gray border */
+        background-color: #ffffff;
+        /* White background */
+        border-radius: 10px;
+        color: #a3a3a3;
+        /* Light gray text */
+      }
 
-    /* Output section */
-    .output-section {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #464547;
-      /* Dark gray border */
-      background-color: #ffffff;
-      /* White background */
-      border-radius: 10px;
-      color: #a3a3a3;
-      /* Light gray text */
-    }
+      /* Placeholder style */
+      .placeholder {
+        color: #a3a3a3;
+        /* Light gray text */
+      }
 
-    /* Placeholder style */
-    .placeholder {
-      color: #a3a3a3;
-      /* Light gray text */
-    }
+      /* Toggle buttons */
+      .btn-group-toggle label.btn {
+        background-color: transparent;
+        color: #464547;
+        /* Dark gray text */
+        border: 1px solid #464547;
+        /* Dark gray border */
+      }
 
-    /* Toggle buttons */
-    .btn-group-toggle label.btn {
-      background-color: transparent;
-      color: #464547;
-      /* Dark gray text */
-      border: 1px solid #464547;
-      /* Dark gray border */
-    }
+      .btn-group-toggle label.btn.active {
+        background-color: #a3c644;
+        /* Secondary color */
+        color: #ffffff;
+        /* White text */
+      }
 
-    .btn-group-toggle label.btn.active {
-      background-color: #a3c644;
-      /* Secondary color */
-      color: #ffffff;
-      /* White text */
-    }
+      .controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
 
-    .controls {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-  </style>
-</head>
+  <body style="overflow: hidden">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- First half with iframe -->
+        <div class="col-md-6 p-0 half-screen">
+          <iframe src="./ketcher/index.html" id="ketcher" style="width: 100%; height: 100%" frameborder="0"></iframe>
+        </div>
 
-<body style="overflow: hidden;">
-
-  <div class="container-fluid">
-    <div class="row">
-      <!-- First half with iframe -->
-      <div class="col-md-6 p-0 half-screen">
-        <iframe src="./ketcher/index.html" id="ketcher" style="width:100%; height:100%;" frameborder="0"></iframe>
-      </div>
-
-      <!-- Second half with collapsible content and output section -->
-      <div class="col-md-6 p-0 half-screen">
-        <div class="container-fluid right-half" style="display: flex; flex-direction: column; flex: 1;">
-          <!-- h1 title -->
-          <h1 class="text-center" style="color: #39c2d7;">Inspecto Demo</h1>
-          <div class="row">
-            <div class="col">
-              <!-- Collapsible sections with checkboxes -->
-              <div class="form-check">
-                <input class="form-check-input" data-type="ruleSwitcher" data-rule-name="valenceRule" type="checkbox" value="" id="valenceSwitcher">
-                <label class="form-check-label collapsible">Valence</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" data-type="ruleSwitcher" data-rule-name="trippleBondAngleRule"
-                  type="checkbox" value="" id="tripleBondAngleSwithcer">
-                <label class="form-check-label collapsible">Triple Bond Angle</label>
-                <div class="content">
-                  <form>
-                    <div class="form-group">
-                      <label for="angleDifferenceError">Angle Difference Error</label>
-                      <input type="text" class="form-control" id="angleDifferenceError">
-                    </div>
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input" id="fixingRule">
-                      <label class="form-check-label" for="fixingRule">Fixing Rule?</label>
-                    </div>
-                  </form>
+        <!-- Second half with collapsible content and output section -->
+        <div class="col-md-6 p-0 half-screen">
+          <div class="container-fluid right-half" style="display: flex; flex-direction: column; flex: 1">
+            <!-- h1 title -->
+            <h1 class="text-center" style="color: #39c2d7">Inspecto Demo</h1>
+            <div class="row">
+              <div class="col">
+                <!-- Collapsible sections with checkboxes -->
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    data-type="ruleSwitcher"
+                    data-rule-name="valenceRule"
+                    type="checkbox"
+                    value=""
+                    id="valenceSwitcher"
+                  />
+                  <label class="form-check-label collapsible">Valence</label>
                 </div>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" data-type="ruleSwitcher" data-rule-name="bondLengthRule" type="checkbox"
-                  value="" id="bondLengthSwithcer">
-                <label class="form-check-label collapsible">Bond Length</label>
-                <div class="content">
-                  <form>
-                    <div class="form-group">
-                      <label for="bondLengthDifferenceError">Bond Length Difference Error</label>
-                      <input type="number" class="form-control" id="bondLengthDifferenceError">
-                    </div>
-                    <div class="form-group">
-                      <label for="defaultBondLength">Default Bond Length</label>
-                      <input type="number" class="form-control" id="defaultBondLength">
-                    </div>
-                  </form>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    data-type="ruleSwitcher"
+                    data-rule-name="alkaliRule"
+                    type="checkbox"
+                    value=""
+                    id="alkaliSwitcher"
+                  />
+                  <label class="form-check-label collapsible">Alkali Bonds Rule</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    data-type="ruleSwitcher"
+                    data-rule-name="trippleBondAngleRule"
+                    type="checkbox"
+                    value=""
+                    id="tripleBondAngleSwithcer"
+                  />
+                  <label class="form-check-label collapsible">Triple Bond Angle</label>
+                  <div class="content">
+                    <form>
+                      <div class="form-group">
+                        <label for="angleDifferenceError">Angle Difference Error</label>
+                        <input type="text" class="form-control" id="angleDifferenceError" />
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="fixingRule" />
+                        <label class="form-check-label" for="fixingRule">Fixing Rule?</label>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    data-type="ruleSwitcher"
+                    data-rule-name="bondLengthRule"
+                    type="checkbox"
+                    value=""
+                    id="bondLengthSwithcer"
+                  />
+                  <label class="form-check-label collapsible">Bond Length</label>
+                  <div class="content">
+                    <form>
+                      <div class="form-group">
+                        <label for="bondLengthDifferenceError">Bond Length Difference Error</label>
+                        <input type="number" class="form-control" id="bondLengthDifferenceError" />
+                      </div>
+                      <div class="form-group">
+                        <label for="defaultBondLength">Default Bond Length</label>
+                        <input type="number" class="form-control" id="defaultBondLength" />
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- Output section -->
-          <div class="row mt-4">
-            <div class="col controls">
-              <!-- Toggle buttons for output options -->
-              <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn active">
-                  <input type="radio" name="outputOption" id="rawOption" autocomplete="off" checked> Raw
-                </label>
-                <!-- <label class="btn">
+            <!-- Output section -->
+            <div class="row mt-4">
+              <div class="col controls">
+                <!-- Toggle buttons for output options -->
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="btn active">
+                    <input type="radio" name="outputOption" id="rawOption" autocomplete="off" checked />
+                    Raw
+                  </label>
+                  <!-- <label class="btn">
                   <input type="radio" name="outputOption" id="prettyOption" autocomplete="off"> Pretty
                 </label> -->
+                </div>
+                <!-- Apply Rules button -->
+                <button class="btn btn-primary apply-rules-button">Apply Rules</button>
               </div>
-              <!-- Apply Rules button -->
-              <button class="btn btn-primary apply-rules-button">Apply Rules</button>
             </div>
-          </div>
-          <div class="row">
-            <div class="col" style="display: flex; flex: 1;">
-              <!-- Output section -->
-              <pre class="output-section placeholder" style="flex: 1;">
+            <div class="row">
+              <div class="col" style="display: flex; flex: 1">
+                <!-- Output section -->
+                <pre class="output-section placeholder" style="flex: 1">
                 Inspecto results goes here
-              </pre>
+              </pre
+                >
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Link Bootstrap JS (for dropdown functionality) -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Link Bootstrap JS (for dropdown functionality) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <script>
-    // Add event listeners to collapsible buttons to toggle content visibility
-    var coll = document.getElementsByClassName("collapsible");
-    var i;
+    <script>
+      // Add event listeners to collapsible buttons to toggle content visibility
+      var coll = document.getElementsByClassName("collapsible");
+      var i;
 
-    for (i = 0; i < coll.length; i++) {
-      coll[i].addEventListener("click", function () {
-        // Prevent checkboxes from being checked when the user clicks on the section title
-        if (event.target.nodeName !== 'INPUT') {
-          this.classList.toggle("active");
-          var content = this.nextElementSibling;
-          if (content.style.display === "block") {
-            content.style.display = "none";
-          } else {
-            content.style.display = "block";
+      for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+          // Prevent checkboxes from being checked when the user clicks on the section title
+          if (event.target.nodeName !== "INPUT") {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+              content.style.display = "none";
+            } else {
+              content.style.display = "block";
+            }
           }
+        });
+      }
+    </script>
+
+    <script type="module">
+      import { Inspecto } from "../build/inspecto.js";
+      import { RulesManager } from "../build/rules.js";
+
+      const trippleBondAngleRule = RulesManager.getRuleByName("Tripple Bond Angle");
+      const bondLengthRule = RulesManager.getRuleByName("Bond Length");
+      const valenceRule = RulesManager.getRuleByName("Valence");
+      const alkaliRule = RulesManager.getRuleByName("Alkali Bonds");
+
+      const rulesMap = {
+        trippleBondAngleRule,
+        bondLengthRule,
+        valenceRule,
+        alkaliRule,
+      };
+
+      // setup initial values
+      document.querySelector("#angleDifferenceError").value = trippleBondAngleRule.config.angleDiffError;
+      document.querySelector("#fixingRule").checked = trippleBondAngleRule.config.fixingRule;
+      document.querySelector("#bondLengthDifferenceError").value = bondLengthRule.config.differenceError;
+      document.querySelector("#defaultBondLength").value = bondLengthRule.config.bondLength;
+
+      document.querySelector(".apply-rules-button").addEventListener("click", async () => {
+        const ketcher = document.getElementById("ketcher").contentWindow.ketcher;
+        const ketFile = await ketcher.getKet();
+
+        RulesManager.updateRuleConfig(trippleBondAngleRule, {
+          angleDiffError: document.querySelector("#angleDifferenceError").value,
+          fixingRule: document.querySelector("#fixingRule").checked,
+        });
+
+        RulesManager.updateRuleConfig(bondLengthRule, {
+          bondLength: document.querySelector("#defaultBondLength").value,
+          differenceError: document.querySelector("#bondLengthDifferenceError").value,
+        });
+
+        const rules = Array.from(document.querySelectorAll('[data-type="ruleSwitcher"]'))
+          .filter(checkBox => checkBox.checked)
+          .map(checkBox => rulesMap[checkBox.dataset["ruleName"]]);
+
+        const result = await Inspecto.applyRulesToStructure(rules, ketFile);
+
+        document.querySelector(".output-section").textContent = JSON.stringify(result.validation, undefined, 2);
+
+        if (document.querySelector("#fixingRule").checked) {
+          const molecule = Inspecto.structureToKet(result.structure);
+          ketcher.setMolecule(molecule);
         }
       });
-    }
-  </script>
-
-  <script type="module">
-    import { Inspecto } from "../build/inspecto.js";
-    import { RulesManager } from "../build/rules.js";
-
-    const trippleBondAngleRule = RulesManager.getRuleByName("Tripple Bond Angle");
-    const bondLengthRule = RulesManager.getRuleByName("Bond Length");
-    const valenceRule = RulesManager.getRuleByName("Valence");
-
-    const rulesMap = { trippleBondAngleRule, bondLengthRule, valenceRule };
-
-    // setup initial values
-    document.querySelector('#angleDifferenceError').value = trippleBondAngleRule.config.angleDiffError;
-    document.querySelector('#fixingRule').checked = trippleBondAngleRule.config.fixingRule;
-    document.querySelector('#bondLengthDifferenceError').value = bondLengthRule.config.differenceError;
-    document.querySelector('#defaultBondLength').value = bondLengthRule.config.bondLength;
-
-    document.querySelector('.apply-rules-button').addEventListener('click', async () => {
-      const ketcher = document.getElementById('ketcher').contentWindow.ketcher;
-      const ketFile = await ketcher.getKet();
-
-      RulesManager.updateRuleConfig(trippleBondAngleRule, {
-        angleDiffError: document.querySelector('#angleDifferenceError').value,
-        fixingRule: document.querySelector('#fixingRule').checked
-      });
-
-      RulesManager.updateRuleConfig(bondLengthRule, {
-        bondLength: document.querySelector('#defaultBondLength').value,
-        differenceError: document.querySelector('#bondLengthDifferenceError').value
-      });
-
-      const rules = Array.from(document.querySelectorAll('[data-type="ruleSwitcher"]'))
-        .filter(checkBox => checkBox.checked)
-        .map(checkBox => rulesMap[checkBox.dataset['ruleName']]);
-
-      const result = await Inspecto.applyRulesToStructure(
-        rules,
-        ketFile
-      );
-
-      document.querySelector('.output-section').textContent = JSON.stringify(result.validation, undefined, 2);
-      console.log(result);
-
-      if (document.querySelector('#fixingRule').checked) {
-        const molecule = Inspecto.structureToKet(result.structure);
-        console.log(molecule);
-        ketcher.setMolecule(molecule);
-      }
-
-    });
-  </script>
-
-</body>
-
+    </script>
+  </body>
 </html>
