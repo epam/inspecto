@@ -3,6 +3,7 @@ import { type Structure } from "@models";
 import { type Rule } from "@rules/models";
 
 export type RulesValidationResults = {
+  errorCode?: string;
   message?: string;
   path: string;
 };
@@ -19,7 +20,7 @@ export interface IInspectoProcessor {
   convertFileContentToStructure: (fileContent: string) => Promise<Structure>;
   applyRulesToStructure: (
     rules: Array<Rule<any>>,
-    structure: Structure,
+    structure: Structure
   ) => Promise<{
     validation: InspectoResults;
     structure: Structure;
