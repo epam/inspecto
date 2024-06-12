@@ -3,10 +3,10 @@ import IndigoModule from "indigo-ketcher";
 import { DataModelProcessor } from "@processors";
 import { type BondLengthAlgorithmType, bondLengthAlgorithm } from "@rules/algorithms/bondLength";
 import { Rule } from "@rules/models/Rule";
-import { RulesManager, type alkaliBondsAlgorithmType } from "@rules";
+import { RulesManager } from "@rules";
 import { type RulesValidationResults } from "@infrastructure";
 import { valenceAlgorithm, type ValenceAlgorithmType } from "@rules/algorithms/valence";
-import { alkaliBondsAlgorithm } from "@rules/algorithms";
+import { type CovalentCounterionAlgorithmType, covalentCounterionAlgorithm } from "@rules/algorithms";
 
 const indigoModule = IndigoModule();
 const dataProcessor = new DataModelProcessor();
@@ -29,13 +29,13 @@ export async function toStructure(str: string): Promise<Structure> {
 export enum RuleNames {
   BondLength = "Bond Length",
   Valence = "Valence",
-  AlkaliBonds = "Alkali Bonds",
+  CovalentCounterion = "Covalent Counterion",
 }
 
 interface RuleTypes {
   [RuleNames.BondLength]: BondLengthAlgorithmType;
   [RuleNames.Valence]: ValenceAlgorithmType;
-  [RuleNames.AlkaliBonds]: alkaliBondsAlgorithmType;
+  [RuleNames.CovalentCounterion]: CovalentCounterionAlgorithmType;
 }
 const RULES: {
   [key in RuleNames]: (config?: RuleTypes[key]) => Rule<RuleTypes[key]>;
@@ -53,8 +53,8 @@ const RULES: {
   [RuleNames.Valence]: (config?: ValenceAlgorithmType) => {
     return new Rule<ValenceAlgorithmType>("Valence", valenceAlgorithm, config ?? {});
   },
-  [RuleNames.AlkaliBonds]: (config?: alkaliBondsAlgorithmType) => {
-    return new Rule<alkaliBondsAlgorithmType>("Alkali Bonds", alkaliBondsAlgorithm, config ?? {});
+  [RuleNames.CovalentCounterion]: (config?: CovalentCounterionAlgorithmType) => {
+    return new Rule<CovalentCounterionAlgorithmType>("Covalent Counterion", covalentCounterionAlgorithm, config ?? {});
   },
 };
 

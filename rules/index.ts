@@ -5,12 +5,13 @@ import {
   trippleBondAngleAlgorithm,
   overlappingBondsAlgorithm,
   valenceAlgorithm,
+  covalentCounterionAlgorithm,
   type OverlappingBondsConfigType,
   type trippleBondAngleAlgorithmType,
   type BondLengthAlgorithmType,
+  type CovalentCounterionAlgorithmType,
 } from "@rules/algorithms";
 import type { ValenceAlgorithmType } from "./algorithms/valence";
-import { alkaliBondsAlgorithm, type alkaliBondsAlgorithmType } from "./algorithms/alkaliBonds";
 
 export { Rule } from "./models/Rule";
 
@@ -18,7 +19,12 @@ const RulesManager = container.get<IRulesManager>(RULES_TOKENS.RULES_MANAGER);
 
 RulesManager.createRule<ValenceAlgorithmType>("Valence", valenceAlgorithm, { fixingRule: false }, []);
 
-RulesManager.createRule<alkaliBondsAlgorithmType>("Alkali Bonds", alkaliBondsAlgorithm, { fixingRule: false }, []);
+RulesManager.createRule<CovalentCounterionAlgorithmType>(
+  "Covalent Counterion",
+  covalentCounterionAlgorithm,
+  { fixingRule: false },
+  []
+);
 
 RulesManager.createRule<BondLengthAlgorithmType>(
   "Bond Length",
@@ -41,6 +47,5 @@ export {
   type IRulesManager,
   type OverlappingBondsConfigType,
   type trippleBondAngleAlgorithmType,
-  type BondLengthAlgorithmType,
-  type alkaliBondsAlgorithmType,
+  type CovalentCounterionAlgorithmType,
 };

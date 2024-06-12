@@ -116,12 +116,12 @@
                   <input
                     class="form-check-input"
                     data-type="ruleSwitcher"
-                    data-rule-name="alkaliRule"
+                    data-rule-name="covalentCounterionRule"
                     type="checkbox"
                     value=""
-                    id="alkaliSwitcher"
+                    id="covalentCounterionSwitcher"
                   />
-                  <label class="form-check-label collapsible">Alkali Bonds Rule</label>
+                  <label class="form-check-label collapsible">Covalent Counterion Rule</label>
                 </div>
                 <div class="form-check">
                   <input
@@ -235,13 +235,13 @@
       const trippleBondAngleRule = RulesManager.getRuleByName("Tripple Bond Angle");
       const bondLengthRule = RulesManager.getRuleByName("Bond Length");
       const valenceRule = RulesManager.getRuleByName("Valence");
-      const alkaliRule = RulesManager.getRuleByName("Alkali Bonds");
+      const covalentCounterionRule = RulesManager.getRuleByName("Covalent Counterion");
 
       const rulesMap = {
         trippleBondAngleRule,
         bondLengthRule,
         valenceRule,
-        alkaliRule,
+        covalentCounterionRule,
       };
 
       // setup initial values
