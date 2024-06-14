@@ -2,29 +2,7 @@ import { type RulesValidationResults } from "@infrastructure";
 import { type RuleAlgorithm } from "@rules/infrastructure";
 
 const BE = "Be";
-// but The most likely formation of bonds with ["H", "O", "F", "S", "Cl", "N"]
-const MORE_ELECTRONEGATIVE_ATOMS_THAN_BE = [
-  "H",
-  "C",
-  "N",
-  "O",
-  "F",
-  "Si",
-  "P",
-  "S",
-  "Cl",
-  "Co",
-  "Cu",
-  "Zn",
-  "Ge",
-  "As",
-  "Se",
-  "Br",
-  "Cr",
-  "Mn",
-  "Fe",
-  "Cd",
-];
+const ELECTRONEGATIVES = ["O", "N", "S"];
 
 export interface BerilliumAlgorithmType {
   fixingRule?: boolean;
@@ -39,8 +17,7 @@ export const berilliumBondsAlgorithm: RuleAlgorithm<BerilliumAlgorithmType> = (s
     for (const bond of bonds) {
       if (
         (bond.from.label === BE || bond.to.label === BE) &&
-        (MORE_ELECTRONEGATIVE_ATOMS_THAN_BE.includes(bond.from.label) ||
-          MORE_ELECTRONEGATIVE_ATOMS_THAN_BE.includes(bond.to.label))
+        (ELECTRONEGATIVES.includes(bond.from.label) || ELECTRONEGATIVES.includes(bond.to.label))
       ) {
         output.push({
           errorCode: "covalent-counterion:1.3.9",

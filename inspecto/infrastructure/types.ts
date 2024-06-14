@@ -3,6 +3,7 @@ import { type Structure } from "@models";
 import { type Rule } from "@rules/models";
 
 export type RulesValidationResults = {
+  isFixable?: boolean;
   errorCode?: string;
   message?: string;
   path: string;

@@ -16,6 +16,18 @@ Inspecto is a molecular checker to validate them to satisfy chemical rules.
 
 > npm run build
 
+#### Update demo in run-time
+
+in one terminal
+
+> npm run build:watch
+
+in the second terminal
+
+> npm run demo
+
+After changing files it will be updated automatically
+
 #### Local testing
 
 For development purposes run the following command in the root of the project

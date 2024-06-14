@@ -19,18 +19,14 @@ export class InspectoProcessor implements IInspectoProcessor {
     @inject(TOKENS.CONVERTER_PROVIDER)
     private readonly _converterProvider: IConverterProvider,
     @inject(TOKENS.DATA_MODEL_PROCESSOR)
-    private readonly _dataModelProcessor: IDataModelProcessor,
+    private readonly _dataModelProcessor: IDataModelProcessor
   ) {}
 
-  public async convertFileContentToStructure(
-    fileContent: string | Buffer,
-  ): Promise<Structure> {
+  public async convertFileContentToStructure(fileContent: string | Buffer): Promise<Structure> {
     try {
-      const ketMolecule =
-        await this._converterProvider.convertToKetFormat(fileContent);
+      const ketMolecule = await this._converterProvider.convertToKetFormat(fileContent);
 
-      const structureDataModel: Structure =
-        this._dataModelProcessor.createDataModel(ketMolecule);
+      const structureDataModel: Structure = this._dataModelProcessor.createDataModel(ketMolecule);
 
       return structureDataModel;
     } catch (error) {
@@ -42,7 +38,7 @@ export class InspectoProcessor implements IInspectoProcessor {
 
   public async applyRulesToStructure(
     rules: Array<Rule<any>>,
-    structure: Structure | string,
+    structure: Structure | string
   ): Promise<{
     validation: InspectoResults;
     structure: Structure;

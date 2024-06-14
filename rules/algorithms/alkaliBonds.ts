@@ -16,8 +16,8 @@ export const alkaliBondsAlgorithm: RuleAlgorithm<AlkaliBondsAlgorithmType> = (st
 
   // eslint-disable-next-line no-unreachable-loop
   for (const molecule of structure.molecules()) {
-    const alkaliInMolecula = [];
-    const alkaliEarthInMolecula = [];
+    const alkaliInMolecula: Atom[] = [];
+    const alkaliEarthInMolecula: Atom[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (const atom of molecule.atoms()) {
