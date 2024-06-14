@@ -10,10 +10,10 @@ export class Molecule extends KetcherNode {
   constructor(
     _molId: string,
     private readonly _atoms: Atom[],
-    private readonly _bonds: Bond[],
+    private readonly _bonds: Bond[]
   ) {
     super(_molId, RawKetType.MOLECULE);
-    this._graphView = new Graph((atom) => atom.toString());
+    this._graphView = new Graph(atom => atom.toString());
     for (const atom of _atoms) {
       this._graphView.addVertex(atom);
     }
@@ -50,7 +50,11 @@ export class Molecule extends KetcherNode {
   }
 
   public filterBondsByType(bondType: BOND_TYPES): Bond[] {
-    return this._bonds.filter((bond) => bond.bondType === bondType);
+    return this._bonds.filter(bond => bond.bondType === bondType);
+  }
+
+  public removeBond(bond: Bond): void {
+    this._bonds.splice(this.getBondIndex(bond), 1);
   }
 
   public getAdjacentBonds(bond: Bond): Bond[] {
@@ -58,12 +62,12 @@ export class Molecule extends KetcherNode {
       const adjacentBondsFrom = this._graphView
         .getAdjacentVertices(bond.from)
         .filter(({ to: atom }) => atom !== bond.to)
-        .map((atom) => atom.edge);
+        .map(atom => atom.edge);
 
       const adjacentBondsTo = this._graphView
         .getAdjacentVertices(bond.to)
         .filter(({ to: atom }) => atom !== bond.from)
-        .map((atom) => atom.edge);
+        .map(atom => atom.edge);
 
       return [...adjacentBondsFrom, ...adjacentBondsTo];
     } catch (error) {

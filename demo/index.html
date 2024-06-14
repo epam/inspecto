@@ -122,6 +122,17 @@
                     id="covalentCounterionSwitcher"
                   />
                   <label class="form-check-label collapsible">Covalent Counterion Rule</label>
+                  <div class="content">
+                    <form>
+                      <div class="form-group">
+                        <label>Do you want to change bond from covalent to ionic?</label>
+                      </div>
+                      <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="fixingRuleCovalent" />
+                        <label class="form-check-label" for="fixingRuleCovalent">Fixing Rule?</label>
+                      </div>
+                    </form>
+                  </div>
                 </div>
                 <div class="form-check">
                   <input
@@ -247,6 +258,7 @@
       // setup initial values
       document.querySelector("#angleDifferenceError").value = trippleBondAngleRule.config.angleDiffError;
       document.querySelector("#fixingRule").checked = trippleBondAngleRule.config.fixingRule;
+      document.querySelector("#fixingRuleCovalent").checked = covalentCounterionRule.config.fixingRule;
       document.querySelector("#bondLengthDifferenceError").value = bondLengthRule.config.differenceError;
       document.querySelector("#defaultBondLength").value = bondLengthRule.config.bondLength;
 
@@ -257,6 +269,10 @@
         RulesManager.updateRuleConfig(trippleBondAngleRule, {
           angleDiffError: document.querySelector("#angleDifferenceError").value,
           fixingRule: document.querySelector("#fixingRule").checked,
+        });
+
+        RulesManager.updateRuleConfig(covalentCounterionRule, {
+          fixingRule: document.querySelector("#fixingRuleCovalent").checked,
         });
 
         RulesManager.updateRuleConfig(bondLengthRule, {
@@ -273,6 +289,11 @@
         document.querySelector(".output-section").textContent = JSON.stringify(result.validation, undefined, 2);
 
         if (document.querySelector("#fixingRule").checked) {
+          const molecule = Inspecto.structureToKet(result.structure);
+          ketcher.setMolecule(molecule);
+        }
+
+        if (document.querySelector("#fixingRuleCovalent").checked) {
           const molecule = Inspecto.structureToKet(result.structure);
           ketcher.setMolecule(molecule);
         }
