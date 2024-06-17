@@ -8,13 +8,7 @@ export class Rule<TConfig extends object> {
   private readonly _tags: string[];
   private readonly _description: string;
 
-  constructor(
-    name: string,
-    algorithm: RuleAlgorithm<TConfig>,
-    config: TConfig,
-    tags?: string[],
-    description?: string,
-  ) {
+  constructor(name: string, algorithm: RuleAlgorithm<TConfig>, config: TConfig, tags?: string[], description?: string) {
     this._name = name;
     this._algorithm = algorithm;
     this._config = config;
@@ -35,6 +29,6 @@ export class Rule<TConfig extends object> {
   }
 
   public get config(): TConfig {
-    return JSON.parse(JSON.stringify(this._config));
+    return this._config;
   }
 }

@@ -82,6 +82,22 @@
         align-items: center;
         justify-content: space-between;
       }
+
+      .dg.main.a {
+        width: 100% !important;
+      }
+
+      .close-button {
+        display: none;
+      }
+
+      .property-name {
+        font-size: 1.5em;
+      }
+
+      .dg li.number > div > span {
+        padding-left: 15px;
+      }
     </style>
   </head>
 
@@ -101,85 +117,8 @@
             <div class="row">
               <div class="col">
                 <!-- Collapsible sections with checkboxes -->
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    data-type="ruleSwitcher"
-                    data-rule-name="valenceRule"
-                    type="checkbox"
-                    value=""
-                    id="valenceSwitcher"
-                  />
-                  <label class="form-check-label collapsible">Valence</label>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    data-type="ruleSwitcher"
-                    data-rule-name="covalentCounterionRule"
-                    type="checkbox"
-                    value=""
-                    id="covalentCounterionSwitcher"
-                  />
-                  <label class="form-check-label collapsible">Covalent Counterion Rule</label>
-                  <div class="content">
-                    <form>
-                      <div class="form-group">
-                        <label>Do you want to change bond from covalent to ionic?</label>
-                      </div>
-                      <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="fixingRuleCovalent" />
-                        <label class="form-check-label" for="fixingRuleCovalent">Fixing Rule?</label>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    data-type="ruleSwitcher"
-                    data-rule-name="trippleBondAngleRule"
-                    type="checkbox"
-                    value=""
-                    id="tripleBondAngleSwithcer"
-                  />
-                  <label class="form-check-label collapsible">Triple Bond Angle</label>
-                  <div class="content">
-                    <form>
-                      <div class="form-group">
-                        <label for="angleDifferenceError">Angle Difference Error</label>
-                        <input type="text" class="form-control" id="angleDifferenceError" />
-                      </div>
-                      <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="fixingRule" />
-                        <label class="form-check-label" for="fixingRule">Fixing Rule?</label>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    data-type="ruleSwitcher"
-                    data-rule-name="bondLengthRule"
-                    type="checkbox"
-                    value=""
-                    id="bondLengthSwithcer"
-                  />
-                  <label class="form-check-label collapsible">Bond Length</label>
-                  <div class="content">
-                    <form>
-                      <div class="form-group">
-                        <label for="bondLengthDifferenceError">Bond Length Difference Error</label>
-                        <input type="number" class="form-control" id="bondLengthDifferenceError" />
-                      </div>
-                      <div class="form-group">
-                        <label for="defaultBondLength">Default Bond Length</label>
-                        <input type="number" class="form-control" id="defaultBondLength" />
-                      </div>
-                    </form>
-                  </div>
-                </div>
+
+                <div id="rulesContainer"></div>
               </div>
             </div>
             <!-- Output section -->
@@ -217,83 +156,42 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-      // Add event listeners to collapsible buttons to toggle content visibility
-      var coll = document.getElementsByClassName("collapsible");
-      var i;
-
-      for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function () {
-          // Prevent checkboxes from being checked when the user clicks on the section title
-          if (event.target.nodeName !== "INPUT") {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
-              content.style.display = "none";
-            } else {
-              content.style.display = "block";
-            }
-          }
-        });
-      }
-    </script>
+    <!-- Link dat.gui -->
+    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
 
     <script type="module">
       import { Inspecto } from "../build/inspecto.js";
       import { RulesManager } from "../build/rules.js";
 
-      const trippleBondAngleRule = RulesManager.getRuleByName("Tripple Bond Angle");
-      const bondLengthRule = RulesManager.getRuleByName("Bond Length");
-      const valenceRule = RulesManager.getRuleByName("Valence");
-      const covalentCounterionRule = RulesManager.getRuleByName("Covalent Counterion");
+      const rules = ["Valence", "Covalent Counterion", "Bond Length", "Tripple Bond Angle"];
 
-      const rulesMap = {
-        trippleBondAngleRule,
-        bondLengthRule,
-        valenceRule,
-        covalentCounterionRule,
-      };
+      const rulesWithFlag = rules.map(rule => {
+        return { rule: RulesManager.getRuleByName(rule), isChecked: false };
+      });
 
-      // setup initial values
-      document.querySelector("#angleDifferenceError").value = trippleBondAngleRule.config.angleDiffError;
-      document.querySelector("#fixingRule").checked = trippleBondAngleRule.config.fixingRule;
-      document.querySelector("#fixingRuleCovalent").checked = covalentCounterionRule.config.fixingRule;
-      document.querySelector("#bondLengthDifferenceError").value = bondLengthRule.config.differenceError;
-      document.querySelector("#defaultBondLength").value = bondLengthRule.config.bondLength;
+      let gui = new dat.GUI();
+      document.getElementById("rulesContainer")?.appendChild(gui.domElement);
+
+      for (let ruleWithFlag of rulesWithFlag) {
+        gui.add(ruleWithFlag, "isChecked").name(ruleWithFlag.rule.name);
+        for (let property in ruleWithFlag.rule.config) {
+          const controller = gui.add(ruleWithFlag.rule.config, property).name(property);
+        }
+      }
 
       document.querySelector(".apply-rules-button").addEventListener("click", async () => {
         const ketcher = document.getElementById("ketcher").contentWindow.ketcher;
         const ketFile = await ketcher.getKet();
 
-        RulesManager.updateRuleConfig(trippleBondAngleRule, {
-          angleDiffError: document.querySelector("#angleDifferenceError").value,
-          fixingRule: document.querySelector("#fixingRule").checked,
-        });
+        const appliedRules = rulesWithFlag
+          .filter(ruleWithFlag => ruleWithFlag.isChecked)
+          .map(checkedRule => checkedRule.rule);
 
-        RulesManager.updateRuleConfig(covalentCounterionRule, {
-          fixingRule: document.querySelector("#fixingRuleCovalent").checked,
-        });
-
-        RulesManager.updateRuleConfig(bondLengthRule, {
-          bondLength: document.querySelector("#defaultBondLength").value,
-          differenceError: document.querySelector("#bondLengthDifferenceError").value,
-        });
-
-        const rules = Array.from(document.querySelectorAll('[data-type="ruleSwitcher"]'))
-          .filter(checkBox => checkBox.checked)
-          .map(checkBox => rulesMap[checkBox.dataset["ruleName"]]);
-
-        const result = await Inspecto.applyRulesToStructure(rules, ketFile);
+        const result = await Inspecto.applyRulesToStructure(appliedRules, ketFile);
 
         document.querySelector(".output-section").textContent = JSON.stringify(result.validation, undefined, 2);
 
-        if (document.querySelector("#fixingRule").checked) {
-          const molecule = Inspecto.structureToKet(result.structure);
-          ketcher.setMolecule(molecule);
-        }
-
-        if (document.querySelector("#fixingRuleCovalent").checked) {
+        if (rulesWithFlag.some(ruleWithFlag => ruleWithFlag.rule.config?.fixingRule)) {
           const molecule = Inspecto.structureToKet(result.structure);
           ketcher.setMolecule(molecule);
         }
