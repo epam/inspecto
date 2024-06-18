@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inspecto Demo</title>
     <!-- Link Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./styles/bootstrap.min.css" />
 
     <style>
       /* Adjust height of the halves */
@@ -97,6 +97,7 @@
         font-size: 1.3em;
       }
     </style>
+
   </head>
 
   <body style="overflow: hidden">
@@ -150,56 +151,9 @@
       </div>
     </div>
 
-    <!-- Link Bootstrap JS (for dropdown functionality) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Link dat.gui -->
-    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
+
+    <script type="module" src="./ui/demo.ts"></script>
     <link rel="stylesheet" href="./styles/dat-gui-light-theme.css" />
 
-    <script type="module">
-      import { Inspecto } from "../build/inspecto.js";
-      import { RulesManager } from "../build/rules.js";
-
-      const ruleNames = ["Valence", "Covalent Counterion", "Bond Length", "Tripple Bond Angle"];
-      const configStringsMap = new Map([
-        ["fixingRule", "Fix"],
-        ["bondLength", "Bond Length"],
-        ["differenceError", "Difference Error"],
-        ["angleDiffError", "Angle Difference Error"],
-      ]);
-
-      const rules = ruleNames.map(rule => RulesManager.getRuleByName(rule));
-      let rulesFlags = {};
-      rules.forEach(rule => (rulesFlags[rule.name] = false));
-
-      let gui = new dat.GUI();
-      document.getElementById("rulesContainer")?.appendChild(gui.domElement);
-      for (let rule of rules) {
-        const folder = gui.addFolder(rule.name);
-        folder.add(rulesFlags, rule.name).name("Enabled");
-        for (let property in rule["_config"]) {
-          folder
-            .add(rule["_config"], property)
-            .name(configStringsMap.has(property) ? configStringsMap.get(property) : property);
-        }
-      }
-
-      document.querySelector(".apply-rules-button").addEventListener("click", async () => {
-        const ketcher = document.getElementById("ketcher").contentWindow.ketcher;
-        const ketFile = await ketcher.getKet();
-
-        const enabledRules = rules.filter(rule => rulesFlags[rule.name]);
-        const result = await Inspecto.applyRulesToStructure(enabledRules, ketFile);
-
-        document.querySelector(".output-section").textContent = JSON.stringify(result.validation, undefined, 2);
-
-        if (rules.some(rule => rule.config?.fixingRule)) {
-          const molecule = Inspecto.structureToKet(result.structure);
-          ketcher.setMolecule(molecule);
-        }
-      });
-    </script>
   </body>
 </html>
