@@ -17,7 +17,7 @@ export { Rule } from "./models/Rule";
 
 const RulesManager = container.get<IRulesManager>(RULES_TOKENS.RULES_MANAGER);
 
-RulesManager.createRule<ValenceAlgorithmType>("Valence", valenceAlgorithm, { fixingRule: false }, []);
+RulesManager.createRule<ValenceAlgorithmType>("Valence", valenceAlgorithm, {}, []);
 
 RulesManager.createRule<CovalentCounterionAlgorithmType>(
   "Covalent Counterion",
