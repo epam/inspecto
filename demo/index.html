@@ -171,13 +171,14 @@
       ]);
 
       const rules = ruleNames.map(rule => RulesManager.getRuleByName(rule));
+      let rulesFlags = {};
+      rules.forEach(rule => (rulesFlags[rule.name] = false));
 
       let gui = new dat.GUI();
       document.getElementById("rulesContainer")?.appendChild(gui.domElement);
-
       for (let rule of rules) {
         const folder = gui.addFolder(rule.name);
-        folder.add(rule, "enabled").name("Enabled");
+        folder.add(rulesFlags, rule.name).name("Enabled");
         for (let property in rule["_config"]) {
           folder
             .add(rule["_config"], property)
@@ -189,8 +190,7 @@
         const ketcher = document.getElementById("ketcher").contentWindow.ketcher;
         const ketFile = await ketcher.getKet();
 
-        const enabledRules = rules.filter(rule => rule.enabled);
-
+        const enabledRules = rules.filter(rule => rulesFlags[rule.name]);
         const result = await Inspecto.applyRulesToStructure(enabledRules, ketFile);
 
         document.querySelector(".output-section").textContent = JSON.stringify(result.validation, undefined, 2);
