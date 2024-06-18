@@ -21,7 +21,7 @@ export interface IInspectoProcessor {
   convertFileContentToStructure: (fileContent: string) => Promise<Structure>;
   applyRulesToStructure: (
     rules: Array<Rule<any>>,
-    structure: Structure
+    structure: Structure | string
   ) => Promise<{
     validation: InspectoResults;
     structure: Structure;

@@ -30,7 +30,9 @@
     "lint": "eslint index.ts '{inspecto,rules,tests,types,utils}/**/*.ts'",
     "prepare": "husky && husky install",
     "demo": "vite --port 8000",
-    "test": "vitest"
+    "test": "vitest",
+    "start": "vite",
+    "dev": "vite"
   },
   "repository": {
     "type": "git",
@@ -59,13 +61,16 @@
     "lint-staged": "^15.2.1",
     "prettier": "3.2.5",
     "ts-jest": "^29.1.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.2",
+    "@types/dat.gui": "^0.7.13",
+    "dat.gui": "^0.7.9",
+    "ketcher-core": "^2.20.0"
   },
   "dependencies": {
     "indigo-ketcher": "^1.16.0",
-    "reflect-metadata": "^0.2.1",
     "vite": "^5.0.12",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "reflect-metadata": "^0.2.1"
   },
   "lint-staged": {
     "*.ts": "eslint --fix",
