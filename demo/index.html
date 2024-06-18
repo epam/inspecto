@@ -6,6 +6,7 @@
     <title>Inspecto Demo</title>
     <!-- Link Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+
     <style>
       /* Adjust height of the halves */
       .half-screen {
@@ -91,12 +92,9 @@
         display: none;
       }
 
-      .property-name {
-        font-size: 1.5em;
-      }
-
-      .dg li.number > div > span {
-        padding-left: 15px;
+      .property-name,
+      .title {
+        font-size: 1.3em;
       }
     </style>
   </head>
@@ -158,24 +156,32 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Link dat.gui -->
     <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.7/build/dat.gui.min.js"></script>
+    <link rel="stylesheet" href="./styles/dat-gui-light-theme.css" />
 
     <script type="module">
       import { Inspecto } from "../build/inspecto.js";
       import { RulesManager } from "../build/rules.js";
 
-      const rules = ["Valence", "Covalent Counterion", "Bond Length", "Tripple Bond Angle"];
+      const ruleNames = ["Valence", "Covalent Counterion", "Bond Length", "Tripple Bond Angle"];
+      const configStringsMap = new Map([
+        ["fixingRule", "Fix"],
+        ["bondLength", "Bond Length"],
+        ["differenceError", "Difference Error"],
+        ["angleDiffError", "Angle Difference Error"],
+      ]);
 
-      const rulesWithFlag = rules.map(rule => {
-        return { rule: RulesManager.getRuleByName(rule), isChecked: false };
-      });
+      const rules = ruleNames.map(rule => RulesManager.getRuleByName(rule));
 
       let gui = new dat.GUI();
       document.getElementById("rulesContainer")?.appendChild(gui.domElement);
 
-      for (let ruleWithFlag of rulesWithFlag) {
-        gui.add(ruleWithFlag, "isChecked").name(ruleWithFlag.rule.name);
-        for (let property in ruleWithFlag.rule.config) {
-          const controller = gui.add(ruleWithFlag.rule.config, property).name(property);
+      for (let rule of rules) {
+        const folder = gui.addFolder(rule.name);
+        folder.add(rule, "enabled").name("Enabled");
+        for (let property in rule["_config"]) {
+          folder
+            .add(rule["_config"], property)
+            .name(configStringsMap.has(property) ? configStringsMap.get(property) : property);
         }
       }
 
@@ -183,15 +189,13 @@
         const ketcher = document.getElementById("ketcher").contentWindow.ketcher;
         const ketFile = await ketcher.getKet();
 
-        const appliedRules = rulesWithFlag
-          .filter(ruleWithFlag => ruleWithFlag.isChecked)
-          .map(checkedRule => checkedRule.rule);
+        const enabledRules = rules.filter(rule => rule.enabled);
 
-        const result = await Inspecto.applyRulesToStructure(appliedRules, ketFile);
+        const result = await Inspecto.applyRulesToStructure(enabledRules, ketFile);
 
         document.querySelector(".output-section").textContent = JSON.stringify(result.validation, undefined, 2);
 
-        if (rulesWithFlag.some(ruleWithFlag => ruleWithFlag.rule.config?.fixingRule)) {
+        if (rules.some(rule => rule.config?.fixingRule)) {
           const molecule = Inspecto.structureToKet(result.structure);
           ketcher.setMolecule(molecule);
         }
