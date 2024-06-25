@@ -6,3 +6,4 @@ export * from "./Structure";
 export * from "./KetcherNode";
 export * from "./MonomerTemplate";
 export * from "./Monomer";
+export * from "./SGroup";

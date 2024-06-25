@@ -1,9 +1,13 @@
-import { Inspecto } from "..";
+import { type InspectoResults } from "@infrastructure";
+import { Inspecto, type Structure } from "..";
 import { RulesManager } from "../rules";
 import dat from "dat.gui";
 import type { Ketcher } from "ketcher-core";
 
 const ruleNames = RulesManager.getAllRules().map(rule => rule.name);
+
+const ALIAS_RULE_NAME = "Alias";
+const ALIAS_RULE_CODE = `alias-rule:2.3`;
 
 const configStringsMap = new Map([
   ["fixingRule", "Fix"],
@@ -23,10 +27,10 @@ for (const rule of rules) {
   const folder = gui.addFolder(rule.name);
   folder.add(rulesFlags, rule.name).name("Enabled");
   // eslint-disable-next-line @typescript-eslint/dot-notation
-  for (const property in rule["_config"]) {
+  for (const property in rule.getOriginalConfig()) {
     folder
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      .add(rule["_config"], property)
+      .add(rule.getOriginalConfig(), property)
       .name(configStringsMap.get(property) ?? property);
   }
 }
@@ -43,7 +47,9 @@ async function applyConfig(): Promise<void> {
     writeOutput("Inspecto results goes here");
     return;
   }
-  const result = await Inspecto.applyRulesToStructure(enabledRules, ketFile);
+  let result = await Inspecto.applyRulesToStructure(enabledRules, ketFile);
+
+  result = await fixAliases(result);
 
   writeOutput(JSON.stringify(result.validation, undefined, 2));
 
@@ -55,6 +61,38 @@ async function applyConfig(): Promise<void> {
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 document.querySelector(".apply-rules-button")?.addEventListener("click", applyConfig);
+
+async function fixAliases(result: {
+  validation: InspectoResults;
+  structure: Structure;
+}): Promise<{ validation: InspectoResults; structure: Structure }> {
+  const aliasRule = rules.find(rule => rule.name === ALIAS_RULE_NAME);
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  if (!aliasRule) {
+    throw new Error("alias rule is not found");
+  }
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  if (rulesFlags[aliasRule.name] && aliasRule?.config.fixingRule) {
+    const resultValidationForAlias = result.validation[ALIAS_RULE_NAME].data.filter(
+      err => err.errorCode === ALIAS_RULE_CODE
+    );
+    aliasRule.getOriginalConfig().fixingScope = aliasRule.getOriginalConfig().fixingScope ?? [];
+    for (const result of resultValidationForAlias) {
+      const answer = prompt(result.message);
+      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+      if (answer) {
+        aliasRule.getOriginalConfig().fixingScope.push({
+          path: result.path,
+          errorCode: result.errorCode,
+          data: answer,
+        });
+      }
+    }
+    const ketMolecule = Inspecto.structureToKet(result.structure);
+    return await Inspecto.applyRulesToStructure([aliasRule], ketMolecule);
+  }
+  return result;
+}
 
 function writeOutput(text: string): void {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

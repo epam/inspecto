@@ -12,6 +12,7 @@ import {
   type CovalentCounterionAlgorithmType,
 } from "@rules/algorithms";
 import type { ValenceAlgorithmType } from "./algorithms/valence";
+import { type AliasAlgorithmType, aliasAlgorithm } from "./algorithms/alias";
 
 export { Rule } from "./models/Rule";
 
@@ -39,6 +40,8 @@ RulesManager.createRule<trippleBondAngleAlgorithmType>(
   { angleDiffError: 0.5, fixingRule: false },
   []
 );
+
+RulesManager.createRule<AliasAlgorithmType>("Alias", aliasAlgorithm, { fixingRule: false }, []);
 
 RulesManager.createRule<OverlappingBondsConfigType>("Overlapping Bonds", overlappingBondsAlgorithm, {}, []);
 

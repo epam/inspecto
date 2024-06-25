@@ -17,6 +17,12 @@ export type InspectoResults = Record<
   }
 >;
 
+export type FixingScope = {
+  path: string;
+  errorCode: string;
+  data: any;
+};
+
 export interface IInspectoProcessor {
   convertFileContentToStructure: (fileContent: string) => Promise<Structure>;
   applyRulesToStructure: (
