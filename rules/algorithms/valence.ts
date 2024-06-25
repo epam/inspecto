@@ -34,22 +34,8 @@ const VALENCE_RULES: Record<string, number[]> = {
   N: [3, 5],
   Cr: [2, 3, 6],
 };
-const METHALS = [
-  "Li",
-  "Na",
-  "K",
-  "Mg",
-  "Ca",
-  "Al",
-  "Cr",
-  "Mn",
-  "Fe",
-  "Co",
-  "Ni",
-  "Cu",
-  "Zn",
-  "Mo",
-];
+
+const METHALS = ["Li", "Na", "K", "Mg", "Ca", "Al", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Mo"];
 const DEFAULT_HYDROGENES: Record<string, number> = {
   N: 3,
   C: 4,
@@ -59,10 +45,7 @@ const DEFAULT_HYDROGENES: Record<string, number> = {
   // P: 3,
   // Se: 2,
 };
-export const valenceAlgorithm: RuleAlgorithm<ValenceAlgorithmType> = (
-  structure,
-  config,
-) => {
+export const valenceAlgorithm: RuleAlgorithm<ValenceAlgorithmType> = (structure, config) => {
   const output: RulesValidationResults[] = [];
 
   // eslint-disable-next-line no-unreachable-loop
@@ -77,8 +60,7 @@ export const valenceAlgorithm: RuleAlgorithm<ValenceAlgorithmType> = (
         // exclude metals with negative charge
         continue;
       }
-      let hydrogenCount =
-        atomName in DEFAULT_HYDROGENES ? DEFAULT_HYDROGENES[atomName] : 0;
+      let hydrogenCount = atomName in DEFAULT_HYDROGENES ? DEFAULT_HYDROGENES[atomName] : 0;
 
       if (atom.charge < 0 && hydrogenCount > 0) {
         hydrogenCount = 0;

@@ -1,3 +1,4 @@
+import { Types } from "@inspecto/infrastructure/enums";
 import { Location } from "./Location";
 
 export enum CHARGE {
@@ -7,7 +8,7 @@ export enum CHARGE {
 
 export class Atom {
   constructor(
-    private readonly _label: string,
+    private _label: string,
     private _location: Location,
     private _charge?: CHARGE
   ) {}
@@ -36,8 +37,16 @@ export class Atom {
     return this._label;
   }
 
+  public set label(value: string) {
+    this._label = value;
+  }
+
   public get vector(): [number, number, number] {
     return [this.x, this.y, this.z];
+  }
+
+  public get type(): Types.ATOM {
+    return Types.ATOM;
   }
 
   public toString(): string {

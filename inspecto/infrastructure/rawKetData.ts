@@ -17,10 +17,24 @@ export type RawKetBonds = {
   atoms: [number, number];
 };
 
+export type AttachmentPoint = {
+  attachmentAtom: number;
+  attachmentId: string;
+};
+
+export type RawKetSGroups = {
+  type: string;
+  atoms: number[];
+  name: string;
+  id: number;
+  attachmentPoints: AttachmentPoint[];
+};
+
 export type RawKetMolecule = {
   type: RawKetType.MOLECULE;
   atoms: RawKetAtom[];
   bonds: RawKetBonds[];
+  sgroups: RawKetSGroups[];
 };
 
 export type RawKetMonomer = {

@@ -8,9 +8,11 @@ import {
   type RawKetMolecule,
   type RawKetMonomer,
   type RawKetMonomerTemplate,
+  type RawKetSGroups,
+  type Types,
 } from "@infrastructure";
 import { injectable } from "inversify";
-import { Atom, Structure, Location, Bond, Molecule, type KetcherNode, MonomerTemplate, Monomer } from "@models";
+import { Atom, Structure, Location, Bond, Molecule, type KetcherNode, MonomerTemplate, Monomer, SGroup } from "@models";
 
 @injectable()
 export class DataModelProcessor implements IDataModelProcessor {
@@ -60,7 +62,9 @@ export class DataModelProcessor implements IDataModelProcessor {
   private _createMolecule(nodeId: string, rawNodeData: RawKetMolecule): [string, KetcherNode] {
     const atoms = this._createAtoms(rawNodeData.atoms);
     const bonds = this._createBonds(rawNodeData.bonds ?? [], atoms);
-    const molecule = new Molecule(nodeId, atoms, bonds);
+    const sgroups = this._createSGroups(rawNodeData.sgroups ?? []);
+
+    const molecule = new Molecule(nodeId, atoms, bonds, sgroups);
 
     return [nodeId, molecule] as [string, KetcherNode];
   }
@@ -101,6 +105,12 @@ export class DataModelProcessor implements IDataModelProcessor {
     });
   }
 
+  private _createSGroups(rawKetSGroups: RawKetSGroups[]): SGroup[] {
+    return rawKetSGroups.map(({ type, atoms, name, id, attachmentPoints }) => {
+      return new SGroup(type as Types.SGROUP, atoms, name, id, attachmentPoints);
+    });
+  }
+
   private _ketcherNodeToKet(ketcherNode: KetcherNode): RawKetChems {
     // Hack, fix it
     const result = { type: ketcherNode.type } as unknown as RawKetChems;
@@ -108,6 +118,7 @@ export class DataModelProcessor implements IDataModelProcessor {
     if (ketcherNode.type === RawKetType.MOLECULE) {
       const atoms: RawKetAtom[] = [];
       const bonds: RawKetBonds[] = [];
+      const sgroups: RawKetSGroups[] = [];
 
       for (const atom of (ketcherNode as Molecule).atoms()) {
         atoms.push({
@@ -124,7 +135,18 @@ export class DataModelProcessor implements IDataModelProcessor {
           atoms: bond.atomsIndexes,
         });
       }
-      return { type: ketcherNode.type, atoms, bonds };
+
+      for (const sgroup of (ketcherNode as Molecule).sgroups()) {
+        sgroups.push({
+          type: sgroup.type,
+          atoms: sgroup.atoms,
+          name: sgroup.name,
+          id: sgroup.id,
+          attachmentPoints: JSON.parse(JSON.stringify(sgroup.attachmentPoints ?? [])),
+        });
+      }
+
+      return { type: ketcherNode.type, atoms, bonds, sgroups };
     }
 
     return result;

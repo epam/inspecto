@@ -3,6 +3,7 @@ import { type Atom } from "./Atom";
 import { type BOND_TYPES, type Bond } from "./Bond";
 import { GRAPH_ERRORS, Graph } from "./Graph";
 import { RawKetType } from "@infrastructure";
+import { type SGroup } from "@models";
 
 export class Molecule extends KetcherNode {
   private readonly _graphView: Graph<Atom, Bond>;
@@ -10,7 +11,8 @@ export class Molecule extends KetcherNode {
   constructor(
     _molId: string,
     private readonly _atoms: Atom[],
-    private readonly _bonds: Bond[]
+    private readonly _bonds: Bond[],
+    private readonly _sgroups: SGroup[]
   ) {
     super(_molId, RawKetType.MOLECULE);
     this._graphView = new Graph(atom => atom.toString());
@@ -41,12 +43,22 @@ export class Molecule extends KetcherNode {
     }
   }
 
+  public *sgroups(): Generator<SGroup> {
+    for (const sgroup of this._sgroups) {
+      yield sgroup;
+    }
+  }
+
   public getAtomIndex(atom: Atom): number {
     return this._atoms.indexOf(atom);
   }
 
   public getBondIndex(bond: Bond): number {
     return this._bonds.indexOf(bond);
+  }
+
+  public getGroupIndex(sgroup: SGroup): number {
+    return this._sgroups.indexOf(sgroup);
   }
 
   public filterBondsByType(bondType: BOND_TYPES): Bond[] {

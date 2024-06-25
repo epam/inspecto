@@ -7,6 +7,7 @@ import { RulesManager } from "@rules";
 import { type RulesValidationResults } from "@infrastructure";
 import { valenceAlgorithm, type ValenceAlgorithmType } from "@rules/algorithms/valence";
 import { type CovalentCounterionAlgorithmType, covalentCounterionAlgorithm } from "@rules/algorithms";
+import { type AliasAlgorithmType, aliasAlgorithm } from "@rules/algorithms/alias";
 
 const indigoModule = IndigoModule();
 const dataProcessor = new DataModelProcessor();
@@ -30,12 +31,14 @@ export enum RuleNames {
   BondLength = "Bond Length",
   Valence = "Valence",
   CovalentCounterion = "Covalent Counterion",
+  Alias = "Alias",
 }
 
 interface RuleTypes {
   [RuleNames.BondLength]: BondLengthAlgorithmType;
   [RuleNames.Valence]: ValenceAlgorithmType;
   [RuleNames.CovalentCounterion]: CovalentCounterionAlgorithmType;
+  [RuleNames.Alias]: AliasAlgorithmType;
 }
 const RULES: {
   [key in RuleNames]: (config?: RuleTypes[key]) => Rule<RuleTypes[key]>;
@@ -55,6 +58,9 @@ const RULES: {
   },
   [RuleNames.CovalentCounterion]: (config?: CovalentCounterionAlgorithmType) => {
     return new Rule<CovalentCounterionAlgorithmType>("Covalent Counterion", covalentCounterionAlgorithm, config ?? {});
+  },
+  [RuleNames.Alias]: (config?: AliasAlgorithmType) => {
+    return new Rule<AliasAlgorithmType>("Alias", aliasAlgorithm, config ?? {});
   },
 };
 
