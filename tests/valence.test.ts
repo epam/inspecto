@@ -1,5 +1,6 @@
 import { it, describe } from "vitest";
-import { ketToStructure, RuleNames, getRule } from "@testing";
+import { ketToStructure, getRule } from "@testing";
+import { Rules as RuleNames } from "@infrastructure";
 
 import E1F from "./mocks/valence/E1F.ket?raw";
 import E1T from "./mocks/valence/E1T.ket?raw";
@@ -19,9 +20,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(results.length, "Valence validation errors should be detected").toBe(
-      2,
-    );
+    expect(results.length, "Valence validation errors should be detected").toBe(2);
   });
   it("E2F", async ({ expect }) => {
     const structure = ketToStructure(E2F);
@@ -29,9 +28,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(results.length, "Valence validation errors should be detected").toBe(
-      2,
-    );
+    expect(results.length, "Valence validation errors should be detected").toBe(2);
   });
 
   it("E3F", async ({ expect }) => {
@@ -40,9 +37,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(results.length, "Valence validation errors should be detected").toBe(
-      2,
-    );
+    expect(results.length, "Valence validation errors should be detected").toBe(2);
   });
 
   it("E4F", async ({ expect }) => {
@@ -51,9 +46,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(results.length, "Valence validation errors should be detected").toBe(
-      2,
-    );
+    expect(results.length, "Valence validation errors should be detected").toBe(2);
   });
 
   it("E5F", async ({ expect }) => {
@@ -62,9 +55,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(results.length, "Valence validation errors should be detected").toBe(
-      4,
-    );
+    expect(results.length, "Valence validation errors should be detected").toBe(4);
   });
 
   it("E1T", async ({ expect }) => {
@@ -73,10 +64,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(
-      results.length,
-      "No valence validation errors should be detected",
-    ).toBe(0);
+    expect(results.length, "No valence validation errors should be detected").toBe(0);
   });
 
   it("E2T", async ({ expect }) => {
@@ -85,10 +73,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(
-      results.length,
-      "No valence validation errors should be detected",
-    ).toBe(0);
+    expect(results.length, "No valence validation errors should be detected").toBe(0);
   });
   it("E3T", async ({ expect }) => {
     const structure = ketToStructure(E3T);
@@ -96,10 +81,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(
-      results.length,
-      "No valence validation errors should be detected",
-    ).toBe(0);
+    expect(results.length, "No valence validation errors should be detected").toBe(0);
   });
   it("E4T", async ({ expect }) => {
     const structure = ketToStructure(E4T);
@@ -107,10 +89,7 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(
-      results.length,
-      "No valence validation errors should be detected",
-    ).toBe(0);
+    expect(results.length, "No valence validation errors should be detected").toBe(0);
   });
   it("E5T", async ({ expect }) => {
     const structure = ketToStructure(E5T);
@@ -118,9 +97,6 @@ describe("Valence Rule", async () => {
 
     const results = rule.verify(structure);
 
-    expect(
-      results.length,
-      "No valence validation errors should be detected",
-    ).toBe(0);
+    expect(results.length, "No valence validation errors should be detected").toBe(0);
   });
 });

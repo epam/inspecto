@@ -4,7 +4,7 @@ import { DataModelProcessor } from "@processors";
 import { type BondLengthAlgorithmType, bondLengthAlgorithm } from "@rules/algorithms/bondLength";
 import { Rule } from "@rules/models/Rule";
 import { RulesManager } from "@rules";
-import { type RulesValidationResults } from "@infrastructure";
+import { Rules as RuleNames, type RulesValidationResults } from "@infrastructure";
 import { valenceAlgorithm, type ValenceAlgorithmType } from "@rules/algorithms/valence";
 import { type CovalentCounterionAlgorithmType, covalentCounterionAlgorithm } from "@rules/algorithms";
 import { type AliasAlgorithmType, aliasAlgorithm } from "@rules/algorithms/alias";
@@ -27,13 +27,6 @@ export async function toStructure(str: string): Promise<Structure> {
   return structure;
 }
 
-export enum RuleNames {
-  BondLength = "Bond Length",
-  Valence = "Valence",
-  CovalentCounterion = "Covalent Counterion",
-  Alias = "Alias",
-}
-
 interface RuleTypes {
   [RuleNames.BondLength]: BondLengthAlgorithmType;
   [RuleNames.Valence]: ValenceAlgorithmType;
@@ -45,7 +38,7 @@ const RULES: {
 } = {
   [RuleNames.BondLength]: (config?: BondLengthAlgorithmType) => {
     return new Rule<BondLengthAlgorithmType>(
-      "Bond Length",
+      RuleNames.BondLength,
       bondLengthAlgorithm,
       config ?? {
         bondLength: 2,
@@ -54,13 +47,17 @@ const RULES: {
     );
   },
   [RuleNames.Valence]: (config?: ValenceAlgorithmType) => {
-    return new Rule<ValenceAlgorithmType>("Valence", valenceAlgorithm, config ?? {});
+    return new Rule<ValenceAlgorithmType>(RuleNames.Valence, valenceAlgorithm, config ?? {});
   },
   [RuleNames.CovalentCounterion]: (config?: CovalentCounterionAlgorithmType) => {
-    return new Rule<CovalentCounterionAlgorithmType>("Covalent Counterion", covalentCounterionAlgorithm, config ?? {});
+    return new Rule<CovalentCounterionAlgorithmType>(
+      RuleNames.CovalentCounterion,
+      covalentCounterionAlgorithm,
+      config ?? {}
+    );
   },
   [RuleNames.Alias]: (config?: AliasAlgorithmType) => {
-    return new Rule<AliasAlgorithmType>("Alias", aliasAlgorithm, config ?? {});
+    return new Rule<AliasAlgorithmType>(RuleNames.Alias, aliasAlgorithm, config ?? {});
   },
 };
 

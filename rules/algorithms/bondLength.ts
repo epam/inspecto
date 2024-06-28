@@ -6,10 +6,9 @@ export interface BondLengthAlgorithmType {
   differenceError: number;
 }
 
-export const bondLengthAlgorithm: RuleAlgorithm<BondLengthAlgorithmType> = (
-  structure,
-  config,
-) => {
+export const BOND_LENGTH = "bond-lenght";
+
+export const bondLengthAlgorithm: RuleAlgorithm<BondLengthAlgorithmType> = (structure, config) => {
   const output: RulesValidationResults[] = [];
 
   for (const molecule of structure.molecules()) {
@@ -18,6 +17,8 @@ export const bondLengthAlgorithm: RuleAlgorithm<BondLengthAlgorithmType> = (
 
       if (Math.abs(bondLength - config.bondLength) > config.differenceError) {
         output.push({
+          errorCode: BOND_LENGTH,
+          isFixable: false,
           message: `Bond Length Rule validation error: ${bond.getLength()}`,
           path: `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`,
         });

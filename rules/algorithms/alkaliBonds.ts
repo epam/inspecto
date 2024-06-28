@@ -6,6 +6,8 @@ const ALKALI = ["Li", "Na", "K", "Rb", "Cs", "Fr"];
 const ALKALI_EARTH = ["Mg", "Ca", "Sr", "Ba", "Ra"];
 const MAXIMUM_ALKALI_BONDS = 1;
 const MAXIMUM_ALKALI_EARTH_BONDS = 2;
+export const COVALENT_ALKALI_BONDS_EXIST = "covalent-counterion:1.3.4";
+export const COVALENT_ALKALI_EARTH_BONDS_EXIST = "covalent-counterion:1.3.8";
 
 export interface AlkaliBondsAlgorithmType {
   fixingRule?: boolean;
@@ -30,8 +32,14 @@ export const alkaliBondsAlgorithm: RuleAlgorithm<AlkaliBondsAlgorithmType> = (st
         alkaliEarthInMolecula.push(atom);
       }
     }
-    checkMultipleBonds(alkaliInMolecula, molecule, output, MAXIMUM_ALKALI_BONDS, "1.3.4");
-    checkMultipleBonds(alkaliEarthInMolecula, molecule, output, MAXIMUM_ALKALI_EARTH_BONDS, "1.3.8");
+    checkMultipleBonds(alkaliInMolecula, molecule, output, MAXIMUM_ALKALI_BONDS, COVALENT_ALKALI_BONDS_EXIST);
+    checkMultipleBonds(
+      alkaliEarthInMolecula,
+      molecule,
+      output,
+      MAXIMUM_ALKALI_EARTH_BONDS,
+      COVALENT_ALKALI_EARTH_BONDS_EXIST
+    );
   }
 
   return output;
@@ -51,7 +59,8 @@ const checkMultipleBonds = (
     const atomBondsSum = atomBonds.reduce((previous, current) => previous + current.bondType, 0);
     if (atomBondsSum > maximumBonds) {
       output.push({
-        errorCode: `covalent-counterion:${errorCode}`,
+        isFixable: false,
+        errorCode: `${errorCode}`,
         message: `Inspecto has detected an alkali metal with multiple covalent bonds: ${atomBondsSum}`,
         path: `${molecule.id}->atoms->${molecule.getAtomIndex(atom)}->${atom.label}`,
       });

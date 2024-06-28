@@ -1,0 +1,117 @@
+/* Adjust height of the halves */
+.half-screen {
+  height: 100vh;
+}
+
+/* Make collapsible sections */
+.collapsible {
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  background-color: #e8e8e8;
+  /* Light gray */
+  transition: 0.4s;
+  display: flex;
+  align-items: center;
+  /* Align checkbox at center */
+}
+
+/* Style the collapsible content. Default is hidden */
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f9f9f9;
+}
+
+/* Adjust right half height */
+.right-half {
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Output section */
+.output-section {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #464547;
+  /* Dark gray border */
+  background-color: #ffffff;
+  /* White background */
+  border-radius: 10px;
+  color: #a3a3a3;
+  /* Light gray text */
+}
+
+/* Placeholder style */
+.placeholder {
+  color: #a3a3a3;
+  /* Light gray text */
+}
+
+/* Toggle buttons */
+.btn-group-toggle label.btn {
+  background-color: transparent;
+  color: #464547;
+  /* Dark gray text */
+  border: 1px solid #464547;
+  /* Dark gray border */
+}
+
+.btn-group-toggle label.btn.active {
+  background-color: #a3c644;
+  /* Secondary color */
+  color: #ffffff;
+  /* White text */
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dg.main.a {
+  width: 100% !important;
+}
+
+.close-button {
+  display: none;
+}
+
+.property-name,
+.title {
+  font-size: 1.3em;
+}
+
+.list {
+  margin: 0 10px;
+}
+
+.ul-list {
+  list-style: none;
+  padding: 0;
+}
+
+.li-list {
+  margin-bottom: 4px;
+  align-items: center;
+  display: flex;
+  padding: 5px;
+  border: 1px solid #464547;
+}
+
+.li-list > span {
+  font-size: 12px;
+}
+
+.fix-button {
+  margin: 4px;
+}
+
+button:disabled {
+  cursor: progress;
+}

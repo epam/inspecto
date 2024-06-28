@@ -6,7 +6,8 @@ export interface AliasAlgorithmType {
   fixingRule?: boolean;
   fixingScope?: FixingScope[];
 }
-const ERROR_CODE = "alias-rule:2.3";
+
+export const ALIAS_CODE = "alias:2.3";
 
 const PERIODIC_TABLE: Record<string, string> = {
   H: "Hydrogen",
@@ -201,15 +202,22 @@ const handleIncorrectSymbols = (
   const itemType = moleculeItem.type;
   const pathIndex = getMoleculeItemIndex(moleculeItem, molecule);
   const path = `${molecule.id}->${itemType}->${pathIndex}`;
-  const fixingScope = config.fixingScope?.find(scope => scope.errorCode === ERROR_CODE && scope.path === path);
+  const fixingScope = config.fixingScope?.find(scope => scope.errorCode === ALIAS_CODE && scope.path === path);
   /* eslint-disable @typescript-eslint/strict-boolean-expressions */
   if (fixingScope) {
     setMoleculeItemName(moleculeItem, fixingScope.data);
     config.fixingScope?.splice(config.fixingScope?.indexOf(fixingScope), 1);
   } else {
     output.push({
-      errorCode: ERROR_CODE,
-      message: `Inspecto has detected incorrect written symbols [${incorrectSymbols.join(", ")}] in ${abbreviationString}, would you like to change it?`,
+      isFixable: true,
+      fixMeta: {
+        requireUserInput: true,
+        type: "string",
+        initialValue: "",
+        prompt: `Inspecto has detected incorrect written symbols [${incorrectSymbols.join(", ")}] in ${abbreviationString}, would you like to change it?`,
+      },
+      errorCode: ALIAS_CODE,
+      message: `Inspecto has detected incorrect written symbols [${incorrectSymbols.join(", ")}] in ${abbreviationString}`,
       path,
     });
   }

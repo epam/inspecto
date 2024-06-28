@@ -1,5 +1,6 @@
 import { describe, it } from "vitest";
-import { RuleNames, getRule, ketToStructure } from "@testing";
+import { getRule, ketToStructure } from "@testing";
+import { Rules as RuleNames } from "@infrastructure";
 import R1_3_6_E1F from "./mocks/covalentCounterion/1.3.6/E1F.ket?raw";
 
 describe("Remove bond", async () => {

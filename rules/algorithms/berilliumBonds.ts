@@ -3,6 +3,7 @@ import { type RuleAlgorithm } from "@rules/infrastructure";
 
 const BE = "Be";
 const ELECTRONEGATIVES = ["O", "N", "S"];
+export const COVALENT_BERILLIUM_BONDS = "covalent-counterion:1.3.9";
 
 export interface BerilliumAlgorithmType {
   fixingRule?: boolean;
@@ -20,7 +21,8 @@ export const berilliumBondsAlgorithm: RuleAlgorithm<BerilliumAlgorithmType> = (s
         (ELECTRONEGATIVES.includes(bond.from.label) || ELECTRONEGATIVES.includes(bond.to.label))
       ) {
         output.push({
-          errorCode: "covalent-counterion:1.3.9",
+          isFixable: false,
+          errorCode: COVALENT_BERILLIUM_BONDS,
           message: "Inspecto has detected a covalently bound beryllium",
           path: `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`,
         });

@@ -6,102 +6,11 @@
     <title>Inspecto Demo</title>
     <!-- Link Bootstrap CSS -->
     <link rel="stylesheet" href="./styles/bootstrap.min.css" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-
-    <style>
-      /* Adjust height of the halves */
-      .half-screen {
-        height: 100vh;
-      }
-
-      /* Make collapsible sections */
-      .collapsible {
-        cursor: pointer;
-        padding: 10px;
-        width: 100%;
-        border: none;
-        text-align: left;
-        outline: none;
-        background-color: #e8e8e8;
-        /* Light gray */
-        transition: 0.4s;
-        display: flex;
-        align-items: center;
-        /* Align checkbox at center */
-      }
-
-      /* Style the collapsible content. Default is hidden */
-      .content {
-        padding: 0 18px;
-        display: none;
-        overflow: hidden;
-        background-color: #f9f9f9;
-      }
-
-      /* Adjust right half height */
-      .right-half {
-        height: 100%;
-        overflow-y: auto;
-      }
-
-      /* Output section */
-      .output-section {
-        margin-top: 20px;
-        padding: 10px;
-        border: 1px solid #464547;
-        /* Dark gray border */
-        background-color: #ffffff;
-        /* White background */
-        border-radius: 10px;
-        color: #a3a3a3;
-        /* Light gray text */
-      }
-
-      /* Placeholder style */
-      .placeholder {
-        color: #a3a3a3;
-        /* Light gray text */
-      }
-
-      /* Toggle buttons */
-      .btn-group-toggle label.btn {
-        background-color: transparent;
-        color: #464547;
-        /* Dark gray text */
-        border: 1px solid #464547;
-        /* Dark gray border */
-      }
-
-      .btn-group-toggle label.btn.active {
-        background-color: #a3c644;
-        /* Secondary color */
-        color: #ffffff;
-        /* White text */
-      }
-
-      .controls {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .dg.main.a {
-        width: 100% !important;
-      }
-
-      .close-button {
-        display: none;
-      }
-
-      .property-name,
-      .title {
-        font-size: 1.3em;
-      }
-    </style>
-
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="./inspecto/styles/style.css" />
   </head>
 
   <body style="overflow: hidden">
@@ -141,23 +50,25 @@
                 <button class="btn btn-primary apply-rules-button">Apply Rules</button>
               </div>
             </div>
-            <div class="row">
-              <div class="col" style="display: flex; flex: 1">
-                <!-- Output section -->
-                <pre class="output-section placeholder" style="flex: 1">
+            <details>
+              <summary>Results</summary>
+              <div class="row">
+                <div class="col" style="display: flex; flex: 1">
+                  <!-- Output section -->
+                  <pre class="output-section placeholder" style="flex: 1">
                 Inspecto results goes here
               </pre
-                >
+                  >
+                </div>
               </div>
-            </div>
+            </details>
+            <div class="row list"></div>
           </div>
         </div>
       </div>
     </div>
 
-
     <script type="module" src="./ui/demo.ts"></script>
     <link rel="stylesheet" href="./styles/dat-gui-light-theme.css" />
-
   </body>
 </html>

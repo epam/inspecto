@@ -1,13 +1,12 @@
 import { type InspectoResults } from "@infrastructure";
 import { Inspecto, type Structure } from "..";
-import { RulesManager } from "../rules";
+import { type Rule, RulesManager } from "../rules";
 import dat from "dat.gui";
-import type { Ketcher } from "ketcher-core";
+import { writeList } from "./components/list/list";
+import { getKetcher } from "./utils/getKetcher";
+import { getFixRule } from "./utils/getFixRule";
 
-const ruleNames = RulesManager.getAllRules().map(rule => rule.name);
-
-const ALIAS_RULE_NAME = "Alias";
-const ALIAS_RULE_CODE = `alias-rule:2.3`;
+const rules = RulesManager.getAllRules();
 
 const configStringsMap = new Map([
   ["fixingRule", "Fix"],
@@ -16,11 +15,8 @@ const configStringsMap = new Map([
   ["angleDiffError", "Angle Difference Error"],
 ]);
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const rules = ruleNames.map(rule => RulesManager.getRuleByName(rule)!);
 const rulesFlags: Record<string, boolean> = {};
 rules.forEach(rule => (rulesFlags[rule.name] = false));
-
 const gui = new dat.GUI();
 document.getElementById("rulesContainer")?.appendChild(gui.domElement);
 for (const rule of rules) {
@@ -36,9 +32,7 @@ for (const rule of rules) {
 }
 
 async function applyConfig(): Promise<void> {
-  const ketcherIframe = document.getElementById("ketcher") as HTMLIFrameElement;
-  const ketcherContentWindow = ketcherIframe.contentWindow as Window & { ketcher: Ketcher };
-  const ketcher = ketcherContentWindow.ketcher;
+  const ketcher = getKetcher();
   const ketFile = await ketcher.getKet();
 
   const enabledRules = rules.filter(rule => rulesFlags[rule.name]);
@@ -49,9 +43,12 @@ async function applyConfig(): Promise<void> {
   }
   let result = await Inspecto.applyRulesToStructure(enabledRules, ketFile);
 
-  result = await fixAliases(result);
+  result = await fixErrorsWithRequiredInputs(result);
 
   writeOutput(JSON.stringify(result.validation, undefined, 2));
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  writeList(result);
 
   if (rules.some(rule => rule.config?.fixingRule)) {
     const molecule = Inspecto.structureToKet(result.structure);
@@ -62,36 +59,33 @@ async function applyConfig(): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 document.querySelector(".apply-rules-button")?.addEventListener("click", applyConfig);
 
-async function fixAliases(result: {
+async function fixErrorsWithRequiredInputs(result: {
   validation: InspectoResults;
   structure: Structure;
 }): Promise<{ validation: InspectoResults; structure: Structure }> {
-  const aliasRule = rules.find(rule => rule.name === ALIAS_RULE_NAME);
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (!aliasRule) {
-    throw new Error("alias rule is not found");
-  }
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (rulesFlags[aliasRule.name] && aliasRule?.config.fixingRule) {
-    const resultValidationForAlias = result.validation[ALIAS_RULE_NAME].data.filter(
-      err => err.errorCode === ALIAS_RULE_CODE
+  const fixRules: Array<Rule<any>> = [];
+  rules.forEach(rule => (rule.config.fixingScope = []));
+  for (const ruleName in result.validation) {
+    if (rules.find(rule => rule.name === ruleName)?.config?.fixingRule !== true) {
+      continue;
+    }
+    const validationErrorsWithRequiredInput = result.validation[ruleName].data.filter(
+      validationResult => validationResult.fixMeta?.requireUserInput === true
     );
-    aliasRule.getOriginalConfig().fixingScope = aliasRule.getOriginalConfig().fixingScope ?? [];
-    for (const result of resultValidationForAlias) {
-      const answer = prompt(result.message);
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      if (answer) {
-        aliasRule.getOriginalConfig().fixingScope.push({
-          path: result.path,
-          errorCode: result.errorCode,
-          data: answer,
-        });
+    for (const validationResult of validationErrorsWithRequiredInput) {
+      const fixRule = getFixRule(ruleName, validationResult, false);
+      if (fixRule !== null) {
+        if (!fixRules.some(fr => fr.name === fixRule.name)) {
+          fixRules.push(fixRule);
+        }
       }
     }
-    const ketMolecule = Inspecto.structureToKet(result.structure);
-    return await Inspecto.applyRulesToStructure([aliasRule], ketMolecule);
   }
-  return result;
+  if (fixRules.length === 0) {
+    return result;
+  }
+  const ketMolecule = Inspecto.structureToKet(result.structure);
+  return await Inspecto.applyRulesToStructure(fixRules, ketMolecule);
 }
 
 function writeOutput(text: string): void {

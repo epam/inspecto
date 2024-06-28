@@ -13,37 +13,38 @@ import {
 } from "@rules/algorithms";
 import type { ValenceAlgorithmType } from "./algorithms/valence";
 import { type AliasAlgorithmType, aliasAlgorithm } from "./algorithms/alias";
+import { Rules } from "@infrastructure";
 
 export { Rule } from "./models/Rule";
 
 const RulesManager = container.get<IRulesManager>(RULES_TOKENS.RULES_MANAGER);
 
-RulesManager.createRule<ValenceAlgorithmType>("Valence", valenceAlgorithm, {}, []);
+RulesManager.createRule<ValenceAlgorithmType>(Rules.Valence, valenceAlgorithm, {}, []);
 
 RulesManager.createRule<CovalentCounterionAlgorithmType>(
-  "Covalent Counterion",
+  Rules.CovalentCounterion,
   covalentCounterionAlgorithm,
   { fixingRule: false },
   []
 );
 
 RulesManager.createRule<BondLengthAlgorithmType>(
-  "Bond Length",
+  Rules.BondLength,
   bondLengthAlgorithm,
   { bondLength: 1, differenceError: 0.01 },
   []
 );
 
 RulesManager.createRule<trippleBondAngleAlgorithmType>(
-  "Tripple Bond Angle",
+  Rules.TrippleBondAngle,
   trippleBondAngleAlgorithm,
   { angleDiffError: 0.5, fixingRule: false },
   []
 );
 
-RulesManager.createRule<AliasAlgorithmType>("Alias", aliasAlgorithm, { fixingRule: false }, []);
+RulesManager.createRule<AliasAlgorithmType>(Rules.Alias, aliasAlgorithm, { fixingRule: false }, []);
 
-RulesManager.createRule<OverlappingBondsConfigType>("Overlapping Bonds", overlappingBondsAlgorithm, {}, []);
+RulesManager.createRule<OverlappingBondsConfigType>(Rules.OverlappingBonds, overlappingBondsAlgorithm, {}, []);
 
 export {
   RulesManager,

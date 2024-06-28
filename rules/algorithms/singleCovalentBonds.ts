@@ -1,12 +1,14 @@
-import { type RulesValidationResults } from "@infrastructure";
+import { type FixingScope, type RulesValidationResults } from "@infrastructure";
 import { BOND_TYPES, type Bond } from "@models";
 import { type RuleAlgorithm } from "@rules/infrastructure";
 
 const ALKALI = ["Li", "Na", "K", "Rb", "Cs", "Fr"];
 const ELECTRONEGATIVES = ["O", "N", "S"];
+export const COVALENT_SINGLE_ALC_BONDS = "covalent-counterion:1.3.3";
 
 export interface SingleCovalentBondsAlgorithmType {
   fixingRule?: boolean;
+  fixingScope?: FixingScope[];
 }
 
 export const singleCovalentBondsAlgorithm: RuleAlgorithm<SingleCovalentBondsAlgorithmType> = (structure, config) => {
@@ -22,7 +24,11 @@ export const singleCovalentBondsAlgorithm: RuleAlgorithm<SingleCovalentBondsAlgo
         (ELECTRONEGATIVES.includes(bond.from.label) || ELECTRONEGATIVES.includes(bond.to.label))
     );
     for (const bond of singleBondsAlkaliWithElectronegatives) {
-      if (config.fixingRule ?? false) {
+      const path = `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`;
+      const fixingScope = config.fixingScope?.find(
+        scope => scope.errorCode === COVALENT_SINGLE_ALC_BONDS && scope.path === path
+      );
+      if (config.fixingRule === true || fixingScope !== undefined) {
         const atomAlkali = ALKALI.includes(bond.from.label) ? bond.from : bond.to;
         atomAlkali.charge = atomAlkali.charge + 1;
         const atomSecond = atomAlkali === bond.from ? bond.to : bond.from;
@@ -33,7 +39,7 @@ export const singleCovalentBondsAlgorithm: RuleAlgorithm<SingleCovalentBondsAlgo
       } else {
         output.push({
           isFixable: true,
-          errorCode: `covalent-counterion:1.3.3`,
+          errorCode: COVALENT_SINGLE_ALC_BONDS,
           message: `Inspecto has detected an alkali with single covalent bonds with electronegative atom: ${bond.from.label} - ${bond.to.label}`,
           path: `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`,
         });
