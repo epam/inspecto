@@ -1,5 +1,13 @@
 import { it, describe } from "vitest";
-import { ketToStructure, RuleNames, getRule } from "@testing";
+import { ketToStructure, getRule } from "@testing";
+import { Rules as RuleNames } from "@infrastructure";
+
+import { COVALENT_ALKALI_BONDS_EXIST, COVALENT_ALKALI_EARTH_BONDS_EXIST } from "@rules/algorithms/alkaliBonds";
+import { COVALENT_BERILLIUM_BONDS } from "@rules/algorithms/berilliumBonds";
+import {
+  COVALENT_DOUBLE_ALC_EARTH_BONDS,
+  COVALENT_SINGLE_ALC_EARTH_BONDS,
+} from "@rules/algorithms/doubleCovalentBonds";
 
 import R1_3_4_E1F from "./mocks/covalentCounterion/1.3.4/E1F.ket?raw";
 import R1_3_4_E2F from "./mocks/covalentCounterion/1.3.4/E2F.ket?raw";
@@ -46,7 +54,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -58,7 +66,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -70,7 +78,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -82,7 +90,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -94,7 +102,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -106,7 +114,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -118,7 +126,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -130,7 +138,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -141,7 +149,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -152,7 +160,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -163,7 +171,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.4").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -175,7 +183,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -187,7 +195,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -198,7 +206,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -209,7 +217,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -220,7 +228,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -231,7 +239,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "Inspecto has detected an alkali metal with multiple covalent bonds"
     ).toBe(1);
   });
@@ -243,7 +251,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -255,7 +263,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -266,7 +274,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -277,7 +285,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -288,7 +296,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -299,7 +307,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.8").length,
+      results.filter(res => res.errorCode === COVALENT_ALKALI_EARTH_BONDS_EXIST).length,
       "No alkali metal validation errors should be detected"
     ).toBe(0);
   });
@@ -311,7 +319,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.9").length,
+      results.filter(res => res.errorCode === COVALENT_BERILLIUM_BONDS).length,
       "Inspecto has detected a covalently bound beryllium"
     ).toBe(1);
   });
@@ -323,7 +331,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.9").length,
+      results.filter(res => res.errorCode === COVALENT_BERILLIUM_BONDS).length,
       "Inspecto has detected a covalently bound beryllium"
     ).toBe(0);
   });
@@ -335,7 +343,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.6").length,
+      results.filter(res => res.errorCode === COVALENT_SINGLE_ALC_EARTH_BONDS).length,
       "Inspecto has detected an alkali-earth metal to two single drawn bonds"
     ).toBe(0);
   });
@@ -347,7 +355,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.6").length,
+      results.filter(res => res.errorCode === COVALENT_SINGLE_ALC_EARTH_BONDS).length,
       "Inspecto has detected an alkali-earth metal to two single drawn bonds"
     ).toBe(1);
   });
@@ -359,7 +367,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.6").length,
+      results.filter(res => res.errorCode === COVALENT_SINGLE_ALC_EARTH_BONDS).length,
       "Inspecto has detected an alkali-earth metal to two single drawn bonds"
     ).toBe(0);
   });
@@ -371,7 +379,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.6").length,
+      results.filter(res => res.errorCode === COVALENT_SINGLE_ALC_EARTH_BONDS).length,
       "Inspecto has detected an alkali-earth metal to two single drawn bonds"
     ).toBe(1);
   });
@@ -383,7 +391,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.5").length,
+      results.filter(res => res.errorCode === COVALENT_DOUBLE_ALC_EARTH_BONDS).length,
       "Inspecto has detected an alkali-earth metal with two single drawn bonds"
     ).toBe(0);
   });
@@ -395,7 +403,7 @@ describe("Covalent Counterion rule", async () => {
     const results = rule.verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "covalent-counterion:1.3.5").length,
+      results.filter(res => res.errorCode === COVALENT_DOUBLE_ALC_EARTH_BONDS).length,
       "Inspecto has detected an alkali-earth metal with two single drawn bonds"
     ).toBe(1);
   });

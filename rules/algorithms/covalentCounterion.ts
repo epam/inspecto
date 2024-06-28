@@ -3,9 +3,11 @@ import { alkaliBondsAlgorithm } from "./alkaliBonds";
 import { berilliumBondsAlgorithm } from "./berilliumBonds";
 import { singleCovalentBondsAlgorithm } from "./singleCovalentBonds";
 import { doubleCovalentBondsAlgorithm } from "./doubleCovalentBonds";
+import { type FixingScope } from "@infrastructure";
 
 export interface CovalentCounterionAlgorithmType {
   fixingRule?: boolean;
+  fixingScope?: FixingScope[];
 }
 
 export const covalentCounterionAlgorithm: RuleAlgorithm<CovalentCounterionAlgorithmType> = (structure, config) => {

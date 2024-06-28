@@ -1,5 +1,7 @@
 import { describe, it } from "vitest";
-import { ketToStructure, RuleNames, getRule } from "@testing";
+import { ketToStructure, getRule } from "@testing";
+import { Rules as RuleNames } from "@infrastructure";
+import { ALIAS_CODE } from "@rules/algorithms/alias";
 
 import E1T from "./mocks/alias/E1T.ket?raw";
 import E2T from "./mocks/alias/E2T.ket?raw";
@@ -19,7 +21,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -29,7 +31,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -39,7 +41,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -49,7 +51,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -59,7 +61,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -69,7 +71,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols [M] in Fluorine|unknown|Oxygen|Carbon, would you like to change it?"
     ).toBe(1);
   });
@@ -79,7 +81,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(1);
   });
@@ -89,7 +91,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(1);
   });
@@ -99,7 +101,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(1);
   });
@@ -109,7 +111,7 @@ describe("Alias rule", async () => {
     const rule = getRule(RuleNames.Alias);
     const results = rule.verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(2);
   });
@@ -122,7 +124,7 @@ describe("Fix alias rule", async () => {
     const scope = [
       {
         path: "mol0->SUP->0",
-        errorCode: "alias-rule:2.3",
+        errorCode: ALIAS_CODE,
         data: "N",
       },
     ];
@@ -133,7 +135,7 @@ describe("Fix alias rule", async () => {
       .verify(structure);
 
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -144,7 +146,7 @@ describe("Fix alias rule", async () => {
     const scope = [
       {
         path: "mol0->ATOM->3",
-        errorCode: "alias-rule:2.3",
+        errorCode: ALIAS_CODE,
         data: "CBCF",
       },
     ];
@@ -154,7 +156,7 @@ describe("Fix alias rule", async () => {
       })
       .verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -165,7 +167,7 @@ describe("Fix alias rule", async () => {
     const scope = [
       {
         path: "mol0->ATOM->5",
-        errorCode: "alias-rule:2.3",
+        errorCode: ALIAS_CODE,
         data: "NaCO",
       },
     ];
@@ -175,7 +177,7 @@ describe("Fix alias rule", async () => {
       })
       .verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -186,7 +188,7 @@ describe("Fix alias rule", async () => {
     const scope = [
       {
         path: "mol0->SUP->0",
-        errorCode: "alias-rule:2.3",
+        errorCode: ALIAS_CODE,
         data: "N",
       },
     ];
@@ -196,7 +198,7 @@ describe("Fix alias rule", async () => {
       })
       .verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });
@@ -207,12 +209,12 @@ describe("Fix alias rule", async () => {
     const scope = [
       {
         path: "mol0->ATOM->0",
-        errorCode: "alias-rule:2.3",
+        errorCode: ALIAS_CODE,
         data: "N",
       },
       {
         path: "mol0->ATOM->5",
-        errorCode: "alias-rule:2.3",
+        errorCode: ALIAS_CODE,
         data: "C",
       },
     ];
@@ -222,7 +224,7 @@ describe("Fix alias rule", async () => {
       })
       .verify(structure);
     expect(
-      results.filter(res => res.errorCode === "alias-rule:2.3").length,
+      results.filter(res => res.errorCode === ALIAS_CODE).length,
       "Inspecto has detected incorrect written symbols"
     ).toBe(0);
   });

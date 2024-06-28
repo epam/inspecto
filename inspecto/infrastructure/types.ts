@@ -4,9 +4,17 @@ import { type Rule } from "@rules/models";
 
 export type RulesValidationResults = {
   isFixable?: boolean;
+  fixMeta?: FixMeta;
   errorCode?: string;
   message?: string;
   path: string;
+};
+
+export type FixMeta = {
+  requireUserInput: boolean;
+  type: string;
+  initialValue: string;
+  prompt: string;
 };
 
 export type InspectoResults = Record<

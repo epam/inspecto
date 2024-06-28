@@ -6,6 +6,8 @@ export interface ValenceAlgorithmType {
   fixingRule?: boolean;
 }
 
+export const VALENCE = "valence:3";
+
 const VALENCE_RULES: Record<string, number[]> = {
   H: [1],
   O: [2],
@@ -88,6 +90,8 @@ export const valenceAlgorithm: RuleAlgorithm<ValenceAlgorithmType> = (structure,
 
       if (!VALENCE_RULES[atom.label].includes(currentValence)) {
         output.push({
+          errorCode: VALENCE,
+          isFixable: false,
           message: `Atom ${molecule.id}->${molecule.getAtomIndex(atom)} (${atom.label}) has incorrect valence - ${currentValence} instead of ${VALENCE_RULES[atom.label].join(", ")}`,
           path: `${molecule.id}->${molecule.getAtomIndex(atom)}`,
         });
@@ -97,6 +101,8 @@ export const valenceAlgorithm: RuleAlgorithm<ValenceAlgorithmType> = (structure,
 
   if (output.length > 0) {
     output.push({
+      errorCode: VALENCE,
+      isFixable: false,
       message: `Inspecto found ${output.length} atoms with the wrong valence`,
       path: "atoms",
     });
