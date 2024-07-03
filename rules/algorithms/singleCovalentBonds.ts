@@ -13,9 +13,9 @@ export interface SingleCovalentBondsAlgorithmType {
 
 export const singleCovalentBondsAlgorithm: RuleAlgorithm<SingleCovalentBondsAlgorithmType> = (structure, config) => {
   const output: RulesValidationResults[] = [];
-  let singleBondsAlkaliWithElectronegatives: Bond[] = [];
 
   for (const molecule of structure.molecules()) {
+    let singleBondsAlkaliWithElectronegatives: Bond[] = [];
     const singleBonds = molecule.filterBondsByType(BOND_TYPES.SINGLE);
 
     singleBondsAlkaliWithElectronegatives = singleBonds.filter(
