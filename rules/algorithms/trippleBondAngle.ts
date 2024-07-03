@@ -8,7 +8,7 @@ export interface trippleBondAngleAlgorithmType {
   fixingRule?: boolean;
 }
 
-export const TRIPLE_BOND_ANGLE = "triple-bond:5";
+export const TRIPLE_BOND_ANGLE = "triple-bond:5.8";
 
 export const trippleBondAngleAlgorithm: RuleAlgorithm<trippleBondAngleAlgorithmType> = (structure, config) => {
   const output: RulesValidationResults[] = [];

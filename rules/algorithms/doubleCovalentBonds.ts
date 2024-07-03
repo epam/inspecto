@@ -15,12 +15,11 @@ export interface DoubleCovalentBondsAlgorithmType {
 export const doubleCovalentBondsAlgorithm: RuleAlgorithm<DoubleCovalentBondsAlgorithmType> = (structure, config) => {
   const output: RulesValidationResults[] = [];
 
-  let bondsAlkaliEarthWithElectronegatives: Bond[] = [];
-
-  const singleBondsAlkaliEarthWithElectronegatives: Bond[] = [];
-  const doubleBondsAlkaliEarthWithElectronegatives: Bond[] = [];
-
   for (const molecule of structure.molecules()) {
+    let bondsAlkaliEarthWithElectronegatives: Bond[] = [];
+    const singleBondsAlkaliEarthWithElectronegatives: Bond[] = [];
+    const doubleBondsAlkaliEarthWithElectronegatives: Bond[] = [];
+
     const bonds = Array.from(molecule.bonds());
 
     bondsAlkaliEarthWithElectronegatives = bonds.filter(

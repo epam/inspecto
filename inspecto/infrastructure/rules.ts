@@ -5,4 +5,5 @@ export enum Rules {
   Alias = "Alias",
   TrippleBondAngle = "Tripple Bond Angle",
   OverlappingBonds = "Overlapping Bonds",
+  BondAngle = "Bond Angle",
 }

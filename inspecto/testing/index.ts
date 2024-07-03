@@ -8,6 +8,7 @@ import { Rules as RuleNames, type RulesValidationResults } from "@infrastructure
 import { valenceAlgorithm, type ValenceAlgorithmType } from "@rules/algorithms/valence";
 import { type CovalentCounterionAlgorithmType, covalentCounterionAlgorithm } from "@rules/algorithms";
 import { type AliasAlgorithmType, aliasAlgorithm } from "@rules/algorithms/alias";
+import { type BondAngleAlgorithmType, bondAngleAlgorithm } from "@rules/algorithms/bondAngle";
 
 const indigoModule = IndigoModule();
 const dataProcessor = new DataModelProcessor();
@@ -32,6 +33,7 @@ interface RuleTypes {
   [RuleNames.Valence]: ValenceAlgorithmType;
   [RuleNames.CovalentCounterion]: CovalentCounterionAlgorithmType;
   [RuleNames.Alias]: AliasAlgorithmType;
+  [RuleNames.BondAngle]: BondAngleAlgorithmType;
 }
 const RULES: {
   [key in RuleNames]: (config?: RuleTypes[key]) => Rule<RuleTypes[key]>;
@@ -58,6 +60,9 @@ const RULES: {
   },
   [RuleNames.Alias]: (config?: AliasAlgorithmType) => {
     return new Rule<AliasAlgorithmType>(RuleNames.Alias, aliasAlgorithm, config ?? {});
+  },
+  [RuleNames.BondAngle]: (config?: BondAngleAlgorithmType) => {
+    return new Rule<BondAngleAlgorithmType>(RuleNames.Alias, bondAngleAlgorithm, config ?? {});
   },
 };
 

@@ -14,6 +14,7 @@ import {
 import type { ValenceAlgorithmType } from "./algorithms/valence";
 import { type AliasAlgorithmType, aliasAlgorithm } from "./algorithms/alias";
 import { Rules } from "@infrastructure";
+import { type BondAngleAlgorithmType, bondAngleAlgorithm } from "./algorithms/bondAngle";
 
 export { Rule } from "./models/Rule";
 
@@ -43,6 +44,8 @@ RulesManager.createRule<trippleBondAngleAlgorithmType>(
 );
 
 RulesManager.createRule<AliasAlgorithmType>(Rules.Alias, aliasAlgorithm, { fixingRule: false }, []);
+
+RulesManager.createRule<BondAngleAlgorithmType>(Rules.BondAngle, bondAngleAlgorithm, { fixingRule: false }, []);
 
 RulesManager.createRule<OverlappingBondsConfigType>(Rules.OverlappingBonds, overlappingBondsAlgorithm, {}, []);
 
