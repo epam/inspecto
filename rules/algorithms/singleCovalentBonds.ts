@@ -1,6 +1,7 @@
 import { type FixingScope, type RulesValidationResults } from "@infrastructure";
 import { BOND_TYPES, type Bond } from "@models";
 import { type RuleAlgorithm } from "@rules/infrastructure";
+import { shouldFix } from "../../utils/shouldFix";
 
 const ALKALI = ["Li", "Na", "K", "Rb", "Cs", "Fr"];
 const ELECTRONEGATIVES = ["O", "N", "S"];
@@ -25,10 +26,8 @@ export const singleCovalentBondsAlgorithm: RuleAlgorithm<SingleCovalentBondsAlgo
     );
     for (const bond of singleBondsAlkaliWithElectronegatives) {
       const path = `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`;
-      const fixingScope = config.fixingScope?.find(
-        scope => scope.errorCode === COVALENT_SINGLE_ALC_BONDS && scope.path === path
-      );
-      if (config.fixingRule === true || fixingScope !== undefined) {
+
+      if (shouldFix(config, COVALENT_SINGLE_ALC_BONDS, path)) {
         const atomAlkali = ALKALI.includes(bond.from.label) ? bond.from : bond.to;
         atomAlkali.charge = atomAlkali.charge + 1;
         const atomSecond = atomAlkali === bond.from ? bond.to : bond.from;

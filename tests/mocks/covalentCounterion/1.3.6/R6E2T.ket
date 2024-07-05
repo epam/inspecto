@@ -1,0 +1,59 @@
+{
+    "root": {
+        "nodes": [
+            {
+                "$ref": "mol0"
+            },
+            {
+                "$ref": "mol1"
+            }
+        ],
+        "connections": [],
+        "templates": []
+    },
+    "mol0": {
+        "type": "molecule",
+        "atoms": [
+            {
+                "label": "P",
+                "location": [
+                    6.25,
+                    -4.925000000000001,
+                    0
+                ]
+            },
+            {
+                "label": "Ca",
+                "location": [
+                    7.25,
+                    -4.925000000000001,
+                    0
+                ],
+                "charge": 1
+            }
+        ],
+        "bonds": [
+            {
+                "type": 1,
+                "atoms": [
+                    0,
+                    1
+                ]
+            }
+        ]
+    },
+    "mol1": {
+        "type": "molecule",
+        "atoms": [
+            {
+                "label": "N",
+                "location": [
+                    7.75,
+                    -5.791025403784439,
+                    0
+                ],
+                "charge": -1
+            }
+        ]
+    }
+}

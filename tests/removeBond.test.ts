@@ -1,7 +1,7 @@
 import { describe, it } from "vitest";
 import { getRule, ketToStructure } from "@testing";
 import { Rules as RuleNames } from "@infrastructure";
-import R1_3_6_E1F from "./mocks/covalentCounterion/1.3.6/E1F.ket?raw";
+import R1_3_6_E1F from "./mocks/covalentCounterion/1.3.6/R6E1F.ket?raw";
 
 describe("Remove bond", async () => {
   it("remove bond", async ({ expect }) => {

@@ -1,6 +1,7 @@
 import { type FixingScope, type RulesValidationResults } from "@infrastructure";
-import { type Atom, type Bond, type Molecule } from "@models";
+import { BOND_TYPES, type Atom, type Bond, type Molecule } from "@models";
 import { type RuleAlgorithm } from "@rules/infrastructure";
+import { shouldFix } from "../../utils/shouldFix";
 
 export interface BondAngleAlgorithmType {
   fixingRule?: boolean;
@@ -8,6 +9,7 @@ export interface BondAngleAlgorithmType {
 }
 
 export const BOND_ANGLE_MORE_THAN_FOUR = "bond-angle:5.3.7";
+export const BOND_ANGLE_WITH_TRIPLE_BOND = "bond-angle:5.3.8";
 
 type Graph = Map<Atom, Atom[]>;
 
@@ -34,7 +36,34 @@ export const bondAngleAlgorithm: RuleAlgorithm<BondAngleAlgorithmType> = (struct
 
       if (atomBonds.length > 4) {
         // 5.3.7
-        checkAndFixMoreThanFourBondsAngles(atomBonds, atom, longestChain, molecule, output, config);
+        const errorMessage = `Inspecto has detected an atom:${atom.label} in the longest chain with more than 4 bonds with not equal angles`;
+        checkAndFixEqualAngles(
+          atomBonds,
+          atom,
+          longestChain,
+          molecule,
+          output,
+          config,
+          BOND_ANGLE_MORE_THAN_FOUR,
+          errorMessage
+        );
+        continue;
+      }
+      if (atomBonds.length <= 4) {
+        const atomTripleBonds = atomBonds.filter(bond => bond.bondType === BOND_TYPES.TRIPLE);
+        if (atomTripleBonds.length > 0) {
+          const errorMessage = `Inspecto has detected an atom:${atom.label} in the longest chain with triple bond and not equal angles`;
+          checkAndFixEqualAngles(
+            atomBonds,
+            atom,
+            longestChain,
+            molecule,
+            output,
+            config,
+            BOND_ANGLE_WITH_TRIPLE_BOND,
+            errorMessage
+          );
+        }
       }
       // TODO other rules
     }
@@ -42,13 +71,15 @@ export const bondAngleAlgorithm: RuleAlgorithm<BondAngleAlgorithmType> = (struct
   return output;
 };
 
-function checkAndFixMoreThanFourBondsAngles(
+function checkAndFixEqualAngles(
   atomBonds: Bond[],
   atom: Atom,
   longestChain: Atom[],
   molecule: Molecule,
   output: RulesValidationResults[],
-  config: BondAngleAlgorithmType
+  config: BondAngleAlgorithmType,
+  errorCode: string,
+  errorMessage: string
 ): void {
   const connectedAtoms = atomBonds.map(bond => (bond.from === atom ? bond.to : bond.from));
 
@@ -64,11 +95,8 @@ function checkAndFixMoreThanFourBondsAngles(
   }
 
   const path = `${molecule.id}->atom->${molecule.getAtomIndex(atom)}`;
-  const fixingScope = config.fixingScope?.find(
-    scope => scope.errorCode === BOND_ANGLE_MORE_THAN_FOUR && scope.path === path
-  );
 
-  if (config.fixingRule === true || fixingScope !== undefined) {
+  if (shouldFix(config, errorCode, path)) {
     const atomsWithoutReference = connectedAtoms.filter(atom => atom !== referenceAtom);
     const atomsWithoutReferenceSorted = atomsWithoutReference.sort(
       (a, b) => calculateAngleBetweenBonds(atom, referenceAtom, a) - calculateAngleBetweenBonds(atom, referenceAtom, b)
@@ -88,8 +116,8 @@ function checkAndFixMoreThanFourBondsAngles(
   } else {
     output.push({
       isFixable: true,
-      errorCode: BOND_ANGLE_MORE_THAN_FOUR,
-      message: `Inspecto has detected an atom:${atom.label} in the longest chain with more than 4 bonds with not equal angles`,
+      errorCode,
+      message: errorMessage,
       path,
     });
   }
