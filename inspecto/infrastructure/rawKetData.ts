@@ -10,11 +10,13 @@ export type RawKetAtom = {
   label: string;
   location: [number, number, number];
   charge?: number;
+  stereoLabel?: string;
 };
 
 export type RawKetBonds = {
   type: number;
   atoms: [number, number];
+  stereo?: number;
 };
 
 export type AttachmentPoint = {

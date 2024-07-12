@@ -13,6 +13,7 @@ export class Bond {
     private readonly type: BOND_TYPES,
     private readonly atoms: [Atom, Atom],
     private readonly _atomsIndexes: [number, number],
+    private readonly _stereo: number | undefined
   ) {}
 
   public get from(): Atom {
@@ -25,6 +26,10 @@ export class Bond {
 
   public get bondType(): BOND_TYPES {
     return this.type;
+  }
+
+  public get stereo(): number | undefined {
+    return this._stereo;
   }
 
   public getLength(): number {

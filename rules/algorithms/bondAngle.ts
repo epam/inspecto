@@ -1,116 +1,249 @@
 import { type FixingScope, type RulesValidationResults } from "@infrastructure";
-import { BOND_TYPES, type Atom, type Bond, type Molecule } from "@models";
+import { BOND_TYPES, type Atom, type Molecule } from "@models";
 import { type RuleAlgorithm } from "@rules/infrastructure";
-import { shouldFix } from "../../utils/shouldFix";
+import {
+  addEdge,
+  createGraph,
+  findAllCyclesInGraph,
+  findCoordinatesForAngle,
+  findLongestChainInGraph,
+  getAngleBetweenAtoms,
+  getChildAtoms,
+  getSubGraph,
+  type Graph,
+  isAngleEquals,
+  removeCyclesInGraph,
+  shouldFix,
+} from "@utils";
 
 export interface BondAngleAlgorithmType {
   fixingRule?: boolean;
   fixingScope?: FixingScope[];
 }
 
-export const BOND_ANGLE_MORE_THAN_FOUR = "bond-angle:5.3.7";
-export const BOND_ANGLE_WITH_TRIPLE_BOND = "bond-angle:5.3.8";
+const BOND_ANGLE_MORE_THAN_FOUR = "bond-angle:5.3.7";
+const BOND_ANGLE_THREE_SINGLE_BONDS = "bond-angle:three bonds";
+const BOND_ANGLE_WITH_TRIPLE_BOND = "bond-angle:5.3.8";
+const BOND_ANGLE_WITH_MIN_TWO_DOUBLE_BOND = "bond-angle:5.3.9";
+const BOND_ANGLE_WITH_FOUR_BOND = "bond-angle:5.3.10";
+const BOND_ANGLE_WITH_FOUR_BOND_AND_ONE_CONN_ATOM_SINGLE = "bond-angle:5.3.11";
+const BOND_ANGLE_WITH_FOUR_BOND_AND_TWO_CONN_ATOM_SINGLE = "bond-angle:5.3.12";
+const BOND_ANGLE_WITH_FOUR_BOND_AND_THREE_CONN_ATOM_SINGLE = "bond-angle:5.3.13";
+const BOND_ANGLE_WITH_FOUR_BOND_AND_FOUR_CONN_ATOM_SINGLE = "bond-angle:5.3.14";
+const BOND_ANGLE_CENTRAL_ATOMS = "bond-angle:5.3.15";
 
-type Graph = Map<Atom, Atom[]>;
+type ErrorMessageFunc = (atom: string) => string;
+
+type FixFunc = (centralAtomData: CentralAtomData, errorCode: string, errorMessage: string) => void;
+
+const ERRORS = new Map<string, ErrorMessageFunc>([
+  [
+    BOND_ANGLE_MORE_THAN_FOUR,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with more than 4 bonds with not equal angles`,
+  ],
+  [
+    BOND_ANGLE_THREE_SINGLE_BONDS,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with 3 bonds with not equal angles`,
+  ],
+  [
+    BOND_ANGLE_WITH_TRIPLE_BOND,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with triple bond and not equal angles`,
+  ],
+  [
+    BOND_ANGLE_WITH_MIN_TWO_DOUBLE_BOND,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with min 2 double bond and not equal angles`,
+  ],
+  [
+    BOND_ANGLE_WITH_FOUR_BOND,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with four not equal angles and each connected atom has more than one bond`,
+  ],
+  [
+    BOND_ANGLE_WITH_FOUR_BOND_AND_ONE_CONN_ATOM_SINGLE,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with four bonds and only one connected atom with one bond and angles are not equal (120,120,60,60)`,
+  ],
+  [
+    BOND_ANGLE_WITH_FOUR_BOND_AND_TWO_CONN_ATOM_SINGLE,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with four bonds and only two connected atoms with one bond and angles are not equal (120,120,60,60)`,
+  ],
+  [
+    BOND_ANGLE_WITH_FOUR_BOND_AND_THREE_CONN_ATOM_SINGLE,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with four bonds and three connected atoms with one bond and angles are not equal (120,120,60,60)`,
+  ],
+  [
+    BOND_ANGLE_WITH_FOUR_BOND_AND_FOUR_CONN_ATOM_SINGLE,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with four bonds and four connected atoms with one bond and angles are not equal (120,120,60,60)`,
+  ],
+  [
+    BOND_ANGLE_CENTRAL_ATOMS,
+    (atomLabel: string) =>
+      `Inspecto has detected an atom:${atomLabel} in the longest chain with angles are not equal (120,240)`,
+  ],
+]);
+
+interface CentralAtomData {
+  centralAtom: Atom;
+  longestChain: Atom[];
+  molecule: Molecule;
+  output: RulesValidationResults[];
+  config: BondAngleAlgorithmType;
+}
 
 export const bondAngleAlgorithm: RuleAlgorithm<BondAngleAlgorithmType> = (structure, config) => {
   const output: RulesValidationResults[] = [];
   const molecules = structure.molecules();
 
   for (const molecule of molecules) {
-    const bonds = Array.from(molecule.bonds());
-    const graph = new Map<Atom, Atom[]>();
-    bonds.forEach(bond => {
-      addEdge(graph, bond.from, bond.to);
-    });
-    const cycles = findAllCycles(graph);
-    removeCycles(graph, cycles);
-    const longestChain = findLongestChain(graph);
-    if (longestChain.length < 3) {
-      continue;
-    }
-    const centerAtoms = longestChain.slice(1, -1);
-
-    for (const atom of centerAtoms) {
-      const atomBonds = bonds.filter(bond => bond.from === atom || bond.to === atom);
-
-      if (atomBonds.length > 4) {
-        // 5.3.7
-        const errorMessage = `Inspecto has detected an atom:${atom.label} in the longest chain with more than 4 bonds with not equal angles`;
-        checkAndFixEqualAngles(
-          atomBonds,
-          atom,
-          longestChain,
-          molecule,
-          output,
-          config,
-          BOND_ANGLE_MORE_THAN_FOUR,
-          errorMessage
-        );
-        continue;
-      }
-      if (atomBonds.length <= 4) {
-        const atomTripleBonds = atomBonds.filter(bond => bond.bondType === BOND_TYPES.TRIPLE);
-        if (atomTripleBonds.length > 0) {
-          const errorMessage = `Inspecto has detected an atom:${atom.label} in the longest chain with triple bond and not equal angles`;
-          checkAndFixEqualAngles(
-            atomBonds,
-            atom,
-            longestChain,
-            molecule,
-            output,
-            config,
-            BOND_ANGLE_WITH_TRIPLE_BOND,
-            errorMessage
-          );
-        }
-      }
-      // TODO other rules
-    }
+    const graph = createGraph(molecule);
+    const cycles = findAllCyclesInGraph(graph);
+    removeCyclesInGraph(graph, cycles);
+    fixGraph(graph, molecule, output, config);
   }
   return output;
 };
 
-function checkAndFixEqualAngles(
-  atomBonds: Bond[],
+function fixGraph(
+  graph: Graph,
+  molecule: Molecule,
+  output: RulesValidationResults[],
+  config: BondAngleAlgorithmType,
+  startAtom?: Atom
+): void {
+  const longestChain = findLongestChainInGraph(graph, startAtom);
+  if (longestChain.length < 3) {
+    return;
+  }
+
+  const centerAtoms = longestChain.slice(1, -1);
+
+  for (const centralAtom of centerAtoms) {
+    const atomBonds = molecule.getAtomBonds(centralAtom).filter(bond => graph.get(bond.from)?.includes(bond.to));
+
+    const data: CentralAtomData = {
+      centralAtom,
+      longestChain,
+      molecule,
+      output,
+      config,
+    };
+
+    if (atomBonds.length === 3) {
+      fixError(checkAndFixEqualAngles, BOND_ANGLE_THREE_SINGLE_BONDS, data, graph);
+      continue;
+    }
+    if (atomBonds.length > 4) {
+      // 5.3.7
+      fixError(checkAndFixEqualAngles, BOND_ANGLE_MORE_THAN_FOUR, data, graph);
+      continue;
+    }
+    const atomTripleBonds = atomBonds.filter(bond => bond.bondType === BOND_TYPES.TRIPLE);
+    const atomDoubleBonds = atomBonds.filter(bond => bond.bondType === BOND_TYPES.DOUBLE);
+    if (atomTripleBonds.length > 0) {
+      // 5.3.8
+      fixError(checkAndFixEqualAngles, BOND_ANGLE_WITH_TRIPLE_BOND, data, graph);
+      continue;
+    }
+    if (atomDoubleBonds.length >= 2) {
+      // 5.3.9
+      fixError(checkAndFixEqualAngles, BOND_ANGLE_WITH_MIN_TWO_DOUBLE_BOND, data, graph);
+      continue;
+    }
+    if (atomBonds.length === 4) {
+      const connected = molecule.getConnectedAtoms(centralAtom);
+      if (connected.every(connectedAtom => molecule.getAtomBonds(connectedAtom).length > 1)) {
+        // 5.3.10
+        fixError(checkAndFixEqualAngles, BOND_ANGLE_WITH_FOUR_BOND, data, graph);
+        continue;
+      }
+      if (connected.filter(connectedAtom => molecule.getAtomBonds(connectedAtom).length === 1).length === 1) {
+        // 5.3.11
+        fixError(checkAndFixFourBondsAngles, BOND_ANGLE_WITH_FOUR_BOND_AND_ONE_CONN_ATOM_SINGLE, data, graph);
+        continue;
+      }
+      if (connected.filter(connectedAtom => molecule.getAtomBonds(connectedAtom).length === 1).length === 2) {
+        // 5.3.12
+        fixError(checkAndFixFourBondsAngles, BOND_ANGLE_WITH_FOUR_BOND_AND_TWO_CONN_ATOM_SINGLE, data, graph);
+        continue;
+      }
+      if (connected.filter(connectedAtom => molecule.getAtomBonds(connectedAtom).length === 1).length === 3) {
+        // 5.3.13
+        fixError(checkAndFixFourBondsAngles, BOND_ANGLE_WITH_FOUR_BOND_AND_THREE_CONN_ATOM_SINGLE, data, graph);
+        continue;
+      }
+      if (connected.filter(connectedAtom => molecule.getAtomBonds(connectedAtom).length === 1).length === 4) {
+        // 5.3.14
+        fixError(checkAndFixFourBondsAngles, BOND_ANGLE_WITH_FOUR_BOND_AND_FOUR_CONN_ATOM_SINGLE, data, graph);
+        continue;
+      }
+    }
+    fixError(checkAndFixTwoBondsAngles, BOND_ANGLE_CENTRAL_ATOMS, data, graph);
+  }
+}
+
+function fixError(fixFunction: FixFunc, errorCode: string, data: CentralAtomData, graph: Graph): void {
+  const { centralAtom, longestChain, molecule, output, config } = data;
+  const errorMessageFunc = ERRORS.get(errorCode);
+  if (errorMessageFunc === undefined) {
+    throw new Error("error message is not specified for error code");
+  }
+  fixFunction(data, errorCode, errorMessageFunc(centralAtom.label));
+  fixSubChain(graph, centralAtom, longestChain, molecule, output, config);
+}
+
+function fixSubChain(
+  graph: Graph,
   atom: Atom,
   longestChain: Atom[],
   molecule: Molecule,
   output: RulesValidationResults[],
-  config: BondAngleAlgorithmType,
-  errorCode: string,
-  errorMessage: string
+  config: BondAngleAlgorithmType
 ): void {
-  const connectedAtoms = atomBonds.map(bond => (bond.from === atom ? bond.to : bond.from));
+  const connectedAtoms = graph.get(atom);
+  if (connectedAtoms === undefined) {
+    return;
+  }
+  const connectedAtomsWithoutCentral = connectedAtoms.filter(connectedAtom => !longestChain.includes(connectedAtom));
+  for (const connectedAtom of connectedAtomsWithoutCentral) {
+    const subGraph = getSubGraph(graph, connectedAtom, [atom]);
+    addEdge(subGraph, atom, connectedAtom);
+    fixGraph(subGraph, molecule, output, config, atom);
+  }
+}
 
-  let referenceAtom = longestChain[longestChain.indexOf(atom) - 1];
+function checkAndFixEqualAngles(data: CentralAtomData, errorCode: string, errorMessage: string): void {
+  const { centralAtom, longestChain, molecule, output, config } = data;
 
-  const angleStep = 360 / atomBonds.length;
+  const connectedAtoms = molecule.getConnectedAtoms(centralAtom);
+  let referenceAtom = longestChain[longestChain.indexOf(centralAtom) - 1];
+  const rightCentralAtom = longestChain[longestChain.indexOf(centralAtom) + 1];
 
-  const angles = connectedAtoms.map(x => calculateAngleBetweenBonds(atom, referenceAtom, x)).sort((a, b) => b - a);
-  const correctAngles = Array.from({ length: atomBonds.length }, (_, i) => 0 + i * angleStep);
+  const angleStep = 360 / connectedAtoms.length;
+
+  const angles = connectedAtoms.map(x => getAngleBetweenAtoms(centralAtom, referenceAtom, x)).sort((a, b) => a - b);
+  const correctAngles = Array.from({ length: connectedAtoms.length }, (_, i) => i * angleStep);
 
   if (compareAngles(angles, correctAngles)) {
     return;
   }
 
-  const path = `${molecule.id}->atom->${molecule.getAtomIndex(atom)}`;
+  const path = `${molecule.id}->atom->${molecule.getAtomIndex(centralAtom)}`;
 
   if (shouldFix(config, errorCode, path)) {
     const atomsWithoutReference = connectedAtoms.filter(atom => atom !== referenceAtom);
     const atomsWithoutReferenceSorted = atomsWithoutReference.sort(
-      (a, b) => calculateAngleBetweenBonds(atom, referenceAtom, a) - calculateAngleBetweenBonds(atom, referenceAtom, b)
+      (a, b) =>
+        getAngleBetweenAtoms(centralAtom, referenceAtom, a) - getAngleBetweenAtoms(centralAtom, referenceAtom, b)
     );
     atomsWithoutReferenceSorted.forEach(connectedAtom => {
-      // Calculate distance from center atom to connected atom
-      const distance = Math.sqrt(
-        (connectedAtom.x - atom.x) * (connectedAtom.x - atom.x) +
-          (connectedAtom.y - atom.y) * (connectedAtom.y - atom.y)
-      );
-
-      const newPosition = findCoordinatesForAngle(referenceAtom, atom, distance, angleStep);
-      connectedAtom.changePosition(newPosition.x, newPosition.y);
-
+      changeAngleForConnectedAtom(connectedAtom, centralAtom, referenceAtom, angleStep, rightCentralAtom, molecule);
       referenceAtom = connectedAtom;
     });
   } else {
@@ -123,171 +256,184 @@ function checkAndFixEqualAngles(
   }
 }
 
-function compareAngles(angles1: number[], angles2: number[]): boolean {
-  const epsilon = 1;
-  for (let index = 0; index < angles1.length; index++) {
-    if (Math.abs(angles2[index] - angles1[index]) > epsilon) {
+function checkAndFixFourBondsAngles(data: CentralAtomData, errorCode: string, errorMessage: string): void {
+  const { centralAtom, longestChain, molecule, output, config } = data;
+  const connectedAtoms = molecule.getConnectedAtoms(centralAtom);
+  let referenceAtom = longestChain[longestChain.indexOf(centralAtom) - 1];
+  const rightCentralAtom = longestChain[longestChain.indexOf(centralAtom) + 1];
+  let sortedConnectedAtoms: Atom[] = [];
+
+  const connectedAtomsWithOneBond = connectedAtoms.filter(atom => molecule.getAtomBonds(atom).length === 1);
+
+  const centralAtomsAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, rightCentralAtom);
+
+  const angles = centralAtomsAngle < 180 ? [60, 60, 120, 120] : [120, 120, 60, 60];
+
+  if (connectedAtomsWithOneBond.length === 1) {
+    const connectedAtomWithOneBond = connectedAtomsWithOneBond[0];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const connectedAtomWithMultipleBond = connectedAtoms.find(
+      connectedAtom =>
+        connectedAtom !== referenceAtom &&
+        connectedAtom !== connectedAtomWithOneBond &&
+        connectedAtom !== rightCentralAtom
+    )!;
+
+    sortedConnectedAtoms = [
+      referenceAtom,
+      centralAtomsAngle < 180 ? connectedAtomWithOneBond : connectedAtomWithMultipleBond,
+      rightCentralAtom,
+      centralAtomsAngle < 180 ? connectedAtomWithMultipleBond : connectedAtomWithOneBond,
+    ];
+  } else {
+    const connectedAtomsWithoutCentral = connectedAtoms.filter(connectedAtom => connectedAtom !== referenceAtom);
+    const connectedAtomsWithoutCentralSorted = connectedAtomsWithoutCentral.sort(
+      (a, b) =>
+        getAngleBetweenAtoms(centralAtom, referenceAtom, a) - getAngleBetweenAtoms(centralAtom, referenceAtom, b)
+    );
+    sortedConnectedAtoms = [referenceAtom, ...connectedAtomsWithoutCentralSorted];
+  }
+
+  const connectedAtomsAngles = connectedAtoms
+    .map(x => getAngleBetweenAtoms(centralAtom, referenceAtom, x))
+    .sort((a, b) => a - b);
+  const correctAngles: number[] = [];
+  for (const angle of angles) {
+    correctAngles.push(correctAngles.length > 0 ? correctAngles[correctAngles.length - 1] + angle : angle);
+  }
+  if (isFourBondsAnglesCorrect(connectedAtomsAngles) || compareAngles(connectedAtomsAngles, correctAngles)) {
+    return;
+  }
+
+  const path = `${molecule.id}->atom->${molecule.getAtomIndex(centralAtom)}`;
+
+  if (shouldFix(config, errorCode, path)) {
+    const sortedConnectedAtomsWithoutReference = sortedConnectedAtoms.filter(atom => atom !== referenceAtom);
+    sortedConnectedAtomsWithoutReference.forEach((connectedAtom, index) => {
+      changeAngleForConnectedAtom(connectedAtom, centralAtom, referenceAtom, angles[index], rightCentralAtom, molecule);
+      referenceAtom = connectedAtom;
+    });
+  } else {
+    output.push({
+      isFixable: true,
+      errorCode,
+      message: errorMessage,
+      path,
+    });
+  }
+}
+
+function checkAndFixTwoBondsAngles(data: CentralAtomData, errorCode: string, errorMessage: string): void {
+  const { centralAtom, longestChain, molecule, output, config } = data;
+  const leftCentralAtom = longestChain[longestChain.indexOf(centralAtom) - 2];
+  const referenceAtom = longestChain[longestChain.indexOf(centralAtom) - 1];
+  const rightCentralAtom = longestChain[longestChain.indexOf(centralAtom) + 1];
+  const centralAtomAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, rightCentralAtom);
+  let angle: number;
+  let isCorrect: boolean;
+  if (leftCentralAtom === undefined) {
+    angle = centralAtomAngle < 180 ? 120 : 240;
+    isCorrect = isAngleEquals(centralAtomAngle, 120) || isAngleEquals(centralAtomAngle, 240);
+  } else {
+    const previousCentralAtomAngle = getAngleBetweenAtoms(referenceAtom, leftCentralAtom, centralAtom);
+    angle = previousCentralAtomAngle < 180 ? 240 : 120;
+    const isPreviousAtomHasThreeBonds = molecule.getAtomBonds(referenceAtom).length === 3;
+    const isCentralAngle120or240 = isAngleEquals(centralAtomAngle, 120) || isAngleEquals(centralAtomAngle, 240);
+    isCorrect =
+      isAngleEquals(centralAtomAngle, angle) ||
+      ((isAngleEquals(previousCentralAtomAngle, 90) ||
+        isAngleEquals(previousCentralAtomAngle, 180) ||
+        isPreviousAtomHasThreeBonds) &&
+        isCentralAngle120or240);
+  }
+
+  if (isCorrect) {
+    return;
+  }
+
+  const path = `${molecule.id}->atom->${molecule.getAtomIndex(centralAtom)}`;
+
+  if (shouldFix(config, errorCode, path)) {
+    const distance = getDistance(rightCentralAtom, centralAtom);
+
+    const newPosition = findCoordinatesForAngle(referenceAtom, centralAtom, distance, angle);
+    rightCentralAtom.changePosition(newPosition.x, newPosition.y);
+    const angleDiff = centralAtomAngle - angle;
+
+    const childAtoms = getChildAtoms(rightCentralAtom, molecule, new Set<Atom>([centralAtom]));
+    childAtoms.forEach(childAtom => {
+      const oldChildAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, childAtom);
+      const newChildAngle = oldChildAngle - angleDiff;
+      const distance = getDistance(childAtom, centralAtom);
+      const childNewPosition = findCoordinatesForAngle(referenceAtom, centralAtom, distance, newChildAngle);
+      childAtom.changePosition(childNewPosition.x, childNewPosition.y);
+    });
+  } else {
+    output.push({
+      isFixable: true,
+      errorCode,
+      message: errorMessage,
+      path,
+    });
+  }
+}
+
+function changeAngleForConnectedAtom(
+  connectedAtom: Atom,
+  centralAtom: Atom,
+  referenceAtom: Atom,
+  angleStep: number,
+  rightCentralAtom: Atom,
+  molecule: Molecule
+): void {
+  const distance = getDistance(connectedAtom, centralAtom);
+  const oldAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, connectedAtom);
+  const angleDiff = oldAngle - angleStep;
+  const newPosition = findCoordinatesForAngle(referenceAtom, centralAtom, distance, angleStep);
+  connectedAtom.changePosition(newPosition.x, newPosition.y);
+
+  if (connectedAtom !== referenceAtom && connectedAtom !== rightCentralAtom) {
+    const childAtoms = getChildAtoms(connectedAtom, molecule, new Set<Atom>([centralAtom]));
+    childAtoms.forEach(childAtom => {
+      const oldChildAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, childAtom);
+      const newChildAngle = oldChildAngle - angleDiff;
+      const distance = getDistance(childAtom, centralAtom);
+      const childNewPosition = findCoordinatesForAngle(referenceAtom, centralAtom, distance, newChildAngle);
+      childAtom.changePosition(childNewPosition.x, childNewPosition.y);
+    });
+  }
+}
+
+function getDistance(from: Atom, to: Atom): number {
+  return Math.sqrt(Math.pow(from.x - to.x, 2) + Math.pow(from.y - to.y, 2));
+}
+
+function isFourBondsAnglesCorrect(angles: number[]): boolean {
+  const angleSteps = angles.reduce((arr: number[], angle: number) => {
+    arr.push(arr.length > 0 ? angle - angles[arr.length - 1] : angle);
+    return arr;
+  }, []);
+  return (
+    angleSteps.filter(angle => isAngleEquals(angle, 60)).length === 2 &&
+    angleSteps.filter(angle => isAngleEquals(angle, 120)).length === 2
+  );
+}
+
+function compareAngles(currentAngles: number[], correctAngles: number[]): boolean {
+  replaceFullAngleToZeroAngle(currentAngles);
+  replaceFullAngleToZeroAngle(correctAngles);
+
+  for (let index = 0; index < currentAngles.length; index++) {
+    if (!isAngleEquals(correctAngles[index], currentAngles[index])) {
       return false;
     }
   }
   return true;
 }
 
-function calculateAngleBetweenBonds(centerAtom: Atom, atom1: Atom, atom2: Atom): number {
-  // Calculate vector (atom1 -> atom2)
-  const vector1 = { x: atom1.x - centerAtom.x, y: atom1.y - centerAtom.y };
-
-  // Calculate vector (atom1 -> atom3)
-  const vector2 = { x: atom2.x - centerAtom.x, y: atom2.y - centerAtom.y };
-
-  // Calculate dot product of vector1 and vector2
-  const dotProduct = vector1.x * vector2.x + vector1.y * vector2.y;
-
-  // Calculate magnitudes of vector1 and vector2
-  const magnitude1 = Math.sqrt(vector1.x * vector1.x + vector1.y * vector1.y);
-  const magnitude2 = Math.sqrt(vector2.x * vector2.x + vector2.y * vector2.y);
-
-  // Calculate the cosine of the angle
-  const cosTheta = dotProduct / (magnitude1 * magnitude2);
-
-  // Ensure the value is within the valid range for arccos
-  const clampedCosTheta = Math.max(-1, Math.min(1, cosTheta));
-
-  // Calculate the angle in radians
-  const angleInRadians = Math.acos(clampedCosTheta);
-
-  // Convert the angle to degrees
-  const angleInDegrees = angleInRadians * (180 / Math.PI);
-
-  // Calculate the cross product to determine the sign of the angle
-  const crossProduct = vector1.x * vector2.y - vector1.y * vector2.x;
-
-  // Adjust the angle for clockwise direction
-  const angle = crossProduct > 0 ? 360 - angleInDegrees : angleInDegrees;
-
-  return angle;
-}
-
-function findCoordinatesForAngle(
-  referenceAtom: Atom,
-  centerAtom: Atom,
-  distance: number,
-  angle: number
-): { x: number; y: number } {
-  const radians = (180 - angle) * (Math.PI / 180);
-
-  const referenceVectorX = centerAtom.x - referenceAtom.x;
-  const referenceVectorY = centerAtom.y - referenceAtom.y;
-
-  // Calculate the length of reference vector.
-  const referenceVectorLength = Math.sqrt(referenceVectorX * referenceVectorX + referenceVectorY * referenceVectorY);
-
-  // Normalize the reference vector.
-  const referenceVectorXNorm = referenceVectorX / referenceVectorLength;
-  const referenceVectorYNorm = referenceVectorY / referenceVectorLength;
-
-  // Calculate the components of the rotated vector
-  const cosA = Math.cos(radians);
-  const sinA = Math.sin(radians);
-
-  const rotatedVectorXNorm = referenceVectorXNorm * cosA - referenceVectorYNorm * sinA;
-  const rotatedVectorYNorm = referenceVectorXNorm * sinA + referenceVectorYNorm * cosA;
-
-  // Scale the rotated vector to the length
-  const rotatedVectorXScaled = rotatedVectorXNorm * distance;
-  const rotatedVectorYScaled = rotatedVectorYNorm * distance;
-
-  // Calculate the new coordinates
-  const newX = centerAtom.x + rotatedVectorXScaled;
-  const newY = centerAtom.y + rotatedVectorYScaled;
-
-  return { x: newX, y: newY };
-}
-
-function removeCycles(graph: Graph, cycles: Atom[][]): void {
-  for (const cycle of cycles) {
-    for (let i = 0; i < cycle.length - 1; i++) {
-      removeEdge(graph, cycle[i], cycle[i + 1]);
-    }
-    // Remove the edge that closes the cycle
-    removeEdge(graph, cycle[cycle.length - 1], cycle[0]);
+function replaceFullAngleToZeroAngle(angles: number[]): void {
+  if (angles[angles.length - 1] === 360) {
+    angles.pop();
+    angles.unshift(0);
   }
-}
-
-function removeEdge(graph: Graph, node1: Atom, node2: Atom): void {
-  graph.set(
-    node1,
-    (graph.get(node1) ?? []).filter(n => n !== node2)
-  );
-  graph.set(
-    node2,
-    (graph.get(node2) ?? []).filter(n => n !== node1)
-  );
-}
-
-function addEdge(graph: Graph, from: Atom, to: Atom): void {
-  if (!graph.has(from)) {
-    graph.set(from, []);
-  }
-  if (!graph.has(to)) {
-    graph.set(to, []);
-  }
-  graph.get(from)?.push(to);
-  graph.get(to)?.push(from);
-}
-
-function findLongestChain(graph: Graph): Atom[] {
-  let longestChain: Atom[] = [];
-  const visited = new Set<Atom>();
-
-  function dfs(current: Atom, path: Atom[]): void {
-    visited.add(current);
-    path.push(current);
-
-    let isEnd = true;
-    for (const neighbor of graph.get(current) ?? []) {
-      if (!visited.has(neighbor)) {
-        isEnd = false;
-        dfs(neighbor, path.slice());
-      }
-    }
-
-    if (isEnd && path.length > longestChain.length) {
-      longestChain = path;
-    }
-  }
-
-  for (const node of graph.keys()) {
-    if (!visited.has(node)) {
-      dfs(node, []);
-    }
-  }
-
-  return longestChain;
-}
-
-function findAllCycles(graph: Graph): Atom[][] {
-  const cycles: Atom[][] = [];
-  const visited = new Set<Atom>();
-  function dfs(current: Atom, parent: Atom, path: Atom[]): void {
-    visited.add(current);
-    path.push(current);
-    for (const neighbor of graph.get(current) ?? []) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor, current, path.slice());
-      } else if (neighbor !== parent && path.includes(neighbor)) {
-        // Cycle detected
-        const cycleStartIndex = path.indexOf(neighbor);
-        const cycle = path.slice(cycleStartIndex);
-        cycle.push(neighbor); // To make it a complete cycle
-        cycles.push(cycle);
-      }
-    }
-  }
-  for (const node of graph.keys()) {
-    if (!visited.has(node)) {
-      dfs(node, null as any, []);
-    }
-  }
-  return cycles;
 }

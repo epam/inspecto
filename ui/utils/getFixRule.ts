@@ -13,7 +13,7 @@ export function getFixRule(
   const enabledRule = new Rule(
     ruleName,
     existingRule._algorithm,
-    existingRule.getOriginalConfig(),
+    existingRule.config,
     existingRule.tags,
     existingRule.description
   );

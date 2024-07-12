@@ -10,7 +10,8 @@ export class Atom {
   constructor(
     private _label: string,
     private _location: Location,
-    private _charge?: CHARGE
+    private _charge?: CHARGE,
+    private readonly _stereolabel?: string
   ) {}
 
   get charge(): CHARGE | 0 {
@@ -19,6 +20,10 @@ export class Atom {
 
   set charge(newCharge: CHARGE) {
     this._charge = newCharge;
+  }
+
+  get stereolabel(): string | undefined {
+    return this._stereolabel;
   }
 
   public get x(): number {
