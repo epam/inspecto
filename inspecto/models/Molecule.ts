@@ -69,6 +69,14 @@ export class Molecule extends KetcherNode {
     this._bonds.splice(this.getBondIndex(bond), 1);
   }
 
+  public getAtomBonds(atom: Atom): Bond[] {
+    return this._bonds.filter(bond => bond.from === atom || bond.to === atom);
+  }
+
+  public getConnectedAtoms(atom: Atom): Atom[] {
+    return this.getAtomBonds(atom).map(bond => (bond.from === atom ? bond.to : bond.from));
+  }
+
   public getAdjacentBonds(bond: Bond): Bond[] {
     try {
       const adjacentBondsFrom = this._graphView

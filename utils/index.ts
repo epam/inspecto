@@ -2,3 +2,8 @@ export * from "./getDistanceBetweenTwoAtoms";
 export * from "./getAngleBetweenBonds";
 export * from "./getCommonAtomInAdjacentBonds";
 export * from "./shouldFix";
+export * from "./graph";
+export * from "./getCoordinatesForAngle";
+export * from "./getAngleBetweenAtoms";
+export * from "./isAngleEquals";
+export * from "./getChildAtoms";

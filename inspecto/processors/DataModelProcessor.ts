@@ -93,15 +93,15 @@ export class DataModelProcessor implements IDataModelProcessor {
   }
 
   private _createAtoms(rawKetAtoms: RawKetAtom[]): Atom[] {
-    return rawKetAtoms.map(({ location: rawLocation, label, charge }) => {
+    return rawKetAtoms.map(({ location: rawLocation, label, charge, stereoLabel }) => {
       const location = new Location(...rawLocation);
-      return new Atom(label, location, charge);
+      return new Atom(label, location, charge, stereoLabel);
     });
   }
 
   private _createBonds(rawKetBonds: RawKetBonds[], atoms: Atom[]): Bond[] {
-    return rawKetBonds.map(({ type, atoms: atomsIndexes }) => {
-      return new Bond(type, [atoms[atomsIndexes[0]], atoms[atomsIndexes[1]]], atomsIndexes);
+    return rawKetBonds.map(({ type, stereo, atoms: atomsIndexes }) => {
+      return new Bond(type, [atoms[atomsIndexes[0]], atoms[atomsIndexes[1]]], atomsIndexes, stereo);
     });
   }
 
@@ -126,6 +126,7 @@ export class DataModelProcessor implements IDataModelProcessor {
           location: atom.vector,
           // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           ...(atom.charge && { charge: atom.charge }),
+          stereoLabel: atom.stereolabel,
         });
       }
 
@@ -133,6 +134,7 @@ export class DataModelProcessor implements IDataModelProcessor {
         bonds.push({
           type: bond.bondType,
           atoms: bond.atomsIndexes,
+          stereo: bond.stereo,
         });
       }
 

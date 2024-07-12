@@ -1,7 +1,7 @@
 import { type FixingScope, type RulesValidationResults } from "@infrastructure";
 import { BOND_TYPES, type Bond } from "@models";
 import { type RuleAlgorithm } from "@rules/infrastructure";
-import { shouldFix } from "../../utils/shouldFix";
+import { shouldFix } from "@utils";
 
 const ALKALI = ["Li", "Na", "K", "Rb", "Cs", "Fr"];
 const ELECTRONEGATIVES = ["O", "N", "S"];
