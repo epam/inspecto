@@ -1,4 +1,4 @@
-import { isNumbersEqual } from "./isDoubleEquals";
+import { isNumbersEqual } from "@utils";
 
 const epsilon = 1;
 
