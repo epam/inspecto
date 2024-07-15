@@ -392,7 +392,7 @@ function changeAngleForConnectedAtom(
   const newPosition = findCoordinatesForAngle(referenceAtom, centralAtom, distance, angleStep);
   connectedAtom.changePosition(newPosition.x, newPosition.y);
 
-  if (connectedAtom !== referenceAtom && connectedAtom !== rightCentralAtom) {
+  if (connectedAtom !== referenceAtom) {
     const childAtoms = getChildAtoms(connectedAtom, molecule, new Set<Atom>([centralAtom]));
     childAtoms.forEach(childAtom => {
       const oldChildAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, childAtom);

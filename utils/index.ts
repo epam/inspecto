@@ -7,3 +7,4 @@ export * from "./getCoordinatesForAngle";
 export * from "./getAngleBetweenAtoms";
 export * from "./isAngleEquals";
 export * from "./getChildAtoms";
+export * from "./isDoubleEquals";
