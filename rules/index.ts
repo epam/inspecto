@@ -32,7 +32,7 @@ RulesManager.createRule<CovalentCounterionAlgorithmType>(
 RulesManager.createRule<BondLengthAlgorithmType>(
   Rules.BondLength,
   bondLengthAlgorithm,
-  { bondLength: 1, differenceError: 0.01 },
+  { bondLength: 1, differenceError: 0.01, fixingRule: false },
   []
 );
 
