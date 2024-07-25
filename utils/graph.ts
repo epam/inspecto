@@ -1,9 +1,9 @@
 import { type Atom, type Molecule } from "@models";
 
-export type Graph = Map<Atom, Atom[]>;
+export type Graph = Map<Atom, Set<Atom>>;
 
-export const createGraph = (molecule: Molecule): Map<Atom, Atom[]> => {
-  const graph = new Map<Atom, Atom[]>();
+export const createGraph = (molecule: Molecule): Graph => {
+  const graph = new Map<Atom, Set<Atom>>();
   const bonds = Array.from(molecule.bonds());
   bonds.forEach(bond => {
     addEdge(graph, bond.from, bond.to);
@@ -12,10 +12,12 @@ export const createGraph = (molecule: Molecule): Map<Atom, Atom[]> => {
 };
 
 export function getSubGraph(graph: Graph, startAtom: Atom, excludeAtoms: Atom[]): Graph {
-  const subGraph = new Map<Atom, Atom[]>();
+  const subGraph = new Map<Atom, Set<Atom>>();
   const visitedItems = new Set<Atom>([...excludeAtoms]);
   const connectedAtoms = graph.get(startAtom);
-  const notVisitedConnectedAtoms = connectedAtoms?.filter(connectedAtom => !visitedItems.has(connectedAtom));
+
+  const notVisitedConnectedAtoms = Array.from(connectedAtoms ?? []).filter(atom => !visitedItems.has(atom));
+
   visitedItems.add(startAtom);
   if (notVisitedConnectedAtoms === undefined) {
     return subGraph;
@@ -97,31 +99,31 @@ export function findAllCyclesInGraph(graph: Graph): Atom[][] {
 
 export function addEdge(graph: Graph, from: Atom, to: Atom): void {
   if (!graph.has(from)) {
-    graph.set(from, []);
+    graph.set(from, new Set());
   }
   if (!graph.has(to)) {
-    graph.set(to, []);
+    graph.set(to, new Set());
   }
-  graph.get(from)?.push(to);
-  graph.get(to)?.push(from);
+  graph.get(from)?.add(to);
+  graph.get(to)?.add(from);
 }
 
 function removeEdge(graph: Graph, node1: Atom, node2: Atom): void {
-  graph.set(
-    node1,
-    (graph.get(node1) ?? []).filter(n => n !== node2)
-  );
-  graph.set(
-    node2,
-    (graph.get(node2) ?? []).filter(n => n !== node1)
-  );
+  if (graph.has(node1)) {
+    graph.get(node1)?.delete(node2);
+  }
+  if (graph.has(node2)) {
+    graph.get(node2)?.delete(node1);
+  }
 }
 
 function mergeGraphs(mainGraph: Graph, graphToAdd: Graph): void {
   graphToAdd.forEach((value, key) => {
     if (mainGraph.has(key)) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      mainGraph.set(key, mainGraph.get(key)!.concat(value));
+      for (const item of value) {
+        mainGraph.get(key)?.add(item);
+      }
     } else {
       mainGraph.set(key, value);
     }

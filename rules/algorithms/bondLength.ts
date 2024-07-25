@@ -29,7 +29,7 @@ export const bondLengthAlgorithm: RuleAlgorithm<BondLengthAlgorithmType> = (stru
 
     for (const bond of molecule.bonds()) {
       /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-      if (!graph.has(bond.from) || !graph.get(bond.from)?.includes(bond.to)) {
+      if (!graph.has(bond.from) || !graph.get(bond.from)?.has(bond.to)) {
         continue;
       }
       const bondLength = bond.getLength();
