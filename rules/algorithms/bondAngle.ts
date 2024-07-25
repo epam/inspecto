@@ -125,7 +125,7 @@ function fixGraph(
   const centerAtoms = longestChain.slice(1, -1);
 
   for (const centralAtom of centerAtoms) {
-    const atomBonds = molecule.getAtomBonds(centralAtom).filter(bond => graph.get(bond.from)?.includes(bond.to));
+    const atomBonds = molecule.getAtomBonds(centralAtom).filter(bond => graph.get(bond.from)?.has(bond.to));
 
     const data: CentralAtomData = {
       centralAtom,
@@ -210,7 +210,9 @@ function fixSubChain(
   if (connectedAtoms === undefined) {
     return;
   }
-  const connectedAtomsWithoutCentral = connectedAtoms.filter(connectedAtom => !longestChain.includes(connectedAtom));
+  const connectedAtomsWithoutCentral = [...connectedAtoms].filter(
+    connectedAtom => !longestChain.includes(connectedAtom)
+  );
   for (const connectedAtom of connectedAtomsWithoutCentral) {
     const subGraph = getSubGraph(graph, connectedAtom, [atom]);
     addEdge(subGraph, atom, connectedAtom);
