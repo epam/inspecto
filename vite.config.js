@@ -15,20 +15,23 @@ export default defineConfig({
       '@ui': resolve(__dirname, 'ui'),
     },
   },
+  base: "",
   build: {
-    lib: {
-      entry: {
-        inspecto: resolve(__dirname, "index.ts"),
-        rules: resolve(__dirname, "rules", "index.ts"),
-        utils: resolve(__dirname, "utils", "index.ts"),
-      },
-      name: "inspecto",
-    },
+    // temporary disable lib build
+    // lib: {
+    //   entry: {
+    //     inspecto: resolve(__dirname, "index.ts"),
+    //     rules: resolve(__dirname, "rules", "index.ts"),
+    //     utils: resolve(__dirname, "utils", "index.ts"),
+    //   },
+    //   name: "inspecto",
+    // },
     rollupOptions: {
       output: {
         dir: "build",
       },
-      external: ["indigo-ketcher"],
+      // temporary disable lib build
+      // external: ["indigo-ketcher"],
     },
   },
 });
