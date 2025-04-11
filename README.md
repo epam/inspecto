@@ -1,90 +1,116 @@
-# Inspecto
+# 🔍 Inspecto
 
-## Definition
+<p align="center">
+  <strong>A molecular validation tool to ensure chemical structures satisfy chemical rules</strong>
+</p>
 
-Inspecto is a molecular checker to validate them to satisfy chemical rules.
+[![License: Apache](https://img.shields.io/badge/License-Apache-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-4.0-blue)](https://www.typescriptlang.org/)
 
-## Usage
+## 📋 Table of Contents
 
-### Installation
+- [Definition](#-definition)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [API](#-api)
+- [Development](#-development)
+- [Technology Stack](#-technology-stack)
+- [Package Structure](#-package-structure)
 
-#### Install dependencies
+## 🧪 Definition
 
-> npm install
+Inspecto is a molecular checker that validates chemical structures to ensure they satisfy chemical rules.
 
-#### Build the package
+## 🚀 Installation
 
-> npm run build
+### Prerequisites
 
-#### Update demo in run-time
+- Node.js (v14 or later)
+- pnpm
 
-in one terminal
+### Install Dependencies
 
-> npm run build:watch
+```bash
+pnpm install
+```
 
-in the second terminal
+### Build the Package
 
-> npm run demo
+```bash
+pnpm run build
+```
 
-After changing files it will be updated automatically
+## 🛠️ Usage
 
-#### Local testing
+### Development Mode
 
-For development purposes run the following command in the root of the project
+#### Update Demo in Run-time
 
-> npm link
+Run in one terminal:
 
-As a result there is an updated package called 'inspecto' in the NPM dependecy graph. In order to use it, type the following command in the target repo
+```bash
+pnpm run dev
+```
 
-> npm link inspecto
+After changing files, the demo will update automatically.
 
-### Inspecto API
+### Local Testing
 
-> See corresponded KB page to look through existing API.
+To execute tests run
 
-### Ketcher update
+```bash
+pnpm run test
+```
 
-to update ketcher run `npm run update-ketcher`;
 
-## Development
+### Ketcher Update
 
-### Technology stack
+To update Ketcher, run:
+
+```bash
+pnpm run update-ketcher
+```
+
+## 📘 API
+
+See the corresponding Knowledge Base page for detailed API documentation.
+
+## 💻 Development
+
+### Technology Stack
 
 #### Dependencies
 
-- [Typescript](https://www.typescriptlang.org/)
-- [Inversify](https://inversify.io/)
-- [Indigo WASM](https://www.npmjs.com/package/indigo-ketcher)
+- 📦 [Typescript](https://www.typescriptlang.org/) - Typed JavaScript
+- 🔄 [Inversify](https://inversify.io/) - Dependency injection container
+- ⚗️ [Indigo WASM](https://www.pnpmjs.com/package/indigo-ketcher) - Chemistry toolkit
 
-#### Developmnent tools
+#### Development Tools
 
-- [Vite](https://vitejs.dev/)
-- [ESlint](https://eslint.org/)
-- [Prettier](https://prettier.io/)
-- [Vitest](https://vitest.dev/)
+- 🔥 [Vite](https://vitejs.dev/) - Next generation frontend tooling
+- 🧹 [ESlint](https://eslint.org/) - Linting utility
+- ✨ [Prettier](https://prettier.io/) - Code formatter
+- 🧪 [Vitest](https://vitest.dev/) - Testing framework
 
-#### Package structure
+### Package Structure
 
-There are 3 main modules of the Inspecto
+Inspecto is organized into three main modules:
 
-- inspecto - source code for Inspecto API;
-- rules - source code for RulesManager and rules;
-- utils - set of useful functions to support calculations;
+#### 🧩 Main Modules
 
-The modules "inspecto" and "rules" are built using IoC design principle to provide low coupling for dependencies (using DI technique).
+- **inspecto** - Source code for Inspecto API
+- **rules** - Source code for RulesManager and rules
+- **utils** - Set of useful functions to support calculations
 
-- processor
+The modules "inspecto" and "rules" are built using IoC design principles to provide low coupling for dependencies (using DI technique).
 
-This is a entity that is entry point for the package or that is responsible for one particular business domain and/or process. For instance, "Rules".
+#### 📐 Architecture Components
 
-- provider
+- **processor** - Entry point for the package or responsible for a particular business domain/process (e.g., "Rules")
+- **provider** - Wrapper around APIs with physical I/O (file system, etc.), 3rd party libs, and APIs with remote services
+- **infrastructure** - Required project structure entities (injection tokens, TS types, etc.)
+- **models** - Required entities for Data Modeling
 
-This is an entity that is wrapper around API with physical I/O (file system and etc), 3rd party libs and API with remote services.
+## 📄 License
 
-- infrastrcture
-
-Contains required for the project structure entities, like, injection tokens, TS types and etc.
-
-- models
-
-Contains required entities for Data Modeling
+Apache
