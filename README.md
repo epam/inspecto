@@ -20,11 +20,9 @@ Inspecto is a molecular checker to validate them to satisfy chemical rules.
 
 For development purposes run the following command in the root of the project
 
-> npm link
+> npm run link
 
-As a result there is an updated package called 'inspecto' in the NPM dependecy graph. In order to use it, type the following command in the target repo
-
-> npm link inspecto
+As a result there is an updated package called 'inspecto' in the NPM dependecy graph.
 
 ### Inspecto API
 

@@ -1,6 +1,8 @@
 export const TOKENS = {
+  // Processors
   INSPECTO_PROCESSOR: Symbol.for("INDIGO_PROCESSOR"),
   RULES_PROCESSOR: Symbol.for("RULES_PROCESSOR"),
-  FILE_PROVIDER: Symbol.for("FILE_PROVIDER"),
-  INDIGO_PROVIDER: Symbol.for("INDIGO_PROVIDER"),
+  DATA_MODEL_PROCESSOR: Symbol.for("DATA_MODEL_PROCESSOR"),
+  // Providers
+  CONVERTER_PROVIDER: Symbol.for("CONVERTER_PROVIDER"),
 } as const;
