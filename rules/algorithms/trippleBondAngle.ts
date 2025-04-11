@@ -2,15 +2,15 @@ import { type RulesValidationResults } from "@infrastructure";
 import { BOND_TYPES } from "@models";
 import { getAngleBetweenBonds, getCommonAtomInAdjacentBonds } from "@utils";
 import { type RuleAlgorithm } from "@rules/infrastructure";
+import { type RuleConfig } from "./base";
 
-export interface trippleBondAngleAlgorithmType {
+export interface TrippleBondAngleRuleConfig extends RuleConfig {
   angleDiffError: number;
-  fixingRule?: boolean;
 }
 
 export const TRIPLE_BOND_ANGLE = "triple-bond:5.8";
 
-export const trippleBondAngleAlgorithm: RuleAlgorithm<trippleBondAngleAlgorithmType> = (structure, config) => {
+export const trippleBondAngleAlgorithm: RuleAlgorithm<TrippleBondAngleRuleConfig> = (structure, config) => {
   const output: RulesValidationResults[] = [];
 
   for (const molecule of structure.molecules()) {

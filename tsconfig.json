@@ -38,6 +38,9 @@
       "@testing": ["./inspecto/testing"],
       "@models": ["./inspecto/models"],
       "@utils": ["./utils"],
+      "@utils/*": ["./utils/*"],
+      "@ui": ["./ui"],
+      "@ui/*": ["./ui/*"],
       "@rules": ["./rules"],
       "@rules/*": ["./rules/*"],
       "@inspecto/*": ["./inspecto/*"]

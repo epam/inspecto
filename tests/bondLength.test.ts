@@ -1,7 +1,7 @@
 import { it, describe } from "vitest";
 import { ketToStructure, getRule } from "@testing";
 import { Rules as RuleNames, type RulesValidationResults } from "@infrastructure";
-import { BOND_LENGTH } from "@rules/algorithms";
+import { BOND_LENGTH } from "@rules/algorithms/bondLength";
 
 import E1F from "./mocks/bondLength/E1F.ket?raw";
 import E2F from "./mocks/bondLength/E2F.ket?raw";
@@ -75,7 +75,6 @@ describe("Bond length rule", async () => {
 
   it("bond_length:E5T", async ({ expect }) => {
     const results = verifyKet(E5T);
-    console.log(results);
     expect(results.length, "Inspecto has detected incorrect bond length").toBe(0);
   });
 });

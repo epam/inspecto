@@ -1,4 +1,4 @@
-import { type FixingScope, type RulesValidationResults } from "@infrastructure";
+import { type RulesValidationResults } from "@infrastructure";
 import { BOND_TYPES, type Atom, type Molecule } from "@models";
 import { type RuleAlgorithm } from "@rules/infrastructure";
 import {
@@ -15,11 +15,9 @@ import {
   removeCyclesInGraph,
   shouldFix,
 } from "@utils";
+import type { RuleConfig } from "./base";
 
-export interface BondAngleAlgorithmType {
-  fixingRule?: boolean;
-  fixingScope?: FixingScope[];
-}
+export interface BondAngleRuleConfig extends RuleConfig {}
 
 const BOND_ANGLE_MORE_THAN_FOUR = "bond-angle:5.3.7";
 const BOND_ANGLE_THREE_SINGLE_BONDS = "bond-angle:three bonds";
@@ -94,10 +92,10 @@ interface CentralAtomData {
   longestChain: Atom[];
   molecule: Molecule;
   output: RulesValidationResults[];
-  config: BondAngleAlgorithmType;
+  config: BondAngleRuleConfig;
 }
 
-export const bondAngleAlgorithm: RuleAlgorithm<BondAngleAlgorithmType> = (structure, config) => {
+export const bondAngleAlgorithm: RuleAlgorithm<BondAngleRuleConfig> = (structure, config) => {
   const output: RulesValidationResults[] = [];
   const molecules = structure.molecules();
 
@@ -114,7 +112,7 @@ function fixGraph(
   graph: Graph,
   molecule: Molecule,
   output: RulesValidationResults[],
-  config: BondAngleAlgorithmType,
+  config: BondAngleRuleConfig,
   startAtom?: Atom
 ): void {
   const longestChain = findLongestChainInGraph(graph, startAtom);
@@ -204,7 +202,7 @@ function fixSubChain(
   longestChain: Atom[],
   molecule: Molecule,
   output: RulesValidationResults[],
-  config: BondAngleAlgorithmType
+  config: BondAngleRuleConfig
 ): void {
   const connectedAtoms = graph.get(atom);
   if (connectedAtoms === undefined) {

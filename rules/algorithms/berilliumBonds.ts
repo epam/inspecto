@@ -14,8 +14,7 @@ export const berilliumBondsAlgorithm: RuleAlgorithm<BerilliumAlgorithmType> = (s
 
   // eslint-disable-next-line no-unreachable-loop
   for (const molecule of structure.molecules()) {
-    const bonds = Array.from(molecule.bonds());
-    for (const bond of bonds) {
+    for (const bond of molecule.bonds) {
       if (
         (bond.from.label === BE || bond.to.label === BE) &&
         (ELECTRONEGATIVES.includes(bond.from.label) || ELECTRONEGATIVES.includes(bond.to.label))

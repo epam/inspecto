@@ -1,14 +1,10 @@
 import type { Structure } from "../..";
 import IndigoModule from "indigo-ketcher";
 import { DataModelProcessor } from "@processors";
-import { type BondLengthAlgorithmType, bondLengthAlgorithm } from "@rules/algorithms/bondLength";
-import { Rule } from "@rules/models/Rule";
+import { type Rule } from "@rules/models/Rule";
 import { RulesManager } from "@rules";
-import { Rules as RuleNames, type RulesValidationResults } from "@infrastructure";
-import { valenceAlgorithm, type ValenceAlgorithmType } from "@rules/algorithms/valence";
-import { type CovalentCounterionAlgorithmType, covalentCounterionAlgorithm } from "@rules/algorithms";
-import { type AliasAlgorithmType, aliasAlgorithm } from "@rules/algorithms/alias";
-import { type BondAngleAlgorithmType, bondAngleAlgorithm } from "@rules/algorithms/bondAngle";
+import { type Rules as RuleNames, type RulesValidationResults } from "@infrastructure";
+import { type Registry } from "@rules/infrastructure";
 
 const indigoModule = IndigoModule();
 const dataProcessor = new DataModelProcessor();
@@ -28,60 +24,33 @@ export async function toStructure(str: string): Promise<Structure> {
   return structure;
 }
 
-interface RuleTypes {
-  [RuleNames.BondLength]: BondLengthAlgorithmType;
-  [RuleNames.Valence]: ValenceAlgorithmType;
-  [RuleNames.CovalentCounterion]: CovalentCounterionAlgorithmType;
-  [RuleNames.Alias]: AliasAlgorithmType;
-  [RuleNames.BondAngle]: BondAngleAlgorithmType;
-}
-const RULES: {
-  [key in RuleNames]: (config?: RuleTypes[key]) => Rule<RuleTypes[key]>;
-} = {
-  [RuleNames.BondLength]: (config?: BondLengthAlgorithmType) => {
-    return new Rule<BondLengthAlgorithmType>(
-      RuleNames.BondLength,
-      bondLengthAlgorithm,
-      config ?? {
-        bondLength: 2,
-        differenceError: 0.1,
-      }
-    );
-  },
-  [RuleNames.Valence]: (config?: ValenceAlgorithmType) => {
-    return new Rule<ValenceAlgorithmType>(RuleNames.Valence, valenceAlgorithm, config ?? {});
-  },
-  [RuleNames.CovalentCounterion]: (config?: CovalentCounterionAlgorithmType) => {
-    return new Rule<CovalentCounterionAlgorithmType>(
-      RuleNames.CovalentCounterion,
-      covalentCounterionAlgorithm,
-      config ?? {}
-    );
-  },
-  [RuleNames.Alias]: (config?: AliasAlgorithmType) => {
-    return new Rule<AliasAlgorithmType>(RuleNames.Alias, aliasAlgorithm, config ?? {});
-  },
-  [RuleNames.BondAngle]: (config?: BondAngleAlgorithmType) => {
-    return new Rule<BondAngleAlgorithmType>(RuleNames.Alias, bondAngleAlgorithm, config ?? {});
-  },
-};
-
 class TestRuleWrapper<T extends RuleNames> {
-  rule: Rule<RuleTypes[T]>;
-  constructor(rule: Rule<RuleTypes[T]>) {
+  rule: Rule<Registry[T]>;
+  constructor(rule: Rule<Registry[T]>) {
     this.rule = rule;
   }
 
   verify(structure: Structure): RulesValidationResults[] {
-    return RulesManager.applyRule(this.rule, structure);
+    const result = RulesManager.applyRule(this.rule, structure);
+    if (!Array.isArray(result)) {
+      throw new Error("Rule verification failed, incorrect rule output");
+    }
+    return result;
   }
 
-  configure(config: Partial<RuleTypes[T]>): this {
+  configure(config: Partial<Registry[T]>): this {
     RulesManager.updateRuleConfig(this.rule, config);
     return this;
   }
 }
 
-export function getRule<T extends RuleNames>(ruleName: T, config?: RuleTypes[T]): TestRuleWrapper<T> {
-  return new TestRuleWrapper(RULES[ruleName](config));
+export function getRule<T extends RuleNames>(ruleName: T, config?: Registry[T]): TestRuleWrapper<T> {
+  const rule = RulesManager.getRuleByName(ruleName);
+  if (rule === null) {
+    throw new Error(`Rule ${ruleName} not found`);
+  }
+  if (config !== undefined) {
+    RulesManager.updateRuleConfig(rule, config);
+  }
+  return new TestRuleWrapper<T>(rule);
 }

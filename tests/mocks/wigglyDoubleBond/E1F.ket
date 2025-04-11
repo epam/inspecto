@@ -1,0 +1,153 @@
+{
+    "root": {
+        "nodes": [
+            {
+                "$ref": "mol0"
+            }
+        ],
+        "connections": [],
+        "templates": []
+    },
+    "mol0": {
+        "type": "molecule",
+        "atoms": [
+            {
+                "label": "C",
+                "location": [
+                    8.609936490538903,
+                    -7.975,
+                    0
+                ]
+            },
+            {
+                "label": "Cl",
+                "location": [
+                    9.475961894323342,
+                    -8.475,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    10.34198729810778,
+                    -7.975,
+                    0
+                ],
+                "stereoLabel": "abs"
+            },
+            {
+                "label": "C",
+                "location": [
+                    11.208012701892219,
+                    -8.475,
+                    0
+                ],
+                "stereoLabel": "abs"
+            },
+            {
+                "label": "C",
+                "location": [
+                    12.07403810567666,
+                    -7.975,
+                    0
+                ],
+                "stereoLabel": "abs"
+            },
+            {
+                "label": "C",
+                "location": [
+                    12.940063509461098,
+                    -8.475,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    9.475961894323342,
+                    -9.475,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    11.208012701892219,
+                    -9.475,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    12.07403810567666,
+                    -6.975,
+                    0
+                ]
+            }
+        ],
+        "bonds": [
+            {
+                "type": 1,
+                "atoms": [
+                    0,
+                    1
+                ]
+            },
+            {
+                "type": 2,
+                "atoms": [
+                    1,
+                    2
+                ]
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    2,
+                    3
+                ],
+                "stereo": 4
+            },
+            {
+                "type": 2,
+                "atoms": [
+                    3,
+                    4
+                ]
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    4,
+                    5
+                ],
+                "stereo": 4
+            },
+            {
+                "type": 2,
+                "atoms": [
+                    1,
+                    6
+                ]
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    3,
+                    7
+                ],
+                "stereo": 4
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    4,
+                    8
+                ],
+                "stereo": 4
+            }
+        ]
+    }
+}

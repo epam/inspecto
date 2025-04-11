@@ -1,8 +1,8 @@
-import { type RulesValidationResults } from "@infrastructure";
+import { type Rules, type RulesValidationResults } from "@infrastructure";
 import { Rule, RulesManager } from "@rules";
 
 export function getFixRule(
-  ruleName: string,
+  ruleName: Rules,
   validationResult: RulesValidationResults,
   overwriteFixingScope: boolean = true
 ): Rule<any> | null {

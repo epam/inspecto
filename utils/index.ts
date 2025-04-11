@@ -1,4 +1,4 @@
-export * from "./getDistanceBetweenTwoAtoms";
+export * from "./getDistanceBetweenTwoPoints";
 export * from "./getAngleBetweenBonds";
 export * from "./getCommonAtomInAdjacentBonds";
 export * from "./shouldFix";
@@ -8,3 +8,4 @@ export * from "./getAngleBetweenAtoms";
 export * from "./isAngleEquals";
 export * from "./getChildAtoms";
 export * from "./isDoubleEquals";
+export * from "./isBondsOverlapping";

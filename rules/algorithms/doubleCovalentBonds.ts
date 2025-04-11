@@ -23,9 +23,7 @@ export const doubleCovalentBondsAlgorithm: RuleAlgorithm<DoubleCovalentBondsAlgo
     const singleBondsAlkaliEarthWithElectronegatives: Bond[] = [];
     const doubleBondsAlkaliEarthWithElectronegatives: Bond[] = [];
 
-    const bonds = Array.from(molecule.bonds());
-
-    bondsAlkaliEarthWithElectronegatives = bonds.filter(
+    bondsAlkaliEarthWithElectronegatives = molecule.bonds.filter(
       bond =>
         (ALKALI_EARTH.includes(bond.from.label) || ALKALI_EARTH.includes(bond.to.label)) &&
         (ELECTRONEGATIVES.includes(bond.from.label) || ELECTRONEGATIVES.includes(bond.to.label))

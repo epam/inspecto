@@ -4,8 +4,7 @@ export type Graph = Map<Atom, Set<Atom>>;
 
 export const createGraph = (molecule: Molecule): Graph => {
   const graph = new Map<Atom, Set<Atom>>();
-  const bonds = Array.from(molecule.bonds());
-  bonds.forEach(bond => {
+  molecule.bonds.forEach(bond => {
     addEdge(graph, bond.from, bond.to);
   });
   return graph;
@@ -74,27 +73,43 @@ export function findLongestChainInGraph(graph: Graph, startAtom?: Atom): Atom[] 
 
 export function findAllCyclesInGraph(graph: Graph): Atom[][] {
   const cycles: Atom[][] = [];
-  const visited = new Set<Atom>();
-  function dfs(current: Atom, parent: Atom, path: Atom[]): void {
-    visited.add(current);
-    path.push(current);
-    for (const neighbor of graph.get(current) ?? []) {
-      if (!visited.has(neighbor)) {
-        dfs(neighbor, current, path.slice());
-      } else if (neighbor !== parent && path.includes(neighbor)) {
-        const cycleStartIndex = path.indexOf(neighbor);
-        const cycle = path.slice(cycleStartIndex);
-        cycle.push(neighbor);
+  const uniqueCycles = new Set<string>();
+
+  function dfs(current: Atom, parent: Atom | null, path: Atom[]): void {
+    const pathIndex = path.indexOf(current);
+    if (pathIndex !== -1) {
+      const cycle = path.slice(pathIndex);
+      const cycleNormalized = normalizeCycle(cycle);
+      if (!uniqueCycles.has(cycleNormalized)) {
         cycles.push(cycle);
+        uniqueCycles.add(cycleNormalized);
+      }
+      return;
+    }
+
+    path.push(current);
+    const neighbors = graph.get(current) ?? [];
+
+    for (const neighbor of neighbors) {
+      if (neighbor !== parent) {
+        dfs(neighbor, current, [...path]);
       }
     }
   }
-  for (const node of graph.keys()) {
-    if (!visited.has(node)) {
-      dfs(node, null as any, []);
+
+  const allNodes = Array.from(graph.keys());
+  for (const node of allNodes) {
+    if (!uniqueCycles.has(node.toString())) {
+      dfs(node, null, []);
     }
   }
+
   return cycles;
+}
+
+function normalizeCycle(cycle: Atom[]): string {
+  const cycleRepresentation = cycle.map(atom => atom.toString()).sort();
+  return cycleRepresentation.join("-");
 }
 
 export function addEdge(graph: Graph, from: Atom, to: Atom): void {
@@ -108,7 +123,7 @@ export function addEdge(graph: Graph, from: Atom, to: Atom): void {
   graph.get(to)?.add(from);
 }
 
-function removeEdge(graph: Graph, node1: Atom, node2: Atom): void {
+export function removeEdge(graph: Graph, node1: Atom, node2: Atom): void {
   if (graph.has(node1)) {
     graph.get(node1)?.delete(node2);
   }
@@ -117,7 +132,7 @@ function removeEdge(graph: Graph, node1: Atom, node2: Atom): void {
   }
 }
 
-function mergeGraphs(mainGraph: Graph, graphToAdd: Graph): void {
+export function mergeGraphs(mainGraph: Graph, graphToAdd: Graph): void {
   graphToAdd.forEach((value, key) => {
     if (mainGraph.has(key)) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -7,6 +7,7 @@ export type RulesValidationResults = {
   fixMeta?: FixMeta;
   errorCode?: string;
   message?: string;
+  url?: string;
   path: string;
 };
 
@@ -44,7 +45,7 @@ export interface IInspectoProcessor {
 }
 
 export interface IConverterProvider {
-  convertToKetFormat: (structure: string | Buffer) => Promise<string>;
+  convertToKetFormat: (structure: string) => Promise<string>;
 }
 
 export interface IDataModelProcessor {

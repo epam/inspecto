@@ -5,12 +5,21 @@ import { type RuleAlgorithm, type IRulesManager, RULES_TOKENS } from "@rules/inf
 import { Rule } from "@rules/models";
 import { type RulesValidationResults } from "@inspecto/infrastructure";
 import { type Structure } from "@inspecto/models";
+import { BaseRule, type RuleConfig } from "@rules/algorithms/base";
 
 @injectable()
 export class RulesManagerProcessor implements IRulesManager {
   public applyRule(rule: Rule<any>, structure: Structure): RulesValidationResults[] {
+    const Algo = rule._algorithm;
+    if (Algo.prototype instanceof BaseRule) {
+      // @ts-expect-error non callable
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const ruleInstance = new Algo(rule["_config"]);
+      return ruleInstance.verify(structure);
+    }
+    // @ts-expect-error non callable
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    return rule["_algorithm"](structure, rule["_config"]);
+    return Algo(structure, rule["_config"]);
   }
 
   public updateRuleConfig<TConfig extends object>(rule: Rule<TConfig>, config: Partial<TConfig>): void {
@@ -22,9 +31,9 @@ export class RulesManagerProcessor implements IRulesManager {
     return container.getAll(RULES_TOKENS.RULE);
   }
 
-  public createRule<TConfig extends object>(
+  public createRule<TConfig extends RuleConfig>(
     name: string,
-    algorithm: RuleAlgorithm<TConfig>,
+    algorithm: RuleAlgorithm<TConfig> | typeof BaseRule<TConfig>,
     config: TConfig,
     tags?: string[],
     description?: string

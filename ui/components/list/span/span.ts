@@ -6,9 +6,6 @@ export function createErrorSpan(validationResult: RulesValidationResults): HTMLS
     validationResult.message?.substring(
       0,
       validationResult.message?.length > 100 ? 100 : validationResult.message?.length
-    ) +
-    " [" +
-    validationResult.errorCode +
-    "]";
+    ) ?? "";
   return span;
 }

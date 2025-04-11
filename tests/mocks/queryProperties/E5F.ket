@@ -1,0 +1,119 @@
+{
+    "root": {
+        "nodes": [
+            {
+                "$ref": "mol0"
+            }
+        ],
+        "connections": [],
+        "templates": []
+    },
+    "mol0": {
+        "type": "molecule",
+        "atoms": [
+            {
+                "label": "C",
+                "location": [
+                    14.700000000000001,
+                    -5.5180595485514345,
+                    0
+                ],
+                "unsaturatedAtom": true,
+                "hCount": 7,
+                "queryProperties": {
+                    "connectivity": 9
+                }
+            },
+            {
+                "label": "C",
+                "location": [
+                    15.508989960649673,
+                    -6.105852254200232,
+                    0
+                ],
+                "queryProperties": {
+                    "ringSize": 8,
+                    "chirality": "clockwise"
+                },
+                "implicitHCount": 5
+            },
+            {
+                "label": "C",
+                "location": [
+                    15.199993795209934,
+                    -7.0569404514485665,
+                    0
+                ],
+                "ringBondCount": -2,
+                "substitutionCount": -2,
+                "hCount": 1
+            },
+            {
+                "label": "C",
+                "location": [
+                    14.200006204790068,
+                    -7.0569404514485665,
+                    0
+                ],
+                "queryProperties": {
+                    "aromaticity": "aliphatic",
+                    "ringMembership": 5,
+                    "ringSize": 9
+                }
+            },
+            {
+                "label": "C",
+                "location": [
+                    13.89101003935033,
+                    -6.105852254200232,
+                    0
+                ],
+                "substitutionCount": 9,
+                "unsaturatedAtom": true,
+                "implicitHCount": 9
+            }
+        ],
+        "bonds": [
+            {
+                "type": 1,
+                "atoms": [
+                    0,
+                    4
+                ]
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    4,
+                    3
+                ]
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    3,
+                    2
+                ]
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    2,
+                    1
+                ]
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    1,
+                    0
+                ]
+            }
+        ],
+        "stereoFlagPosition": {
+            "x": 15.508989960649673,
+            "y": 4.5180595485514345,
+            "z": 0
+        }
+    }
+}

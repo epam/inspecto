@@ -2,75 +2,51 @@ import { KetcherNode } from "./KetcherNode";
 import { type Atom } from "./Atom";
 import { type BOND_TYPES, type Bond } from "./Bond";
 import { GRAPH_ERRORS, Graph } from "./Graph";
-import { RawKetType } from "@infrastructure";
 import { type SGroup } from "@models";
+import { Types } from "./types";
 
 export class Molecule extends KetcherNode {
   private readonly _graphView: Graph<Atom, Bond>;
 
   constructor(
     _molId: string,
-    private readonly _atoms: Atom[],
-    private readonly _bonds: Bond[],
-    private readonly _sgroups: SGroup[]
+    public readonly atoms: Atom[],
+    public readonly bonds: Bond[],
+    public readonly sgroups: SGroup[]
   ) {
-    super(_molId, RawKetType.MOLECULE);
+    super(_molId, Types.MOLECULE);
     this._graphView = new Graph(atom => atom.toString());
-    for (const atom of _atoms) {
+    for (const atom of atoms) {
       this._graphView.addVertex(atom);
     }
 
-    for (const bond of _bonds) {
+    for (const bond of bonds) {
       this._graphView.addEdge(bond.from, bond.to, bond);
     }
   }
 
-  /**
-   * It's used for for...of loops
-   */
-  public *atoms(): Generator<Atom> {
-    for (const atom of this._atoms) {
-      yield atom;
-    }
-  }
-
-  /**
-   * It's used for for...of loops
-   */
-  public *bonds(): Generator<Bond> {
-    for (const bond of this._bonds) {
-      yield bond;
-    }
-  }
-
-  public *sgroups(): Generator<SGroup> {
-    for (const sgroup of this._sgroups) {
-      yield sgroup;
-    }
-  }
-
   public getAtomIndex(atom: Atom): number {
-    return this._atoms.indexOf(atom);
+    return this.atoms.indexOf(atom);
   }
 
   public getBondIndex(bond: Bond): number {
-    return this._bonds.indexOf(bond);
+    return this.bonds.indexOf(bond);
   }
 
   public getGroupIndex(sgroup: SGroup): number {
-    return this._sgroups.indexOf(sgroup);
+    return this.sgroups.indexOf(sgroup);
   }
 
   public filterBondsByType(bondType: BOND_TYPES): Bond[] {
-    return this._bonds.filter(bond => bond.bondType === bondType);
+    return this.bonds.filter(bond => bond.bondType === bondType);
   }
 
   public removeBond(bond: Bond): void {
-    this._bonds.splice(this.getBondIndex(bond), 1);
+    this.bonds.splice(this.getBondIndex(bond), 1);
   }
 
   public getAtomBonds(atom: Atom): Bond[] {
-    return this._bonds.filter(bond => bond.from === atom || bond.to === atom);
+    return this.bonds.filter(bond => bond.from === atom || bond.to === atom);
   }
 
   public getConnectedAtoms(atom: Atom): Atom[] {
