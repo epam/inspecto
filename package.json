@@ -69,7 +69,7 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.2",
     "vite": "^5.3.4",
-    "vitest": "^2.0.4"
+    "vitest": "^2.1.9"
   },
   "dependencies": {
     "indigo-ketcher": "1.25.0",
