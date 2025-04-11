@@ -62,7 +62,6 @@ To execute tests run
 pnpm run test
 ```
 
-
 ### Ketcher Update
 
 To update Ketcher, run:
