@@ -68,7 +68,7 @@
     "prettier": "3.2.5",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.2",
-    "vite": "^5.3.4",
+    "vite": "^6.2.6",
     "vitest": "^2.0.4"
   },
   "dependencies": {
