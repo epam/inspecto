@@ -16,6 +16,18 @@ Inspecto is a molecular checker to validate them to satisfy chemical rules.
 
 > npm run build
 
+#### Update demo in run-time
+
+in one terminal
+
+> npm run build:watch
+
+in the second terminal
+
+> npm run demo
+
+After changing files it will be updated automatically
+
 #### Local testing
 
 For development purposes run the following command in the root of the project
@@ -26,7 +38,7 @@ As a result there is an updated package called 'inspecto' in the NPM dependecy g
 
 ### Inspecto API
 
-TODO: add API
+> See corresponded KB page to look through existing API.
 
 ## Development
 
@@ -47,7 +59,13 @@ TODO: add API
 
 #### Package structure
 
-The package is built using IoC design principle to provide low coupling for dependencies (using DI technique).
+There are 3 main modules of the Inspecto
+
+- inspecto - source code for Inspecto API;
+- rules - source code for RulesManager and rules;
+- utils - set of useful functions to support calculations;
+
+The modules "inspecto" and "rules" are built using IoC design principle to provide low coupling for dependencies (using DI technique).
 
 - processor
 
@@ -60,3 +78,7 @@ This is an entity that is wrapper around API with physical I/O (file system and 
 - infrastrcture
 
 Contains required for the project structure entities, like, injection tokens, TS types and etc.
+
+- models
+
+Contains required entities for Data Modeling
