@@ -1,4 +1,4 @@
-import { type InspectoResults } from "@infrastructure";
+import { type Rules, type InspectoResults } from "@infrastructure";
 import { Inspecto, type Structure } from "..";
 import { type Rule, RulesManager } from "../rules";
 import dat from "dat.gui";
@@ -66,13 +66,16 @@ DOMNodes.navLinks.forEach(link => {
       link.classList.remove("active");
     });
     link.classList.add("active");
-    const tabPane = document.querySelector(link.getAttribute("href"));
+    const hrefValue = link.getAttribute("href");
     DOMNodes.tabPanes.forEach(tab => {
       tab.classList.remove("active");
       tab.classList.remove("show");
       tab.classList.remove("fade");
     });
-    tabPane?.classList.add("active", "show", "fade");
+    if (hrefValue !== null) {
+      const tabPane = document.querySelector(hrefValue);
+      tabPane?.classList.add("active", "show", "fade");
+    }
   });
 });
 
@@ -117,7 +120,7 @@ for (const rule of rules) {
   checkbox.addEventListener("change", event => {
     // console.log('Checkbox state:', event.target.checked);
     // config.myCheckbox = event.target.checked; // Update the configuration object
-    rulesFlags[rule.name] = event.target.checked;
+    rulesFlags[rule.name] = (event as Event & { target: HTMLInputElement }).target.checked;
     storeObject(rulesFlags, "rules");
     onRulesChange();
   });
@@ -194,7 +197,7 @@ async function fixErrorsWithRequiredInputs(result: {
       validationResult => validationResult.fixMeta?.requireUserInput === true
     );
     for (const validationResult of validationErrorsWithRequiredInput) {
-      const fixRule = getFixRule(ruleName, validationResult, false);
+      const fixRule = getFixRule(ruleName as Rules, validationResult, false);
       if (fixRule !== null) {
         if (!fixRules.some(fr => fr.name === fixRule.name)) {
           fixRules.push(fixRule);

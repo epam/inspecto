@@ -25,6 +25,7 @@
   },
   "scripts": {
     "build": "npm run build:bundle",
+    "build-lib": "vite build -- --lib",
     "update-ketcher": "node ./lib/update-ketcher.js",
     "build:bundle": "vite build",
     "build:watch": "vite build --watch",
@@ -69,6 +70,7 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.2",
     "vite": "^5.3.4",
+    "vite-plugin-dts": "^4.5.3",
     "vitest": "^2.0.4"
   },
   "dependencies": {

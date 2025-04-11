@@ -5,7 +5,7 @@ import { type Rule } from "@rules/models";
 export type RulesValidationResults = {
   isFixable?: boolean;
   fixMeta?: FixMeta;
-  errorCode?: string;
+  errorCode: string;
   message?: string;
   url?: string;
   path: string;

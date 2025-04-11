@@ -1,4 +1,4 @@
-import { type InspectoResults, type RulesValidationResults } from "@infrastructure";
+import { type Rules, type InspectoResults, type RulesValidationResults } from "@infrastructure";
 import { type Structure } from "@models";
 import { createFixButton } from "./button/button";
 import { createErrorSpan } from "./span/span";
@@ -93,11 +93,11 @@ function handleFixButtonClick(event: MouseEvent): void {
   async function fixRuleValidationError(): Promise<void> {
     if (event.target instanceof HTMLButtonElement) {
       const clickedButton = event.target;
-      const validationResult = buttonsValidationResultsMap.get(event.target);
-      if (validationResult === undefined || event.target.dataset.ruleName === undefined) {
+      const validationResult = buttonsValidationResultsMap.get(clickedButton);
+      if (validationResult === undefined || clickedButton.dataset.ruleName === undefined) {
         return;
       }
-      const enabledRule = getFixRule(event.target.dataset.ruleName, validationResult);
+      const enabledRule = getFixRule(clickedButton.dataset.ruleName as Rules, validationResult);
       if (enabledRule === null) {
         return;
       }

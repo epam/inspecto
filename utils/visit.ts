@@ -32,7 +32,7 @@ export function visit(obj: object, visitor: GenericVisitor): void {
     if (Array.isArray(node)) {
       return;
     }
-    const type = node?.type as Types | undefined;
+    const type = node?.type as unknown as Types | undefined;
 
     if (typeof type !== "string") return;
     if (!(type in visitor)) return;

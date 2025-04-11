@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { defineConfig } from "vite";
 import { resolve } from "node:path";
+import dts from "vite-plugin-dts";
+
+// eslint-disable-next-line @typescript-eslint/dot-notation
+const isLibBuild = process.env["npm_lifecycle_script"]?.includes("--lib");
 
 export default defineConfig({
   resolve: {
@@ -12,26 +17,34 @@ export default defineConfig({
       "@utils": resolve(__dirname, "utils"),
       "@rules": resolve(__dirname, "rules"),
       "@inspecto": resolve(__dirname, "inspecto"),
-      '@ui': resolve(__dirname, 'ui'),
+      "@ui": resolve(__dirname, "ui"),
     },
   },
   base: "",
-  build: {
-    // temporary disable lib build
-    // lib: {
-    //   entry: {
-    //     inspecto: resolve(__dirname, "index.ts"),
-    //     rules: resolve(__dirname, "rules", "index.ts"),
-    //     utils: resolve(__dirname, "utils", "index.ts"),
-    //   },
-    //   name: "inspecto",
-    // },
-    rollupOptions: {
-      output: {
-        dir: "build",
+  publicDir: isLibBuild ? false : "public",
+  plugins: [isLibBuild ? dts() : undefined],
+  build: isLibBuild
+    ? {
+        lib: {
+          entry: {
+            inspecto: resolve(__dirname, "index.ts"),
+            rules: resolve(__dirname, "rules", "index.ts"),
+            utils: resolve(__dirname, "utils", "index.ts"),
+          },
+          name: "inspecto",
+        },
+        rollupOptions: {
+          output: {
+            dir: "dist",
+          },
+          external: ["indigo-ketcher"],
+        },
+      }
+    : {
+        rollupOptions: {
+          output: {
+            dir: "build",
+          },
+        },
       },
-      // temporary disable lib build
-      // external: ["indigo-ketcher"],
-    },
-  },
 });

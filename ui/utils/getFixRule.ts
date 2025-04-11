@@ -24,8 +24,9 @@ export function getFixRule(
       return null;
     }
   }
+  const originalConfigRef = enabledRule.getOriginalConfig();
   if (overwriteFixingScope) {
-    enabledRule.getOriginalConfig().fixingScope = [
+    originalConfigRef.fixingScope = [
       {
         path: validationResult.path,
         errorCode: validationResult.errorCode,
@@ -33,8 +34,8 @@ export function getFixRule(
       },
     ];
   } else {
-    enabledRule.getOriginalConfig().fixingScope = enabledRule.getOriginalConfig().fixingScope ?? [];
-    enabledRule.getOriginalConfig().fixingScope.push({
+    originalConfigRef.fixingScope = originalConfigRef.fixingScope ?? [];
+    originalConfigRef.fixingScope.push({
       path: validationResult.path,
       errorCode: validationResult.errorCode,
       data,

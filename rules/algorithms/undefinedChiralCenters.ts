@@ -2,6 +2,7 @@ import { type RulesValidationResults } from "@infrastructure";
 import { BOND_TYPES, type Molecule, type Atom } from "@models";
 import { type RuleAlgorithm } from "@rules/infrastructure";
 import { ATOMIC_NUMBER } from "@utils/atomicNumberAndMass";
+import type { RuleConfig } from "./base";
 const enum STEREO {
   wedget = 1,
   either = 4,
@@ -11,7 +12,7 @@ const SUBSTITUENTS_LENGTH_EQUAL_4 = 4;
 const SUBSTITUENTS_LENGTH_EQUAL_3 = 3;
 const SUBSTITUENTS_LENGTH_EQUAL_2 = 2;
 
-export interface UndefinedChiralCentersAlgorithmType {
+export interface UndefinedChiralCentersAlgorithmType extends RuleConfig {
   fixingRule?: boolean;
 }
 
