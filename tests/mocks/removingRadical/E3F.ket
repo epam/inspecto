@@ -1,0 +1,122 @@
+{
+    "root": {
+        "nodes": [
+            {
+                "$ref": "mol0"
+            }
+        ],
+        "connections": [],
+        "templates": []
+    },
+    "mol0": {
+        "type": "molecule",
+        "atoms": [
+            {
+                "label": "C",
+                "location": [
+                    6.1758833714488635,
+                    -3.173703710737492,
+                    0
+                ],
+                "selected": true,
+                "stereoLabel": "abs"
+            },
+            {
+                "label": "O",
+                "location": [
+                    6.676271046402329,
+                    -4.713796198524293,
+                    0
+                ],
+                "selected": true
+            },
+            {
+                "label": "N",
+                "location": [
+                    6.985510437835031,
+                    -3.767563629231333,
+                    0
+                ],
+                "radical": 3,
+                "selected": true
+            },
+            {
+                "label": "N",
+                "location": [
+                    5.6754961733325615,
+                    -4.713796198524293,
+                    0
+                ],
+                "selected": true
+            },
+            {
+                "label": "Cl",
+                "location": [
+                    5.366156646095368,
+                    -3.767563629231333,
+                    0
+                ],
+                "selected": true
+            },
+            {
+                "label": "C",
+                "location": [
+                    6.1758833714488635,
+                    -2.173703710737492,
+                    0
+                ],
+                "radical": 3
+            }
+        ],
+        "bonds": [
+            {
+                "type": 1,
+                "atoms": [
+                    0,
+                    4
+                ],
+                "selected": true
+            },
+            {
+                "type": 2,
+                "atoms": [
+                    4,
+                    3
+                ],
+                "selected": true
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    3,
+                    1
+                ],
+                "selected": true
+            },
+            {
+                "type": 2,
+                "atoms": [
+                    1,
+                    2
+                ],
+                "selected": true
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    2,
+                    0
+                ],
+                "selected": true
+            },
+            {
+                "type": 1,
+                "atoms": [
+                    0,
+                    5
+                ],
+                "stereo": 1
+            }
+        ]
+    }
+}

@@ -1,10 +1,10 @@
-import { type RawKetType } from "@infrastructure";
+import type { GenericNode, Types } from "./types";
 
-export abstract class KetcherNode {
+export abstract class KetcherNode implements GenericNode {
   protected readonly _id: string;
-  protected readonly _type: RawKetType;
+  protected readonly _type: Types;
 
-  constructor(id: string, type: RawKetType) {
+  constructor(id: string, type: Types) {
     this._id = id;
     this._type = type;
   }
@@ -13,7 +13,7 @@ export abstract class KetcherNode {
     return this._id;
   }
 
-  public get type(): RawKetType {
+  public get type(): Types {
     return this._type;
   }
 }

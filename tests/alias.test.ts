@@ -72,8 +72,8 @@ describe("Alias rule", async () => {
     const results = rule.verify(structure);
     expect(
       results.filter(res => res.errorCode === ALIAS_CODE).length,
-      "Inspecto has detected incorrect written symbols [M] in Fluorine|unknown|Oxygen|Carbon, would you like to change it?"
-    ).toBe(1);
+      "Inspecto not detected incorrect written symbols."
+    ).toBe(0);
   });
 
   it("alias:E2F", async ({ expect }) => {

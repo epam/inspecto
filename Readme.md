@@ -32,13 +32,19 @@ After changing files it will be updated automatically
 
 For development purposes run the following command in the root of the project
 
-> npm run link
+> npm link
 
-As a result there is an updated package called 'inspecto' in the NPM dependecy graph.
+As a result there is an updated package called 'inspecto' in the NPM dependecy graph. In order to use it, type the following command in the target repo
+
+> npm link inspecto
 
 ### Inspecto API
 
 > See corresponded KB page to look through existing API.
+
+### Ketcher update
+
+to update ketcher run `npm run update-ketcher`;
 
 ## Development
 
@@ -55,7 +61,7 @@ As a result there is an updated package called 'inspecto' in the NPM dependecy g
 - [Vite](https://vitejs.dev/)
 - [ESlint](https://eslint.org/)
 - [Prettier](https://prettier.io/)
-- [Jest](https://jestjs.io/)
+- [Vitest](https://vitest.dev/)
 
 #### Package structure
 

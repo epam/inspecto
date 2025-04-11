@@ -1,136 +1,11 @@
-import { Types, type FixingScope, type RulesValidationResults } from "@infrastructure";
-import { type Molecule, type SGroup, type Atom } from "@models";
-import { type RuleAlgorithm } from "@rules/infrastructure";
-
-export interface AliasAlgorithmType {
-  fixingRule?: boolean;
-  fixingScope?: FixingScope[];
-}
+import { type RulesValidationResults } from "@infrastructure";
+import { Types } from "@inspecto/models/types";
+import { type Molecule, type SGroup, type Atom, type Structure } from "@models";
+import { PERIODIC_TABLE } from "@utils/periodicTable";
+import { FUNCTIONAL_GROUPS, SOLVENTS } from "@utils/functionalGroupsAndSolvents";
+import { BaseRule, type RuleConfig } from "./base";
 
 export const ALIAS_CODE = "alias:2.3";
-
-const PERIODIC_TABLE: Record<string, string> = {
-  H: "Hydrogen",
-  Li: "Lithium",
-  Na: "Sodium",
-  K: "Potassium",
-  Rb: "Rubidium",
-  Cs: "Cesium",
-  Fr: "Francium",
-  Be: "Beryllium",
-  Mg: "Magnesium",
-  Ca: "Calcium",
-  Sr: "Strontium",
-  Ba: "Barium",
-  Ra: "Radium",
-  Sc: "Scandium",
-  Y: "Yttrium",
-  Ti: "Titanium",
-  Zr: "Zirconium",
-  Hf: "Hafnium",
-  Rf: "Rutherfordium",
-  V: "Vanadium",
-  Nb: "Niobium",
-  Ta: "Tantalum",
-  Db: "Dubnium",
-  Cr: "Chromium",
-  Mo: "Molybdenum",
-  W: "Tungsten",
-  Sg: "Seaborgium",
-  Mn: "Manganese",
-  Tc: "Technetium",
-  Re: "Rhenium",
-  Bh: "Bohrium",
-  Fe: "Iron",
-  Ru: "Ruthenium",
-  Os: "Osmium",
-  Hs: "Hassium",
-  Co: "Cobalt",
-  Rh: "Rhodium",
-  Ir: "Iridium",
-  Mt: "Meitnerium",
-  Ni: "Nickel",
-  Pd: "Palladium",
-  Pt: "Platinum",
-  Ds: "Darmstadtium",
-  Cu: "Copper",
-  Ag: "Silver",
-  Au: "Gold",
-  Rg: "Roentgenium",
-  Zn: "Zinc",
-  Cd: "Cadmium",
-  Hg: "Mercury",
-  Cn: "Copernicium",
-  B: "Boron",
-  Al: "Aluminium",
-  Ga: "Gallium",
-  In: "Indium",
-  Tl: "Thallium",
-  Nh: "Nihonium",
-  C: "Carbon",
-  Si: "Silicon",
-  Ge: "Germanium",
-  Sn: "Tin",
-  Pb: "Lead",
-  Fl: "Flerovium",
-  N: "Nitrogen",
-  P: "Phosphorus",
-  As: "Arsenic",
-  Sb: "Antimony",
-  Bi: "Bismuth",
-  Mc: "Moscovium",
-  O: "Oxygen",
-  S: "Sulfur",
-  Se: "Selenium",
-  Te: "Tellurium",
-  Po: "Polonium",
-  Lv: "Livermorium",
-  F: "Fluorine",
-  Cl: "Chlorine",
-  Br: "Bromine",
-  I: "Iodine",
-  At: "Astatine",
-  Ts: "Tennessine",
-  He: "Helium",
-  Ne: "Neon",
-  Ar: "Argon",
-  Kr: "Krypton",
-  Xe: "Xenon",
-  Rn: "Radon",
-  Og: "Oganesson",
-  // "La-Lu": "Lanthanoids",
-  La: "Lanthanum",
-  Ce: "Cerium",
-  Pr: "Praseodymium",
-  Nd: "Neodymium",
-  Pm: "Promethium",
-  Sm: "Samarium",
-  Eu: "Europium",
-  Gd: "Gadolinium",
-  Tb: "Terbium",
-  Dy: "Dysprosium",
-  Ho: "Holmium",
-  Er: "Erbium",
-  Tm: "Thulium",
-  Yb: "Ytterbium",
-  Lu: "Lutetium",
-  // "Ac-Lr": "Actinoids",
-  Ac: "Actinium",
-  Th: "Thorium",
-  Pa: "Protactinium",
-  U: "Uranium",
-  Np: "Neptunium",
-  Pu: "Plutonium",
-  Am: "Americium",
-  Cm: "Curium",
-  Bk: "Berkelium",
-  Cf: "Californium",
-  Es: "Einsteinium",
-  Fm: "Fermium",
-  Md: "Mendelevium",
-  No: "Nobelium",
-  Lr: "Lawrencium",
-};
 
 const ALIASES_COLLECTION: Record<string, string> = {
   Me: "Methyl",
@@ -156,108 +31,148 @@ for (const key in ALIASES_COLLECTION) {
 const isNumeric = (str: string): boolean => /^\d+$/.test(str);
 const structureGroupNamePartsRegexp = /(?=[A-Z0-9])/;
 
-export const aliasAlgorithm: RuleAlgorithm<AliasAlgorithmType> = (structure, config) => {
-  const output: RulesValidationResults[] = [];
-  for (const molecule of structure.molecules()) {
-    checkAliases(Array.from(molecule.sgroups()), molecule, config, output);
-    checkAliases(Array.from(molecule.atoms()), molecule, config, output);
-  }
-  return output;
-};
+export interface AliasRuleConfig extends RuleConfig {}
+export class AliasRule extends BaseRule<AliasRuleConfig> {
+  static docs = {
+    name: "Alias",
+    description: "Check for incorrect written symbols in the molecule",
+    url: "https://kb.epam.com/display/EPMLSTRCHC/2.+Alias",
+  };
 
-const getMoleculeItemName = (moleculeItem: Atom | SGroup): string => {
-  if (moleculeItem.type === Types.ATOM) {
-    return moleculeItem.label;
+  verify(structure: Structure): RulesValidationResults[] {
+    const output: RulesValidationResults[] = [];
+    for (const molecule of structure.molecules()) {
+      this.checkAliases(molecule.sgroups, molecule, output);
+      this.checkAliases(molecule.atoms, molecule, output);
+    }
+    return output;
   }
 
-  return moleculeItem.type === Types.SGROUP ? moleculeItem.name : "";
-};
+  getMoleculeItemName(moleculeItem: Atom | SGroup): string {
+    if (moleculeItem.type === Types.ATOM) {
+      return moleculeItem.label;
+    }
 
-const setMoleculeItemName = (moleculeItem: Atom | SGroup, name: string): void => {
-  if (moleculeItem.type === Types.ATOM) {
-    moleculeItem.label = name;
-    return;
+    return moleculeItem.type === Types.SGROUP ? moleculeItem.name : "";
   }
-  if (moleculeItem.type === Types.SGROUP) {
-    moleculeItem.name = name;
-  }
-};
 
-const getMoleculeItemIndex = (moleculeItem: Atom | SGroup, molecule: Molecule): number => {
-  if (moleculeItem.type === Types.ATOM) {
-    return molecule.getAtomIndex(moleculeItem);
+  setMoleculeItemName(moleculeItem: Atom | SGroup, name: string): void {
+    if (moleculeItem.type === Types.ATOM) {
+      moleculeItem.label = name;
+      return;
+    }
+    if (moleculeItem.type === Types.SGROUP) {
+      moleculeItem.name = name;
+    }
   }
-  return moleculeItem.type === Types.SGROUP ? molecule.getGroupIndex(moleculeItem) : -1;
-};
 
-const handleIncorrectSymbols = (
-  moleculeAliases: string[],
-  moleculeItem: Atom | SGroup,
-  molecule: Molecule,
-  config: AliasAlgorithmType,
-  output: RulesValidationResults[],
-  incorrectSymbols: string[]
-): void => {
-  const abbreviationString = `${moleculeAliases.join("|")}`;
-  const itemType = moleculeItem.type;
-  const pathIndex = getMoleculeItemIndex(moleculeItem, molecule);
-  const path = `${molecule.id}->${itemType}->${pathIndex}`;
-  const fixingScope = config.fixingScope?.find(scope => scope.errorCode === ALIAS_CODE && scope.path === path);
-  /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-  if (fixingScope) {
-    setMoleculeItemName(moleculeItem, fixingScope.data);
-    config.fixingScope?.splice(config.fixingScope?.indexOf(fixingScope), 1);
-  } else {
-    output.push({
-      isFixable: true,
-      fixMeta: {
-        requireUserInput: true,
-        type: "string",
-        initialValue: "",
-        prompt: `Inspecto has detected incorrect written symbols [${incorrectSymbols.join(", ")}] in ${abbreviationString}, would you like to change it?`,
-      },
-      errorCode: ALIAS_CODE,
-      message: `Inspecto has detected incorrect written symbols [${incorrectSymbols.join(", ")}] in ${abbreviationString}`,
-      path,
-    });
+  getMoleculeItemIndex(moleculeItem: Atom | SGroup, molecule: Molecule): number {
+    if (moleculeItem.type === Types.ATOM) {
+      return molecule.getAtomIndex(moleculeItem);
+    }
+    return moleculeItem.type === Types.SGROUP ? molecule.getGroupIndex(moleculeItem) : -1;
   }
-};
 
-const getIncorrectSymbols = (moleculeItem: Atom | SGroup, resultOfMolecule: string[]): string[] => {
-  const incorrectSymbols: string[] = [];
-  let nameWithReplacedFunctionalGroups: string = getMoleculeItemName(moleculeItem);
-  for (const alias in ALIASES_COLLECTION) {
-    nameWithReplacedFunctionalGroups = nameWithReplacedFunctionalGroups.replace(alias, ALIASES_COLLECTION[alias]);
-  }
-  const symbols = nameWithReplacedFunctionalGroups.split(structureGroupNamePartsRegexp);
-  symbols.forEach(symbol => {
-    resultOfMolecule.push(
-      isNumeric(symbol)
-        ? `number ${symbol}`
-        : FUNCTIONAL_GROUP_NAMES.has(symbol)
-          ? symbol
-          : PERIODIC_TABLE[symbol] ?? "unknown"
-    );
+  handleIncorrectSymbols(
+    moleculeAliases: string[],
+    moleculeItem: Atom | SGroup,
+    molecule: Molecule,
+    output: RulesValidationResults[],
+    incorrectSymbols: string[]
+  ): void {
+    const abbreviationString = `${moleculeAliases.join("|")}`;
+    const itemType = moleculeItem.type;
+    const pathIndex = this.getMoleculeItemIndex(moleculeItem, molecule);
+    const path = `${molecule.id}->${itemType}->${pathIndex}`;
+    const fixingScope = this.config.fixingScope?.find(scope => scope.errorCode === ALIAS_CODE && scope.path === path);
     /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-    if (!isNumeric(symbol) && !PERIODIC_TABLE[symbol] && !FUNCTIONAL_GROUP_NAMES.has(symbol)) {
-      incorrectSymbols.push(symbol);
-    }
-  });
-  return incorrectSymbols;
-};
-
-const checkAliases = (
-  moleculeItems: Array<Atom | SGroup>,
-  molecule: Molecule,
-  config: AliasAlgorithmType,
-  output: RulesValidationResults[]
-): void => {
-  for (const moleculeItem of moleculeItems) {
-    const moleculeAliases: string[] = [];
-    const incorrectSymbols: string[] = getIncorrectSymbols(moleculeItem, moleculeAliases);
-
-    if (incorrectSymbols.length) {
-      handleIncorrectSymbols(moleculeAliases, moleculeItem, molecule, config, output, incorrectSymbols);
+    if (fixingScope) {
+      this.setMoleculeItemName(moleculeItem, fixingScope.data);
+      this.config.fixingScope?.splice(this.config.fixingScope?.indexOf(fixingScope), 1);
+    } else {
+      output.push({
+        isFixable: true,
+        fixMeta: {
+          requireUserInput: true,
+          type: "string",
+          initialValue: "",
+          prompt: `Inspecto has detected incorrect written symbols [${incorrectSymbols.join(", ")}] in ${abbreviationString}, would you like to change it?`,
+        },
+        errorCode: ALIAS_CODE,
+        url: AliasRule.docs.url,
+        message: `Inspecto has detected incorrect written symbols [${incorrectSymbols.join(", ")}] in ${abbreviationString}`,
+        path,
+      });
     }
   }
-};
+
+  getIncorrectSymbols(moleculeItem: Atom | SGroup, resultOfMolecule: string[]): string[] {
+    const incorrectSymbols: string[] = [];
+    const originalName = this.getMoleculeItemName(moleculeItem);
+    let nameWithReplacedFunctionalGroups: string = originalName;
+    for (const alias in ALIASES_COLLECTION) {
+      nameWithReplacedFunctionalGroups = nameWithReplacedFunctionalGroups.replace(alias, ALIASES_COLLECTION[alias]);
+    }
+    const symbols = nameWithReplacedFunctionalGroups.split(structureGroupNamePartsRegexp);
+    if (moleculeItem.type === Types.ATOM) {
+      symbols.forEach(symbol => {
+        resultOfMolecule.push(
+          isNumeric(symbol)
+            ? `number ${symbol}`
+            : FUNCTIONAL_GROUP_NAMES.has(symbol)
+              ? symbol
+              : PERIODIC_TABLE[symbol] ?? "unknown"
+        );
+        if (!isNumeric(symbol) && !PERIODIC_TABLE[symbol] && !FUNCTIONAL_GROUP_NAMES.has(symbol)) {
+          incorrectSymbols.push(symbol);
+        }
+      });
+    } else {
+      const chemicalInfoMatch = FUNCTIONAL_GROUPS.concat(SOLVENTS).find(info =>
+        info.isCaseSensitive ? info.name === originalName : info.name.toLowerCase() === originalName.toLowerCase()
+      );
+
+      if (chemicalInfoMatch) {
+        resultOfMolecule.push(chemicalInfoMatch.name);
+        return incorrectSymbols;
+      }
+      symbols.forEach(symbol => {
+        if (isNumeric(symbol)) {
+          resultOfMolecule.push(`number ${symbol}`);
+          return;
+        }
+        let matched = false;
+        const formattedSymbol = symbol.toLowerCase();
+        const chemicalInfo = [...FUNCTIONAL_GROUPS, ...SOLVENTS].find(inf =>
+          inf.isCaseSensitive ? inf.name === symbol : inf.name.toLowerCase() === formattedSymbol
+        );
+        if (chemicalInfo) {
+          resultOfMolecule.push(chemicalInfo.name);
+          matched = true;
+        }
+        if (!matched) {
+          if (PERIODIC_TABLE[symbol]) {
+            resultOfMolecule.push(PERIODIC_TABLE[symbol]);
+          } else if (ALIASES_COLLECTION[symbol]) {
+            resultOfMolecule.push(ALIASES_COLLECTION[symbol]);
+          } else {
+            resultOfMolecule.push("unknown");
+            incorrectSymbols.push(symbol);
+          }
+        }
+      });
+    }
+    return incorrectSymbols;
+  }
+
+  checkAliases(moleculeItems: Array<Atom | SGroup>, molecule: Molecule, output: RulesValidationResults[]): void {
+    for (const moleculeItem of moleculeItems) {
+      const moleculeAliases: string[] = [];
+      const incorrectSymbols: string[] = this.getIncorrectSymbols(moleculeItem, moleculeAliases);
+
+      if (incorrectSymbols.length) {
+        this.handleIncorrectSymbols(moleculeAliases, moleculeItem, molecule, output, incorrectSymbols);
+      }
+    }
+  }
+}

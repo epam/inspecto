@@ -22,11 +22,15 @@ export class InspectoProcessor implements IInspectoProcessor {
     private readonly _dataModelProcessor: IDataModelProcessor
   ) {}
 
-  public async convertFileContentToStructure(fileContent: string | Buffer): Promise<Structure> {
+  public async convertFileContentToStructure(fileContent: string): Promise<Structure> {
     try {
-      const ketMolecule = await this._converterProvider.convertToKetFormat(fileContent);
-
-      const structureDataModel: Structure = this._dataModelProcessor.createDataModel(ketMolecule);
+      let ketFile;
+      if (this.isKetFile(fileContent)) {
+        ketFile = fileContent;
+      } else {
+        ketFile = await this._converterProvider.convertToKetFormat(fileContent);
+      }
+      const structureDataModel: Structure = this._dataModelProcessor.createDataModel(ketFile);
 
       return structureDataModel;
     } catch (error) {
@@ -48,7 +52,7 @@ export class InspectoProcessor implements IInspectoProcessor {
         throw new Error(ERROR_MESSAGES[ERRORS.RULES_ARE_REQUIRED_PROPERTY]);
       }
 
-      if (typeof structure === "string" || Buffer.isBuffer(structure)) {
+      if (typeof structure === "string") {
         structure = await this.convertFileContentToStructure(structure);
       }
 
@@ -75,5 +79,14 @@ export class InspectoProcessor implements IInspectoProcessor {
 
   public structureToKet(structure: Structure): string {
     return this._dataModelProcessor.dataModelToKet(structure);
+  }
+
+  private isKetFile(value: string): boolean {
+    try {
+      const file = JSON.parse(value);
+      return "root" in file;
+    } catch {
+      return false;
+    }
   }
 }

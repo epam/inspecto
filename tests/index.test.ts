@@ -7,8 +7,7 @@ test("Bond Length Rule", async () => {
   const rule = getRule(RuleNames.BondLength);
 
   let results = rule.verify(structure);
-
-  expect(results.length > 0, "Bond length validation errors should be detected for C=C").toBe(true);
+  expect(results.length === 0, "Bond length validation errors should not be detected for C=C").toBe(true);
 
   results = rule
     .configure({

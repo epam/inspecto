@@ -1,22 +1,27 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
+import type { QueryProperties } from "../models/Atom";
 
-export enum RawKetType {
-  MOLECULE = "molecule",
-  MONOMER = "monomer",
-  MONOMER_TEMPLATE = "monomerTemplate",
-}
+import type { Types } from "@inspecto/models/types";
 
 export type RawKetAtom = {
   label: string;
   location: [number, number, number];
   charge?: number;
   stereoLabel?: string;
+  isotope?: number;
+  queryProperties?: QueryProperties;
+  cip?: string | undefined;
+  explicitValence?: number | undefined;
+  mapping?: number | undefined;
+  implicitHCount?: number | undefined;
+  radical?: number | undefined;
 };
 
 export type RawKetBonds = {
   type: number;
   atoms: [number, number];
   stereo?: number;
+  cip?: string | undefined;
 };
 
 export type AttachmentPoint = {
@@ -33,14 +38,14 @@ export type RawKetSGroups = {
 };
 
 export type RawKetMolecule = {
-  type: RawKetType.MOLECULE;
+  type: Types.MOLECULE;
   atoms: RawKetAtom[];
   bonds: RawKetBonds[];
   sgroups: RawKetSGroups[];
 };
 
 export type RawKetMonomer = {
-  type: RawKetType.MONOMER;
+  type: Types.MONOMER;
   id: string;
   position: Record<"x" | "y", number>;
   alias: string;
@@ -48,7 +53,7 @@ export type RawKetMonomer = {
 };
 
 export type RawKetMonomerTemplate = {
-  type: RawKetType.MONOMER_TEMPLATE;
+  type: Types.MONOMER_TEMPLATE;
   atoms: RawKetAtom[];
   bonds: RawKetBonds[];
   id: string;

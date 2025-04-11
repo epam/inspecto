@@ -1,8 +1,8 @@
-import { RawKetType } from "@infrastructure";
 import { KetcherNode } from "./KetcherNode";
 import { type Atom } from "./Atom";
 import { type Bond } from "./Bond";
 import { Graph } from "./Graph";
+import { Types } from "./types";
 
 export class MonomerTemplate extends KetcherNode {
   private readonly _graphView: Graph<Atom, Bond>;
@@ -11,11 +11,11 @@ export class MonomerTemplate extends KetcherNode {
     nodeId: string,
     private readonly _monomerTemplateId: string,
     private readonly _atoms: Atom[],
-    private readonly _bonds: Bond[],
+    private readonly _bonds: Bond[]
   ) {
-    super(nodeId, RawKetType.MONOMER_TEMPLATE);
+    super(nodeId, Types.MONOMER_TEMPLATE);
 
-    this._graphView = new Graph((atom) => atom.toString());
+    this._graphView = new Graph(atom => atom.toString());
 
     for (const atom of _atoms) {
       this._graphView.addVertex(atom);

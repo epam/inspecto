@@ -99,7 +99,6 @@ describe("Bond angle rule", async () => {
 
   it("bond_angle:E5T", async ({ expect }) => {
     const results = verifyKet(E5T);
-    console.log(results);
     expect(results.length, "Inspecto has detected incorrect written symbols").toBe(0);
   });
 

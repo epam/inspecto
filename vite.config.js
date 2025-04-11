@@ -12,6 +12,7 @@ export default defineConfig({
       "@utils": resolve(__dirname, "utils"),
       "@rules": resolve(__dirname, "rules"),
       "@inspecto": resolve(__dirname, "inspecto"),
+      '@ui': resolve(__dirname, 'ui'),
     },
   },
   build: {

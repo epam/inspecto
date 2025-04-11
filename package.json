@@ -25,10 +25,12 @@
   },
   "scripts": {
     "build": "npm run build:bundle",
+    "update-ketcher": "node ./lib/update-ketcher.js",
     "build:bundle": "vite build",
     "build:watch": "vite build --watch",
     "lint": "eslint index.ts '{inspecto,rules,tests,types,utils}/**/*.ts'",
     "prepare": "husky && husky install",
+    "postinstall": "npm run update-ketcher",
     "demo": "vite --port 8000",
     "test": "vitest",
     "start": "vite",
@@ -46,9 +48,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/dat.gui": "^0.7.13",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.16",
+    "@types/node": "^20.17.19",
+    "@types/reflect-metadata": "^0.0.5",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "dat.gui": "^0.7.9",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
@@ -58,22 +63,25 @@
     "husky": "^9.0.10",
     "inversify": "^6.0.2",
     "jest": "^29.7.0",
+    "ketcher-core": "2.26.0",
     "lint-staged": "^15.2.1",
     "prettier": "3.2.5",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.2",
-    "@types/dat.gui": "^0.7.13",
-    "dat.gui": "^0.7.9",
-    "ketcher-core": "^2.20.0"
+    "vite": "^5.3.4",
+    "vitest": "^2.0.4"
   },
   "dependencies": {
-    "indigo-ketcher": "^1.16.0",
-    "vite": "^5.0.12",
-    "vitest": "^1.6.0",
-    "reflect-metadata": "^0.2.1"
+    "indigo-ketcher": "1.25.0",
+    "neotraverse": "^0.6.9",
+    "reflect-metadata": "^0.2.1",
+    "unzipper": "^0.12.3"
   },
   "lint-staged": {
     "*.ts": "eslint --fix",
     "*.{ts,md}": "prettier --write"
+  },
+  "directories": {
+    "test": "tests"
   }
 }
