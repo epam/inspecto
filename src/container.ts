@@ -4,12 +4,16 @@ import { Container } from "inversify";
 import {
   TOKENS,
   type IInspectoProcessor,
-  type IFileProvider,
   type IRulesProcessor,
+  type IConverterProvider,
+  type IDataModelProcessor,
 } from "@infrastructure";
-import { InspectoProcessor } from "@processors";
-import { FileProvider } from "@providers";
-import { RulesProcessor } from "./processors/RulesProcessor";
+import {
+  DataModelProcessor,
+  InspectoProcessor,
+  RulesProcessor,
+} from "@processors";
+import { ConverterProvider } from "@providers";
 
 export const createContainer = (): Container => {
   const container = new Container({ defaultScope: "Singleton" });
@@ -19,9 +23,14 @@ export const createContainer = (): Container => {
     .bind<IInspectoProcessor>(TOKENS.INSPECTO_PROCESSOR)
     .to(InspectoProcessor);
   container.bind<IRulesProcessor>(TOKENS.RULES_PROCESSOR).to(RulesProcessor);
+  container
+    .bind<IDataModelProcessor>(TOKENS.DATA_MODEL_PROCESSOR)
+    .to(DataModelProcessor);
 
   // providers
-  container.bind<IFileProvider>(TOKENS.FILE_PROVIDER).to(FileProvider);
+  container
+    .bind<IConverterProvider>(TOKENS.CONVERTER_PROVIDER)
+    .to(ConverterProvider);
 
   return container;
 };

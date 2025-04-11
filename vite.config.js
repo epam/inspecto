@@ -18,6 +18,7 @@ export default defineConfig({
       output: {
         dir: "build",
       },
+      external: ['indigo-ketcher']
     },
   },
 });

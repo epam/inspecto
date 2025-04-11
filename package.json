@@ -2,7 +2,7 @@
   "name": "inspecto",
   "version": "1.0.0",
   "description": "Molecules checker",
-  "main": "build/inspecto.umd.js",
+  "main": "build/inspecto.umd.cjs",
   "source": "index.ts",
   "type": "module",
   "module": "build/inspecto.js",
