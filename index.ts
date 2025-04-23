@@ -8,5 +8,3 @@ const Inspecto = container[TOKENS.INSPECTO_PROCESSOR] as IInspectoProcessor;
 export { Inspecto };
 
 export type { IInspectoProcessor };
-
-export { Structure, BOND_TYPES } from "@models";
