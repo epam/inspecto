@@ -4,7 +4,7 @@
   <strong>A molecular validation tool to ensure chemical structures satisfy chemical rules</strong>
 </p>
 
-[![License: Apache](https://img.shields.io/badge/License-Apache-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache](https://img.shields.io/badge/License-Apache-yellow.svg)](./LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-4.0-blue)](https://www.typescriptlang.org/)
 
 ## 📋 Table of Contents
@@ -76,6 +76,8 @@ See the corresponding Knowledge Base page for detailed API documentation.
 
 ## 💻 Development
 
+For instructions on how to add new validation rules, see the [Creating a New Rule](./creating-new-rule.md) guide.
+
 ### Technology Stack
 
 #### Dependencies
@@ -112,4 +114,4 @@ The modules "inspecto" and "rules" are built using IoC design principles to prov
 
 ## 📄 License
 
-Apache
+[Apache](./LICENSE)
