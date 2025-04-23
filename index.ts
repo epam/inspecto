@@ -1,9 +1,9 @@
-import { createContainer } from "./inspecto/container";
+import { createDependencies } from "./inspecto/container";
 import { TOKENS, type IInspectoProcessor } from "@infrastructure";
 
-const container = createContainer();
+const container = createDependencies();
 
-const Inspecto = container.get<IInspectoProcessor>(TOKENS.INSPECTO_PROCESSOR);
+const Inspecto = container[TOKENS.INSPECTO_PROCESSOR] as IInspectoProcessor;
 
 export { Inspecto };
 

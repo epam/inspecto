@@ -9,7 +9,6 @@ import {
   type RawKetMonomerTemplate,
   type RawKetSGroups,
 } from "@infrastructure";
-import { injectable } from "inversify";
 import { Types } from "@inspecto/models/types";
 import {
   type Atom,
@@ -23,7 +22,7 @@ import {
   SGroup,
 } from "@models";
 import { rawKetAtomToAtom, atomToRawKetAtom } from "@utils/ketKonverter";
-@injectable()
+
 export class DataModelProcessor implements IDataModelProcessor {
   public createDataModel(structure: string): Structure {
     try {

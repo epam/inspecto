@@ -1,14 +1,14 @@
-import { injectable } from "inversify";
-import { container } from "@rules/inversify.config";
-
-import { type RuleAlgorithm, type IRulesManager, RULES_TOKENS } from "@rules/infrastructure";
+import { type RuleAlgorithm, type IRulesManager } from "@rules/infrastructure";
 import { Rule } from "@rules/models";
 import { type RulesValidationResults } from "@inspecto/infrastructure";
 import { type Structure } from "@inspecto/models";
 import { BaseRule, type RuleConfig } from "@rules/algorithms/base";
 
-@injectable()
 export class RulesManagerProcessor implements IRulesManager {
+  private readonly rules: Array<Rule<any>> = [];
+  private readonly rulesByName = new Map<string, Rule<any>>();
+  private readonly rulesByTag = new Map<string, Array<Rule<any>>>();
+
   public applyRule(rule: Rule<any>, structure: Structure): RulesValidationResults[] {
     const Algo = rule._algorithm;
     if (Algo.prototype instanceof BaseRule) {
@@ -28,7 +28,7 @@ export class RulesManagerProcessor implements IRulesManager {
   }
 
   public getAllRules(): Array<Rule<any>> {
-    return container.getAll(RULES_TOKENS.RULE);
+    return [...this.rules];
   }
 
   public createRule<TConfig extends RuleConfig>(
@@ -43,21 +43,20 @@ export class RulesManagerProcessor implements IRulesManager {
       throw new Error("Name should be unique");
     }
     const rule = new Rule(name, algorithm, config, tags, description);
-    container.bind(RULES_TOKENS.RULE).toConstantValue(rule).whenTargetNamed(rule.name);
+    this.rules.push(rule);
+    this.rulesByName.set(rule.name, rule);
     for (const tag of rule.tags) {
-      container.bind(RULES_TOKENS.RULE).toConstantValue(rule).whenTargetNamed(tag);
+      if (!this.rulesByTag.has(tag)) {
+        this.rulesByTag.set(tag, []);
+      }
+      this.rulesByTag.get(tag)?.push(rule);
     }
 
     return rule;
   }
 
   public getRuleByName<TConfig extends object>(ruleName: string): Rule<TConfig> | null {
-    try {
-      const rule = container.getNamed<Rule<TConfig>>(RULES_TOKENS.RULE, ruleName);
-      return rule;
-    } catch (error) {
-      return null;
-    }
+    return (this.rulesByName.get(ruleName) as Rule<TConfig>) ?? null;
   }
 
   public getRulesByTags(tags: string[]): Array<Rule<any>> {
@@ -65,15 +64,13 @@ export class RulesManagerProcessor implements IRulesManager {
     const namesSet = new Set<string>();
 
     for (const tag of tags) {
-      try {
-        const rules = container.getAllNamed<Rule<any>>(RULES_TOKENS.RULE, tag);
-        for (const rule of rules) {
-          if (!namesSet.has(rule.name)) {
-            output.push(rule);
-            namesSet.add(rule.name);
-          }
+      const rulesForTag = this.rulesByTag.get(tag) ?? [];
+      for (const rule of rulesForTag) {
+        if (!namesSet.has(rule.name)) {
+          output.push(rule);
+          namesSet.add(rule.name);
         }
-      } catch (error) {}
+      }
     }
 
     return output;

@@ -1,5 +1,5 @@
-import { container } from "@rules/inversify.config";
-import { type IRulesManager, RULES_TOKENS } from "@rules/infrastructure";
+import { type IRulesManager } from "@rules/infrastructure";
+import { RulesManagerProcessor } from "@rules/processors";
 import {
   type BondAngleRuleConfig,
   type BondLengthRuleConfig,
@@ -64,7 +64,7 @@ import {
 import { Rules } from "@infrastructure";
 export { Rule } from "./models/Rule";
 
-const RulesManager = container.get<IRulesManager>(RULES_TOKENS.RULES_MANAGER);
+const RulesManager: IRulesManager = new RulesManagerProcessor();
 
 RulesManager.createRule<ValenceRuleConfig>(Rules.Valence, valenceAlgorithm, {}, []);
 
