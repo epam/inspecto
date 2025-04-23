@@ -34,6 +34,7 @@
     "postinstall": "npm run update-ketcher",
     "demo": "vite --port 8000",
     "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "start": "vite",
     "dev": "vite"
   },
@@ -52,6 +53,7 @@
     "@types/dat.gui": "^0.7.13",
     "@types/node": "^20.17.19",
     "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@vitest/coverage-v8": "2.1.9",
     "dat.gui": "^0.7.9",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",

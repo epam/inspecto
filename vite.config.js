@@ -23,6 +23,13 @@ export default defineConfig({
   base: "",
   publicDir: isLibBuild ? false : "public",
   plugins: [isLibBuild ? dts() : undefined],
+  test: {
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      reportsDirectory: './coverage'
+    }
+  },
   build: isLibBuild
     ? {
         lib: {
