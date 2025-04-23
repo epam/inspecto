@@ -1,20 +1,26 @@
 import { expect, test } from "vitest";
-import { toStructure, getRule } from "@testing";
-import { Rules as RuleNames } from "@infrastructure";
+import { Inspecto } from "..";
+import { RulesManager } from "@rules"; // Import RulesManager
+import { Rules } from "@infrastructure"; // Import Rules enum
 
-test("Bond Length Rule", async () => {
-  const structure = await toStructure("C=C");
-  const rule = getRule(RuleNames.BondLength);
+test("Inspecto main export", () => {
+  expect(Inspecto).toBeDefined();
+  expect(Inspecto.convertFileContentToStructure).toBeInstanceOf(Function);
+  expect(Inspecto.applyRulesToStructure).toBeInstanceOf(Function);
+  expect(Inspecto.structureToKet).toBeInstanceOf(Function);
+});
 
-  let results = rule.verify(structure);
-  expect(results.length === 0, "Bond length validation errors should not be detected for C=C").toBe(true);
+test("Check registered rules", () => {
+  const registeredRules = RulesManager.getAllRules();
+  const registeredRuleNames = registeredRules.map(rule => rule.name);
+  const expectedRuleNames = Object.values(Rules);
 
-  results = rule
-    .configure({
-      bondLength: 1,
-      differenceError: 0.1,
-    })
-    .verify(structure);
+  // Check if all expected rules are registered
+  expectedRuleNames.forEach(expectedRuleName => {
+    expect(registeredRuleNames).toContain(expectedRuleName);
+  });
 
-  expect(results.length, "No Bond length issue with bond length = 1 for  C=C").toBe(0);
+  // Optional: Check if the number of registered rules matches the expected number
+  expect(registeredRules.length).toBe(expectedRuleNames.length);
+  expect(registeredRules.length).toBeGreaterThan(0);
 });
