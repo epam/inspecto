@@ -1,10 +1,7 @@
-import { inject, injectable } from "inversify";
-
 import {
-  TOKENS,
   type IInspectoProcessor,
-  IConverterProvider,
-  IDataModelProcessor,
+  type IConverterProvider,
+  type IDataModelProcessor,
   type InspectoResults,
   ERROR_MESSAGES,
   ERRORS,
@@ -13,14 +10,13 @@ import { type Structure } from "../models";
 import { type Rule } from "@rules/models";
 import { RulesManager } from "@rules";
 
-@injectable()
 export class InspectoProcessor implements IInspectoProcessor {
   constructor(
-    @inject(TOKENS.CONVERTER_PROVIDER)
     private readonly _converterProvider: IConverterProvider,
-    @inject(TOKENS.DATA_MODEL_PROCESSOR)
     private readonly _dataModelProcessor: IDataModelProcessor
-  ) {}
+  ) {
+    // Manual initialization logic can be added here if needed.
+  }
 
   public async convertFileContentToStructure(fileContent: string): Promise<Structure> {
     try {
