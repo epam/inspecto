@@ -239,10 +239,8 @@ export const findShortestPath = (graph: Graph, start: Atom, end: Atom): Atom[] |
   queue.push({ atom: start, path: [start] });
 
   while (queue.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { atom, path } = queue.shift()!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const neighbors = graph.get(atom)!;
+    const { atom, path } = queue.shift() as { atom: Atom; path: Atom[]; };
+    const neighbors = graph.get(atom) ?? [];
     for (const neighbor of neighbors) {
       if (!visited.has(neighbor)) {
         visited.add(neighbor);

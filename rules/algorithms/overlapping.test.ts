@@ -46,9 +46,7 @@ function createSampleGraph(): Map<Atom, Set<Atom>> {
   const atomA = createAtomWithLocation("C", 0, 0, 0);
   const atomB = createAtomWithLocation("C", 1, 0, 0);
   const atomC = createAtomWithLocation("C", 2, 0, 0);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const bondAB = new Bond(BOND_TYPES.SINGLE, [atomA, atomB], [0, 1]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const bondBC = new Bond(BOND_TYPES.SINGLE, [atomB, atomC], [1, 2]);
   const graph = new Map<Atom, Set<Atom>>();
   graph.set(atomA, new Set([atomB]));
