@@ -11,14 +11,14 @@ export interface RuleDocs {
   url: string;
 }
 
-export class BaseRule<T extends RuleConfig> {
+export abstract class BaseRule<T extends RuleConfig> {
   declare static docs: RuleDocs;
   declare config: T;
   constructor(config: T) {
     this.config = config;
   }
-  // eslint-disable-next-line @typescript-eslint/lines-between-class-members
-  verify(structure: Structure): RulesValidationResults[] {
-    throw new Error("Method not implemented.");
-  }
+
+  abstract verify(structure: Structure): RulesValidationResults[];
 }
+
+export type ConcreteRuleClass<T extends RuleConfig> = new (config: T) => BaseRule<T>;

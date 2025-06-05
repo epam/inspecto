@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { QueryProperties } from "../models/Atom";
 
 import type { Types } from "@inspecto/models/types";
 
-export type RawKetAtom = {
+export interface RawKetAtom {
   label: string;
   location: [number, number, number];
   charge?: number;
@@ -15,59 +14,59 @@ export type RawKetAtom = {
   mapping?: number | undefined;
   implicitHCount?: number | undefined;
   radical?: number | undefined;
-};
+}
 
-export type RawKetBonds = {
+export interface RawKetBonds {
   type: number;
   atoms: [number, number];
   stereo?: number;
   cip?: string | undefined;
-};
+}
 
-export type AttachmentPoint = {
+export interface AttachmentPoint {
   attachmentAtom: number;
   attachmentId: string;
-};
+}
 
-export type RawKetSGroups = {
+export interface RawKetSGroups {
   type: string;
   atoms: number[];
   name: string;
   id: number;
   attachmentPoints: AttachmentPoint[];
-};
+}
 
-export type RawKetMolecule = {
+export interface RawKetMolecule {
   type: Types.MOLECULE;
   atoms: RawKetAtom[];
   bonds: RawKetBonds[];
   sgroups: RawKetSGroups[];
-};
+}
 
-export type RawKetMonomer = {
+export interface RawKetMonomer {
   type: Types.MONOMER;
   id: string;
   position: Record<"x" | "y", number>;
   alias: string;
   templateId: string;
-};
+}
 
-export type RawKetMonomerTemplate = {
+export interface RawKetMonomerTemplate {
   type: Types.MONOMER_TEMPLATE;
   atoms: RawKetAtom[];
   bonds: RawKetBonds[];
   id: string;
   fullName: string;
   alias: string;
-};
+}
 
-type Root = {
+interface Root {
   nodes: Array<Record<"$ref", string>>;
-};
+}
 
 export type RawKetChems = RawKetMolecule | RawKetMonomer;
 
-export type RawKetData = {
+export interface RawKetData {
   root: Root;
   [key: string]: RawKetChems | Root;
-};
+}

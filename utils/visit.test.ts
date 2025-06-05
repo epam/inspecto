@@ -109,12 +109,12 @@ describe("visit function", () => {
     };
 
     const MoleculaVisitor = {
-      before: (node: any, ctx: TraverseContext) => {
+      before: (node: any) => {
         if ("children" in node) {
           node.children.push({ type: "ATOM", value: "New Child" });
         }
       },
-      after: (node: any, ctx: TraverseContext) => {
+      after: (node: any) => {
         if ("children" in node) {
           const newChild = node.children.find((child: any) => child.value === "New Child");
           expect(newChild).toBeDefined();
@@ -170,7 +170,7 @@ describe("visit function", () => {
         ["children", "1", "children", "0"],
         ["children", "1"],
         [],
-      ])
+      ]),
     );
   });
 });

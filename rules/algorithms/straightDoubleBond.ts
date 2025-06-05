@@ -109,12 +109,12 @@ export class StraightDoubleBondRule extends BaseRule<StraightDoubleBondRuleConfi
   private compareSubstituentLabels(molecule: Molecule, substituents: Atom[]): boolean {
     if (substituents.length < BOND_COUNT_TWO) return false;
 
-    const getAllLabels = (substituents: Atom[]): string[] => {
-      return substituents.flatMap(substituent =>
+    const getAllLabels = (inputSubstituents: Atom[]): string[] => {
+      return inputSubstituents.flatMap(substituent =>
         molecule
           .getAtomBonds(substituent)
           .map(bond => bond.cip)
-          .filter((cip): cip is string => cip !== null)
+          .filter((cip): cip is string => cip !== null),
       );
     };
 

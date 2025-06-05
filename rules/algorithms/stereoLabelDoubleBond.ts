@@ -39,6 +39,8 @@ function calculateValence(atom: Atom, molecule: Molecule): number {
       case BOND_TYPES.TRIPLE:
         totalValence += 3;
         break;
+      default:
+        console.error(`[Rule] Stereo Label Double Bond: We didn't expect this bond type: ${bond.bondType}`);
     }
   });
   return totalValence;
@@ -68,7 +70,7 @@ export function validateAndAdjustValence(atom: Atom, molecule: Molecule): number
   return additionalHydrogens;
 }
 
-export function doubleBondAtoms(atomA: Atom, atomB: Atom, molecule: Molecule, bond: Bond): boolean {
+export function doubleBondAtoms(atomA: Atom, atomB: Atom, molecule: Molecule): boolean {
   const graph = createGraph(molecule);
   const cycles = findAllCyclesInGraph(graph);
   const bondsAtomA = molecule.getAtomBonds(atomA);
@@ -81,7 +83,7 @@ export function doubleBondAtoms(atomA: Atom, atomB: Atom, molecule: Molecule, bo
     return false;
   }
   const doubleBond = doubleBonds.find(
-    bond => (bond.from === atomA && bond.to === atomB) || (bond.from === atomB && bond.to === atomA)
+    bond => (bond.from === atomA && bond.to === atomB) || (bond.from === atomB && bond.to === atomA),
   );
   const extraHatomA = validateAndAdjustValence(atomA, molecule);
   const extraHatomB = validateAndAdjustValence(atomB, molecule);
@@ -148,7 +150,7 @@ export function compareTotalAtomicNumbers(
   children1: Atom[],
   grandChildren1: Atom[],
   children2: Atom[],
-  grandChildren2: Atom[]
+  grandChildren2: Atom[],
 ): number | undefined {
   function sumOfAtomicNumbers(atoms: Atom[]): number {
     return atoms.reduce((sum, atom) => {
@@ -182,7 +184,11 @@ function determineCalculatedLabel(crossProductA: number, crossProductB: number):
   }
 }
 
-function verifyStereoLabelOnNonDoubleBondAtom(molecule: Molecule, output: RulesValidationResults[], config: any): void {
+function verifyStereoLabelOnNonDoubleBondAtom(
+  molecule: Molecule,
+  output: RulesValidationResults[],
+  config: StereoLabelDoubleRuleConfig,
+): void {
   molecule.bonds.forEach(bond => {
     if (bond.bondType !== BOND_TYPES.DOUBLE && bond.cip !== undefined && ["E", "Z"].includes(bond.cip)) {
       const path = `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`;
@@ -194,11 +200,11 @@ function verifyStereoLabelOnNonDoubleBondAtom(molecule: Molecule, output: RulesV
 function checkAndCorrectDoubleBondStereoLabels(
   molecule: Molecule,
   output: RulesValidationResults[],
-  config: any
+  config: StereoLabelDoubleRuleConfig,
 ): void {
   molecule.filterBondsByType(BOND_TYPES.DOUBLE).forEach(bond => {
     const path = `${molecule.id}->bonds->${molecule.getBondIndex(bond)}`;
-    if (!doubleBondAtoms(bond.from, bond.to, molecule, bond)) {
+    if (!doubleBondAtoms(bond.from, bond.to, molecule)) {
       if (bond.cip !== undefined) {
         handleStereoLabelOnNonDoubleBondAtom(STEREO_LABEL_INVALID_BOND_ATOMS, bond, path, config, output);
       }
@@ -213,7 +219,7 @@ function validateAndCorrectStereoLabel(
   bond: Bond,
   molecule: Molecule,
   config: StereoLabelDoubleRuleConfig,
-  output: RulesValidationResults[]
+  output: RulesValidationResults[],
 ): void {
   const label: string | undefined = bond.cip;
   const calculatedLabel: string | undefined | null = analyzeAndDetermineStereoLabel(molecule, bond);
@@ -244,7 +250,7 @@ function handleStereoLabelOnNonDoubleBondAtom(
   bond: Bond,
   path: string,
   config: StereoLabelDoubleRuleConfig,
-  output: RulesValidationResults[]
+  output: RulesValidationResults[],
 ): void {
   if (shouldFix(config, errorCode, path)) {
     bond.cip = undefined;
@@ -265,7 +271,7 @@ function handleInvalidLabel(
   label: string | undefined,
   path: string,
   config: StereoLabelDoubleRuleConfig,
-  output: RulesValidationResults[]
+  output: RulesValidationResults[],
 ): void {
   if (shouldFix(config, errorCode, path)) {
     bond.cip = undefined;
@@ -286,7 +292,7 @@ function handleLabelMismatch(
   calculatedLabel: string,
   path: string,
   config: StereoLabelDoubleRuleConfig,
-  output: RulesValidationResults[]
+  output: RulesValidationResults[],
 ): void {
   const atomNames = `${bond.from.label}-${bond.to.label}`;
   if (shouldFix(config, errorCode, path)) {
@@ -308,7 +314,7 @@ function handleMissingLabel(
   calculatedLabel: string,
   path: string,
   config: StereoLabelDoubleRuleConfig,
-  output: RulesValidationResults[]
+  output: RulesValidationResults[],
 ): void {
   const atomNames = `${bond.from.label}-${bond.to.label}`;
   if (shouldFix(config, errorCode, path)) {

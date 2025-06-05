@@ -8,25 +8,22 @@ import { BaseRule, type RuleConfig } from "./base";
 export const ALIAS_CODE = "alias:2.3";
 
 const ALIASES_COLLECTION: Record<string, string> = {
-  Me: "Methyl",
-  Et: "Ethyl",
-  Pr: "Propyl",
-  nPr: "Propyl",
+  "Me": "Methyl",
+  "Et": "Ethyl",
+  "Pr": "Propyl",
+  "nPr": "Propyl",
   "n-Pr": "Propyl",
-  iPr: "Iso-propyl",
-  Bu: "Butyl",
-  nBu: "Butyl",
+  "iPr": "Iso-propyl",
+  "Bu": "Butyl",
+  "nBu": "Butyl",
   "n-Bu": "Butyl",
-  iBu: "Iso-butyl",
-  sBu: "Sec-butyl",
-  tBu: "Tert-butyl",
-  Ph: "Phenyl",
+  "iBu": "Iso-butyl",
+  "sBu": "Sec-butyl",
+  "tBu": "Tert-butyl",
+  "Ph": "Phenyl",
 };
 
-const FUNCTIONAL_GROUP_NAMES = new Set();
-for (const key in ALIASES_COLLECTION) {
-  FUNCTIONAL_GROUP_NAMES.add(ALIASES_COLLECTION[key]);
-}
+const FUNCTIONAL_GROUP_NAMES = new Set(Object.values(ALIASES_COLLECTION));
 
 const isNumeric = (str: string): boolean => /^\d+$/.test(str);
 const structureGroupNamePartsRegexp = /(?=[A-Z0-9])/;
@@ -78,7 +75,7 @@ export class AliasRule extends BaseRule<AliasRuleConfig> {
     moleculeItem: Atom | SGroup,
     molecule: Molecule,
     output: RulesValidationResults[],
-    incorrectSymbols: string[]
+    incorrectSymbols: string[],
   ): void {
     const abbreviationString = `${moleculeAliases.join("|")}`;
     const itemType = moleculeItem.type;
@@ -87,7 +84,7 @@ export class AliasRule extends BaseRule<AliasRuleConfig> {
     const fixingScope = this.config.fixingScope?.find(scope => scope.errorCode === ALIAS_CODE && scope.path === path);
     /* eslint-disable @typescript-eslint/strict-boolean-expressions */
     if (fixingScope) {
-      this.setMoleculeItemName(moleculeItem, fixingScope.data);
+      this.setMoleculeItemName(moleculeItem, fixingScope.data as string);
       this.config.fixingScope?.splice(this.config.fixingScope?.indexOf(fixingScope), 1);
     } else {
       output.push({
@@ -110,26 +107,26 @@ export class AliasRule extends BaseRule<AliasRuleConfig> {
     const incorrectSymbols: string[] = [];
     const originalName = this.getMoleculeItemName(moleculeItem);
     let nameWithReplacedFunctionalGroups: string = originalName;
-    for (const alias in ALIASES_COLLECTION) {
-      nameWithReplacedFunctionalGroups = nameWithReplacedFunctionalGroups.replace(alias, ALIASES_COLLECTION[alias]);
+    for (const [alias, value] of Object.entries(ALIASES_COLLECTION)) {
+      nameWithReplacedFunctionalGroups = nameWithReplacedFunctionalGroups.replace(alias, value);
     }
     const symbols = nameWithReplacedFunctionalGroups.split(structureGroupNamePartsRegexp);
     if (moleculeItem.type === Types.ATOM) {
       symbols.forEach(symbol => {
-        resultOfMolecule.push(
-          isNumeric(symbol)
-            ? `number ${symbol}`
-            : FUNCTIONAL_GROUP_NAMES.has(symbol)
-              ? symbol
-              : PERIODIC_TABLE[symbol] ?? "unknown"
-        );
-        if (!isNumeric(symbol) && !PERIODIC_TABLE[symbol] && !FUNCTIONAL_GROUP_NAMES.has(symbol)) {
+        if (isNumeric(symbol)) {
+          resultOfMolecule.push(`number ${symbol}`);
+        } else if (FUNCTIONAL_GROUP_NAMES.has(symbol)) {
+          resultOfMolecule.push(symbol);
+        } else if (PERIODIC_TABLE[symbol]) {
+          resultOfMolecule.push(PERIODIC_TABLE[symbol]);
+        } else {
+          resultOfMolecule.push("unknown");
           incorrectSymbols.push(symbol);
         }
       });
     } else {
       const chemicalInfoMatch = FUNCTIONAL_GROUPS.concat(SOLVENTS).find(info =>
-        info.isCaseSensitive ? info.name === originalName : info.name.toLowerCase() === originalName.toLowerCase()
+        info.isCaseSensitive ? info.name === originalName : info.name.toLowerCase() === originalName.toLowerCase(),
       );
 
       if (chemicalInfoMatch) {
@@ -144,7 +141,7 @@ export class AliasRule extends BaseRule<AliasRuleConfig> {
         let matched = false;
         const formattedSymbol = symbol.toLowerCase();
         const chemicalInfo = [...FUNCTIONAL_GROUPS, ...SOLVENTS].find(inf =>
-          inf.isCaseSensitive ? inf.name === symbol : inf.name.toLowerCase() === formattedSymbol
+          inf.isCaseSensitive ? inf.name === symbol : inf.name.toLowerCase() === formattedSymbol,
         );
         if (chemicalInfo) {
           resultOfMolecule.push(chemicalInfo.name);

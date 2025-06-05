@@ -2,7 +2,7 @@ import { type RuleAlgorithm, type IRulesManager } from "@rules/infrastructure";
 import { Rule } from "@rules/models";
 import { type RulesValidationResults } from "@inspecto/infrastructure";
 import { type Structure } from "@inspecto/models";
-import { BaseRule, type RuleConfig } from "@rules/algorithms/base";
+import { BaseRule, type RuleConfig, type ConcreteRuleClass } from "@rules/algorithms/base";
 
 export class RulesManagerProcessor implements IRulesManager {
   private readonly rules: Array<Rule<any>> = [];
@@ -12,19 +12,19 @@ export class RulesManagerProcessor implements IRulesManager {
   public applyRule(rule: Rule<any>, structure: Structure): RulesValidationResults[] {
     const Algo = rule._algorithm;
     if (Algo.prototype instanceof BaseRule) {
-      // @ts-expect-error non callable
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      const ruleInstance = new Algo(rule["_config"]);
+      // Type assertion since we know it's a constructor at this point
+      const RuleConstructor = Algo as ConcreteRuleClass<any>;
+      const ruleInstance = new RuleConstructor(rule.config);
       return ruleInstance.verify(structure);
     }
-    // @ts-expect-error non callable
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    return Algo(structure, rule["_config"]);
+
+    // Type assertion since we know it's a function at this point
+    const ruleFunction = Algo as RuleAlgorithm<any>;
+    return ruleFunction(structure, rule.config);
   }
 
   public updateRuleConfig<TConfig extends object>(rule: Rule<TConfig>, config: Partial<TConfig>): void {
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    rule["_config"] = { ...rule["_config"], ...config };
+    rule.config = { ...rule.config, ...config };
   }
 
   public getAllRules(): Array<Rule<any>> {
@@ -33,10 +33,10 @@ export class RulesManagerProcessor implements IRulesManager {
 
   public createRule<TConfig extends RuleConfig>(
     name: string,
-    algorithm: RuleAlgorithm<TConfig> | typeof BaseRule<TConfig>,
+    algorithm: RuleAlgorithm<TConfig> | ConcreteRuleClass<TConfig>,
     config: TConfig,
     tags?: string[],
-    description?: string
+    description?: string,
   ): Rule<TConfig> {
     const possibleRule = this.getRuleByName(name);
     if (possibleRule !== null) {

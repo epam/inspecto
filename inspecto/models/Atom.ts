@@ -40,7 +40,7 @@ export class Atom implements GenericNode {
     public _mapping?: number | undefined,
     public _implicitHCount?: number | undefined,
     public _radical?: Radical | undefined,
-    public _isPartOfSGroup?: boolean
+    public _isPartOfSGroup?: boolean,
   ) {
     this._label = _label;
     this._location = _location;
@@ -101,9 +101,23 @@ export class Atom implements GenericNode {
   }
 
   public toString(): string {
-    const charge = this.charge !== 0 ? (this.charge === 1 ? "positive" : "negative") : "neutral";
+    let chargeType: "positive" | "negative" | "neutral";
+    switch (this.charge) {
+      case 0:
+        chargeType = "neutral";
+        break;
+      case 1:
+        chargeType = "positive";
+        break;
+      case -1:
+        chargeType = "negative";
+        break;
+      default:
+        chargeType = "negative";
+        console.error(`Atom charge is wrong: ${this.charge}`);
+    }
 
-    return `{label=${this._label};location=${this._location.toString()};charge=${charge}}`;
+    return `{label=${this._label};location=${this._location.toString()};charge=${chargeType}}`;
   }
 
   public changePosition(x: number): void;

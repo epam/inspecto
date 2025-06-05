@@ -1,3 +1,4 @@
 declare module "*.ket?raw" {
-  export default string;
+  const content: string;
+  export default content;
 }

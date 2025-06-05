@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import { Molecule } from "../inspecto/models/Molecule";
 import { Atom, Bond, BOND_TYPES } from "@models";
 import { Location } from "../inspecto/models/Location";
@@ -98,7 +98,7 @@ function createMockBond(atom1: Atom, atom2: Atom): Bond {
 }
 
 describe("Graph related functions", () => {
-  it("creates a graph from a molecule", () => {
+  it("creates a graph from a molecule", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const atomC = createMockAtom("C", 2, 0, 0);
@@ -114,7 +114,7 @@ describe("Graph related functions", () => {
     expect(graph.get(atomC)?.has(atomB)).toBe(true);
   });
 
-  it("extracts a connected subgraph from a graph", () => {
+  it("extracts a connected subgraph from a graph", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const atomC = createMockAtom("C", 2, 0, 0);
@@ -132,7 +132,7 @@ describe("Graph related functions", () => {
     expect(subGraph.get(atomB)?.has(atomD)).toBe(false);
   });
 
-  it("removes cycles detected in the graph", () => {
+  it("removes cycles detected in the graph", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const atomC = createMockAtom("C", 2, 0, 0);
@@ -154,7 +154,7 @@ describe("Graph related functions", () => {
     expect(graph.get(atomC)?.size).toBe(0);
   });
 
-  it("finds the longest chain in the graph starting from a given atom", () => {
+  it("finds the longest chain in the graph starting from a given atom", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const atomC = createMockAtom("C", 2, 0, 0);
@@ -170,7 +170,7 @@ describe("Graph related functions", () => {
     expect(chain).toEqual([atomA, atomB, atomC, atomD]);
   });
 
-  it("adds an edge to the graph", () => {
+  it("adds an edge to the graph", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const graph: Graph = new Map();
@@ -180,7 +180,7 @@ describe("Graph related functions", () => {
     expect(graph.get(atomB)).toContain(atomA);
   });
 
-  it("removes an edge from the graph", () => {
+  it("removes an edge from the graph", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const graph: Graph = new Map([
@@ -193,7 +193,7 @@ describe("Graph related functions", () => {
     expect(graph.get(atomB)?.has(atomA)).toBe(false);
   });
 
-  it("merges two graphs together", () => {
+  it("merges two graphs together", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const atomC = createMockAtom("C", 2, 0, 0);
@@ -258,7 +258,7 @@ function setupGraph(): Map<Atom, Set<Atom>> {
 }
 
 describe("Molecule cycles detection", () => {
-  it("detects all cycles in the molecule graph", () => {
+  it("detects all cycles in the molecule graph", ({ expect }) => {
     const graph = setupGraph();
     const cycles = findAllCyclesInGraph(graph);
 
@@ -269,7 +269,7 @@ describe("Molecule cycles detection", () => {
     expect(hasSpecificCycle).toBe(true);
   });
 
-  it("detects all cycles in the graph", () => {
+  it("detects all cycles in the graph", ({ expect }) => {
     const atomA = createMockAtom("A", 0, 0, 0);
     const atomB = createMockAtom("B", 1, 0, 0);
     const atomC = createMockAtom("C", 2, 0, 0);

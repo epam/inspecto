@@ -34,8 +34,7 @@ export class BondLengthRule extends BaseRule<BondLengthRuleConfig> {
       removeCyclesInGraph(graph, cycles);
 
       for (const bond of molecule.bonds) {
-        /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-        if (!graph.has(bond.from) || !graph.get(bond.from)?.has(bond.to)) {
+        if (!graph.has(bond.from) || !(graph.get(bond.from)?.has(bond.to) ?? false)) {
           continue;
         }
 

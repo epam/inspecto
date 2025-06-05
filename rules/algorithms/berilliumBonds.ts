@@ -9,10 +9,9 @@ export interface BerilliumAlgorithmType {
   fixingRule?: boolean;
 }
 
-export const berilliumBondsAlgorithm: RuleAlgorithm<BerilliumAlgorithmType> = (structure, config) => {
+export const berilliumBondsAlgorithm: RuleAlgorithm<BerilliumAlgorithmType> = structure => {
   const output: RulesValidationResults[] = [];
 
-  // eslint-disable-next-line no-unreachable-loop
   for (const molecule of structure.molecules()) {
     for (const bond of molecule.bonds) {
       if (

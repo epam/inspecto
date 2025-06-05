@@ -1,6 +1,6 @@
 import { type RulesValidationResults } from "@inspecto/infrastructure";
 import { type Structure } from "@inspecto/models";
-import type { RuleConfig, BaseRule } from "@rules/algorithms/base";
+import type { ConcreteRuleClass, RuleConfig } from "@rules/algorithms/base";
 import { type Rule } from "@rules/models";
 import type { Rules as RuleNames } from "@inspecto/infrastructure/rules";
 import type { Registry } from "@rules/infrastructure";
@@ -12,10 +12,10 @@ export interface IRulesManager {
   getAllRules: () => Array<Rule<any>>;
   createRule: <TConfig extends RuleConfig>(
     name: RuleNames,
-    algorithm: RuleAlgorithm<TConfig> | typeof BaseRule<TConfig>,
+    algorithm: RuleAlgorithm<TConfig> | ConcreteRuleClass<TConfig>,
     config: TConfig,
     tags?: string[],
-    description?: string
+    description?: string,
   ) => Rule<TConfig>;
   updateRuleConfig: <TConfig extends RuleConfig>(rule: Rule<TConfig>, config: Partial<TConfig>) => void;
   getRuleByName: <T extends RuleNames>(ruleName: T) => Rule<Registry[T]> | null;

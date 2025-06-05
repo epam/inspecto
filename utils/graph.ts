@@ -135,7 +135,6 @@ export function removeEdge(graph: Graph, node1: Atom, node2: Atom): void {
 export function mergeGraphs(mainGraph: Graph, graphToAdd: Graph): void {
   graphToAdd.forEach((value, key) => {
     if (mainGraph.has(key)) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       for (const item of value) {
         mainGraph.get(key)?.add(item);
       }
