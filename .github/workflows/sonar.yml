@@ -1,18 +1,14 @@
-name: InspectoLintCheck
-
+name: Sonar Scan
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
-    branches: [main]
-
+    types: [opened, synchronize, reopened]
 jobs:
-  lint:
-    name: Lint
+  sonarqube:
+    name: SonarQube
     runs-on: ubuntu-latest
-    timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,10 +19,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-
-      - name: RUN EsLint
-        run: pnpm run lint
-
-      - name: Run TypeScript Compiler
-        if: always()
-        run: npx tsc --noEmit
+      - name: Run tests and collect coverage
+        run: pnpm run test:coverage
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

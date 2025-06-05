@@ -5,10 +5,81 @@
     "node": true
   },
   "extends": ["standard-with-typescript", "prettier"],
+  "plugins": ["no-only-tests"],
   "parserOptions": {
     "ecmaVersion": "latest"
   },
   "rules": {
-    "@typescript-eslint/no-unsafe-argument": "off"
-  }
+    "@typescript-eslint/no-unsafe-argument": "error",
+    "max-len": ["error", { "code": 180, "ignoreTemplateLiterals": true }],
+    "curly": ["error", "multi-line"],
+    "indent": "off",
+    "yoda": "error",
+    "default-case": "error",
+    "camelcase": ["warn", { "ignoreDestructuring": true, "properties": "never" }],
+    "no-trailing-spaces": "off",
+    "no-console": "off",
+    "no-undef": "off",
+    "no-sync": "error",
+    "no-var": "error",
+    "no-shadow": ["off"],
+    "no-nested-ternary": "error",
+    "no-unmodified-loop-condition": "error",
+    "no-unreachable-loop": "error",
+    "no-constant-binary-expression": "error",
+    "no-return-assign": "error",
+    "no-process-env": "error",
+    "no-bitwise": "error",
+    "no-proto": "error",
+    "no-self-compare": "error",
+    "no-await-in-loop": "error",
+    "no-loop-func": "error",
+    "no-iterator": "error",
+    "no-unused-vars": "off",
+    "no-implicit-coercion": ["error", { "allow": ["!!"] }],
+    "for-direction": "error",
+    "quotes": ["warn", "double", { "allowTemplateLiterals": true }],
+    "guard-for-in": "error",
+    "quote-props": ["warn", "consistent"],
+    "func-style": ["warn", "declaration", { "allowArrowFunctions": true }],
+    "arrow-parens": ["warn", "as-needed"],
+    "dot-notation": "warn",
+    "class-methods-use-this": ["off"], // may be it's needed?
+    "import/no-extraneous-dependencies": ["error"],
+    "import/no-import-module-exports": ["error"],
+    "import/no-duplicates": "error",
+    "@typescript-eslint/no-shadow": ["error", { "hoist": "functions" }],
+    "@typescript-eslint/no-use-before-define": "error",
+    "@typescript-eslint/ban-ts-comment": ["error", {}],
+    "@typescript-eslint/no-inferrable-types": ["error", { "ignoreParameters": true }],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": true }],
+    "@typescript-eslint/no-unused-vars": ["error", {}],
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/type-annotation-spacing": "warn",
+    "no-only-tests/no-only-tests": "error",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ForInStatement",
+        "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array."
+      },
+      {
+        "selector": "LabeledStatement",
+        "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand."
+      },
+      {
+        "selector": "WithStatement",
+        "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.config.js"],
+      "rules": {
+        "no-process-env": "off"
+      }
+    }
+  ]
 }
