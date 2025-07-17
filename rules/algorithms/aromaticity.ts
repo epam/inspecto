@@ -71,7 +71,7 @@ export class AromaticityRule extends BaseRule<AromaticityRuleConfig> {
         });
       });
 
-      atomConnections.forEach((count, atom) => {
+      atomConnections.forEach(count => {
         if (count < DOUBLE_ELECTRONS) {
           hasNonCyclicAromatic = true;
         }
@@ -131,7 +131,7 @@ export class AromaticityRule extends BaseRule<AromaticityRuleConfig> {
     cycle: Atom[],
     molecule: Molecule,
     usedBonds: Map<Bond, boolean>,
-    usedAtoms: Map<Atom, boolean>
+    usedAtoms: Map<Atom, boolean>,
   ): boolean {
     let piElectrons = 0;
     let skipNextBond = false;
@@ -139,7 +139,7 @@ export class AromaticityRule extends BaseRule<AromaticityRuleConfig> {
     if (!cycle.every(atom => valenceMap.has(atom.label))) return false;
 
     const cycleBonds = molecule.bonds.filter(
-      bond => !(usedBonds.get(bond) === true) && bond.atoms.every(atom => cycle.includes(atom))
+      bond => !(usedBonds.get(bond) === true) && bond.atoms.every(atom => cycle.includes(atom)),
     );
 
     for (let i = 0; i < cycleBonds.length; i++) {
@@ -182,8 +182,9 @@ export class AromaticityRule extends BaseRule<AromaticityRuleConfig> {
           isOddCycleWithCriticalValenceAndElectrons ||
           hasInvalidFreeElectrons ||
           hasCriticalValenceWithLowFreeElectrons
-        )
+        ) {
           return false;
+        }
 
         if (meetsHighElectronsValenceRequirements) {
           piElectrons += DOUBLE_ELECTRONS;
@@ -224,10 +225,10 @@ export class AromaticityRule extends BaseRule<AromaticityRuleConfig> {
     const valenceOptions = VALENCE_RULES[atom.label];
     const realValence = this.calculateRealValence(atom, molecule);
     const canPotentiallyHaveDoubleBondCase1 = valenceOptions.some(
-      allowedValence => allowedValence === realValence + SINGLE_ELECTRON
+      allowedValence => allowedValence === realValence + SINGLE_ELECTRON,
     );
     const canPotentiallyHaveDoubleBondCase2 = valenceOptions.some(
-      allowedValence => allowedValence === realValence + DOUBLE_ELECTRONS
+      allowedValence => allowedValence === realValence + DOUBLE_ELECTRONS,
     );
 
     if (valenceOptions.some(allowedValence => allowedValence === realValence)) {

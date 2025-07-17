@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { defineConfig } from "vite";
 import { resolve } from "node:path";
 import dts from "vite-plugin-dts";
@@ -25,10 +24,11 @@ export default defineConfig({
   plugins: [isLibBuild ? dts() : undefined],
   test: {
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
-      reportsDirectory: './coverage'
-    }
+      provider: "v8",
+      exclude: ["node_modules/", "ui/", "types/", "public/", "lib/", "tests/**/*.test.ts", "vite.config.js"],
+      reportsDirectory: './coverage',
+      reporter: ['text', 'json', 'lcov', "html", "text-summary"]
+    },
   },
   build: isLibBuild
     ? {

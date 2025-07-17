@@ -31,8 +31,8 @@ export interface OverlappingRuleConfig extends RuleConfig {
 
 export const OVERLAPPING_CODE = "overlapping:6";
 const fixedOverlaps = new Map<string, string>();
-let direction = 0;
-let allShortestPathsOverlappingAtoms: Atom[][];
+let globalDirection = 0;
+let globalAllShortestPathsOverlappingAtoms: Atom[][];
 export const overlappingAlgorithm: RuleAlgorithm<OverlappingRuleConfig> = (structure, config) => {
   const output: RulesValidationResults[] = [];
   for (const molecule of structure.molecules()) {
@@ -41,20 +41,22 @@ export const overlappingAlgorithm: RuleAlgorithm<OverlappingRuleConfig> = (struc
     if (isStructureSymmetrical(molecule)) {
       overlappingAtoms = sortOverlapsBySymmetry(molecule, overlappingAtoms);
     }
-    allShortestPathsOverlappingAtoms = getAllShortestPaths(molecule, overlappingAtoms);
+    globalAllShortestPathsOverlappingAtoms = getAllShortestPaths(molecule, overlappingAtoms);
     const graph = createGraph(molecule);
     const cycles = findAllCyclesInGraph(graph);
 
+    // expected rw access to global variables
+    // eslint-disable-next-line no-loop-func
     overlappingAtoms.forEach(overlappingPair => {
       const path = `${molecule.id}->atom${molecule.getAtomIndex(overlappingPair[0])}->atom${molecule.getAtomIndex(overlappingPair[1])}`;
       const shortestPath = findOverlapAtomsPath(graph, overlappingPair);
       if (shouldFix(config, OVERLAPPING_CODE, path) && shortestPath.length > 0) {
         if (!fixedOverlaps.has(path)) {
-          direction = 1;
-          fixOverlapping(molecule, shortestPath, cycles, config, allShortestPathsOverlappingAtoms);
+          globalDirection = 1;
+          fixOverlapping(molecule, shortestPath, cycles, config, globalAllShortestPathsOverlappingAtoms);
           fixedOverlaps.set(path, "firstFixAttempted");
         } else if (fixedOverlaps.get(path) === "firstFixAttempted") {
-          direction = 2;
+          globalDirection = 2;
           fixOverlappingAfterFirstRotation(molecule, shortestPath, cycles, config);
           fixedOverlaps.set(path, "secondFixAttempted");
         }
@@ -68,17 +70,19 @@ export const overlappingAlgorithm: RuleAlgorithm<OverlappingRuleConfig> = (struc
       }
     });
 
+    // expected rw access to global variables
+    // eslint-disable-next-line no-loop-func
     overlappingBonds.forEach(overlappingPairBonds => {
       const path = `${molecule.id}->bond${molecule.getBondIndex(overlappingPairBonds[0])}->bond${molecule.getBondIndex(overlappingPairBonds[1])}`;
-      const graph = createGraph(molecule);
-      const shortestPath = findShortestPathOverlappingBonds(molecule, graph);
+      const overlappingBondGraph = createGraph(molecule);
+      const shortestPath = findShortestPathOverlappingBonds(molecule, overlappingBondGraph);
       if (shouldFix(config, OVERLAPPING_CODE, path) && shortestPath.length > 0) {
         if (!fixedOverlaps.has(path)) {
-          direction = 1;
-          fixOverlapping(molecule, shortestPath, cycles, config, allShortestPathsOverlappingAtoms);
+          globalDirection = 1;
+          fixOverlapping(molecule, shortestPath, cycles, config, globalAllShortestPathsOverlappingAtoms);
           fixedOverlaps.set(path, "firstFixAttempted");
         } else if (fixedOverlaps.get(path) === "firstFixAttempted") {
-          direction = 2;
+          globalDirection = 2;
           fixOverlappingAfterFirstRotation(molecule, shortestPath, cycles, config);
           fixedOverlaps.set(path, "secondFixAttempted");
         }
@@ -96,8 +100,8 @@ export const overlappingAlgorithm: RuleAlgorithm<OverlappingRuleConfig> = (struc
     return output;
   } finally {
     fixedOverlaps.clear();
-    direction = 0;
-    allShortestPathsOverlappingAtoms = [];
+    globalDirection = 0;
+    globalAllShortestPathsOverlappingAtoms = [];
   }
 };
 
@@ -106,7 +110,7 @@ function fixOverlapping(
   shortestPath: Atom[],
   cycles: Atom[][],
   config: OverlappingRuleConfig,
-  allShortestPaths: Atom[][]
+  allShortestPaths: Atom[][],
 ): boolean {
   let firstBranchAtoms: Atom[];
   let secondBranchAtoms: Atom[];
@@ -132,7 +136,7 @@ function fixOverlapping(
   let { direction1, direction2 } = determineRotationDirections(
     shortestPath,
     centralAtomFirstPath,
-    centralAtomSecondPath
+    centralAtomSecondPath,
   );
   if (shortestPath.length >= 7 && shortestPath.length <= 9) {
     const firstAtomFirstBranchCycleCheck = isAtomPartOfAnyCycle(shortestPath[1], cycles);
@@ -155,7 +159,7 @@ function fixOverlappingAfterFirstRotation(
   molecule: Molecule,
   shortestPath: Atom[],
   cycles: Atom[][],
-  config: OverlappingRuleConfig
+  config: OverlappingRuleConfig,
 ): boolean {
   const centralAtomFirstPath = getPivotAtomFirstPath(shortestPath);
   const centralAtomSecondPath = getPivotAtomSecondPath(shortestPath);
@@ -163,7 +167,7 @@ function fixOverlappingAfterFirstRotation(
   let { direction1, direction2 } = determineRotationDirections(
     shortestPath,
     centralAtomFirstPath,
-    centralAtomSecondPath
+    centralAtomSecondPath,
   );
   if (shortestPath.length >= 7 && shortestPath.length <= 9) {
     const firstAtomFirstBranchCycleCheck = isAtomPartOfAnyCycle(shortestPath[1], cycles);
@@ -239,10 +243,8 @@ export const findShortestPath = (graph: Graph, start: Atom, end: Atom): Atom[] |
   queue.push({ atom: start, path: [start] });
 
   while (queue.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { atom, path } = queue.shift()!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const neighbors = graph.get(atom)!;
+    const { atom, path } = queue.shift() as { atom: Atom; path: Atom[] };
+    const neighbors = graph.get(atom) ?? [];
     for (const neighbor of neighbors) {
       if (!visited.has(neighbor)) {
         visited.add(neighbor);
@@ -261,7 +263,7 @@ export const findShortestPath = (graph: Graph, start: Atom, end: Atom): Atom[] |
 function determineRotationDirections(
   shortestPath: Atom[],
   centralAtomFirstPath: Atom,
-  centralAtomSecondPath: Atom
+  centralAtomSecondPath: Atom,
 ): RotationDirections {
   if (shortestPath.length < 3) {
     throw new Error("Not enough atoms");
@@ -270,7 +272,7 @@ function determineRotationDirections(
   let last = shortestPath[shortestPath.length - 2];
 
   if (
-    direction === 2 ||
+    globalDirection === 2 ||
     (shortestPath.length < 6 &&
       centralAtomFirstPath === shortestPath[1] &&
       centralAtomSecondPath === shortestPath[shortestPath.length - 2])
@@ -390,7 +392,7 @@ export function calculateCenterOfMass(atoms: Atom[]): Coordinates {
 
 export function calculateAtomDistancesToCenterOfMass(
   atoms: Molecule["atoms"],
-  centerOfMass: { x: number; y: number; z: number }
+  centerOfMass: { x: number; y: number; z: number },
 ): number[] {
   return atoms.map(atom => getDistanceBetweenTwoPoints(atom, centerOfMass));
 }
@@ -415,11 +417,11 @@ export function sortOverlapsBySymmetry(molecule: Molecule, overlappingAtoms: Arr
     const sortedAtomPairs = overlappingAtoms.sort((pairA, pairB) => {
       const distanceA = getDistanceBetweenTwoPoints(
         overlappingMidpoints[overlappingAtoms.indexOf(pairA)],
-        centerOfMass
+        centerOfMass,
       );
       const distanceB = getDistanceBetweenTwoPoints(
         overlappingMidpoints[overlappingAtoms.indexOf(pairB)],
-        centerOfMass
+        centerOfMass,
       );
 
       return distanceA - distanceB;
@@ -554,7 +556,7 @@ function manageExclusionAndConnectionHandling(
   molecule: Molecule,
   excludeIndex: number,
   lastHandledIndex: number,
-  specialIndex: number
+  specialIndex: number,
 ): Atom[] {
   const excludedAtoms = new Set<Atom>();
   const result: Atom[] = [];
@@ -607,7 +609,7 @@ function manageBranchExclusion(
   startIndex: number,
   endIndex: number,
   excludeIndex: number,
-  specialIndex: number
+  specialIndex: number,
 ): Atom[] {
   const excludedAtoms = new Set<Atom>();
   const result: Atom[] = [];
@@ -638,7 +640,7 @@ function handleLongPathBranchEightOrMore(shortestPath: Atom[], molecule: Molecul
     shortestPath.length - 1,
     shortestPath.length - 4,
     shortestPath.length - 5,
-    shortestPath.length - 4
+    shortestPath.length - 4,
   );
 }
 
@@ -649,7 +651,7 @@ function handleLongPathBranchSeven(shortestPath: Atom[], molecule: Molecule): At
     shortestPath.length - 1,
     shortestPath.length - 3,
     shortestPath.length - 4,
-    shortestPath.length - 3
+    shortestPath.length - 3,
   );
 }
 
@@ -660,7 +662,7 @@ function handleLongPathBranchSix(shortestPath: Atom[], molecule: Molecule): Atom
     shortestPath.length - 1,
     shortestPath.length - 3,
     shortestPath.length - 4,
-    shortestPath.length - 3
+    shortestPath.length - 3,
   );
 }
 
@@ -671,7 +673,7 @@ function handleLongPathBranchFive(shortestPath: Atom[], molecule: Molecule): Ato
     shortestPath.length - 1,
     shortestPath.length - 3,
     shortestPath.length - 3,
-    shortestPath.length - 2
+    shortestPath.length - 2,
   );
 }
 
@@ -682,7 +684,7 @@ function handleLongPathBranchFour(shortestPath: Atom[], molecule: Molecule): Ato
     shortestPath.length - 1,
     shortestPath.length - 2,
     shortestPath.length - 3,
-    shortestPath.length - 3
+    shortestPath.length - 3,
   );
 }
 
@@ -693,7 +695,7 @@ function handleLongPathBranchTwoOrThree(shortestPath: Atom[], molecule: Molecule
     shortestPath.length - 1,
     shortestPath.length - 2,
     shortestPath.length - 3,
-    shortestPath.length - 3
+    shortestPath.length - 3,
   );
 }
 
@@ -943,7 +945,7 @@ function isAtomRecurring(allShortestPaths: Atom[][], atom: Atom): boolean {
 function checkAtomsInFirstPath(
   molecule: Molecule,
   allShortestPaths: Atom[][],
-  shortestPath: Atom[]
+  shortestPath: Atom[],
 ): Atom[] | undefined {
   if (shortestPath.length >= 7) {
     const isAtomFirstRecurring = isAtomRecurring(allShortestPaths, shortestPath[1]);
@@ -981,7 +983,7 @@ function checkAtomsInFirstPath(
 export function checkAtomsInSecondPath(
   molecule: Molecule,
   allShortestPaths: Atom[][],
-  shortestPath: Atom[]
+  shortestPath: Atom[],
 ): Atom[] | undefined {
   if (shortestPath.length >= 7) {
     const isAtomFirstRecurring = isAtomRecurring(allShortestPaths, shortestPath[shortestPath.length - 2]);

@@ -12,15 +12,13 @@ export const COVALENT_ALKALI_EARTH_BONDS_EXIST = "covalent-counterion:1.3.8";
 
 export interface AlkaliBondsRuleConfig extends RuleConfig {}
 
-export const alkaliBondsAlgorithm: RuleAlgorithm<AlkaliBondsRuleConfig> = (structure, config) => {
+export const alkaliBondsAlgorithm: RuleAlgorithm<AlkaliBondsRuleConfig> = structure => {
   const output: RulesValidationResults[] = [];
 
-  // eslint-disable-next-line no-unreachable-loop
   for (const molecule of structure.molecules()) {
     const alkaliInMolecula: Atom[] = [];
     const alkaliEarthInMolecula: Atom[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (const atom of molecule.atoms) {
       const isAtomAlkali = ALKALI.includes(atom.label);
       const isAtomAlkaliEarth = ALKALI_EARTH.includes(atom.label);
@@ -37,7 +35,7 @@ export const alkaliBondsAlgorithm: RuleAlgorithm<AlkaliBondsRuleConfig> = (struc
       molecule,
       output,
       MAXIMUM_ALKALI_EARTH_BONDS,
-      COVALENT_ALKALI_EARTH_BONDS_EXIST
+      COVALENT_ALKALI_EARTH_BONDS_EXIST,
     );
   }
 
@@ -49,7 +47,7 @@ const checkMultipleBonds = (
   molecule: Molecule,
   output: RulesValidationResults[],
   maximumBonds: number,
-  errorCode: string
+  errorCode: string,
 ): void => {
   for (const atom of atoms) {
     const atomBonds = molecule.bonds.filter(bond => bond.from === atom || bond.to === atom);

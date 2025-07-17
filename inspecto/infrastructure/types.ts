@@ -1,22 +1,21 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { type Structure } from "@models";
 import { type Rule } from "@rules/models";
 
-export type RulesValidationResults = {
+export interface RulesValidationResults {
   isFixable?: boolean;
   fixMeta?: FixMeta;
   errorCode: string;
   message?: string;
   url?: string;
   path: string;
-};
+}
 
-export type FixMeta = {
+export interface FixMeta {
   requireUserInput: boolean;
   type: string;
   initialValue: string;
   prompt: string;
-};
+}
 
 export type InspectoResults = Record<
   string,
@@ -26,17 +25,17 @@ export type InspectoResults = Record<
   }
 >;
 
-export type FixingScope = {
+export interface FixingScope {
   path: string;
   errorCode: string;
   data: any;
-};
+}
 
 export interface IInspectoProcessor {
   convertFileContentToStructure: (fileContent: string) => Promise<Structure>;
   applyRulesToStructure: (
     rules: Array<Rule<any>>,
-    structure: Structure | string
+    structure: Structure | string,
   ) => Promise<{
     validation: InspectoResults;
     structure: Structure;

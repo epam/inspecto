@@ -7,7 +7,7 @@ describe("getCommonAtomInAdjacentBonds", () => {
     return new Atom(label, new Location(x, y, z));
   }
 
-  it('returns common atom when both bonds share the same "to" atom', () => {
+  it(`returns common atom when both bonds share the same "to" atom`, () => {
     const commonAtom = createAtomWithLocation("C", 1, 2, 3);
     const atom1 = createAtomWithLocation("H", 0, 2, 3);
     const atom2 = createAtomWithLocation("O", 2, 2, 3);
@@ -30,7 +30,7 @@ describe("getCommonAtomInAdjacentBonds", () => {
     expect(result).toBeNull();
   });
 
-  it('returns common atom when both bonds share the same "from" atom', () => {
+  it(`returns common atom when both bonds share the same "from" atom`, () => {
     const commonAtom = createAtomWithLocation("N", 3, 2, 3);
     const atom1 = createAtomWithLocation("O", 2, 3, 3);
     const atom2 = createAtomWithLocation("C", 1, 1, 3);
@@ -42,7 +42,7 @@ describe("getCommonAtomInAdjacentBonds", () => {
     expect(result).toBe(commonAtom);
   });
 
-  it('returns common atom when one bond\'s "from" atom is the other bond\'s "to" atom', () => {
+  it(`returns common atom when one bond's "from" atom is the other bond's "to" atom`, () => {
     const commonAtom = createAtomWithLocation("O", 4, 2, 3);
     const atom1 = createAtomWithLocation("C", 5, 1, 3);
     const atom2 = createAtomWithLocation("H", 3, 3, 3);
@@ -54,7 +54,7 @@ describe("getCommonAtomInAdjacentBonds", () => {
     expect(result).toBe(commonAtom);
   });
 
-  it('returns common atom when one bond\'s "to" atom is the other bond\'s "from" atom', () => {
+  it(`returns common atom when one bond's "to" atom is the other bond's "from" atom`, () => {
     const commonAtom = createAtomWithLocation("H", 6, 2, 3);
     const atom1 = createAtomWithLocation("C", 7, 1, 3);
     const atom2 = createAtomWithLocation("N", 5, 3, 3);

@@ -18,7 +18,7 @@ const DEFAULT_HYDROGENES: Record<string, number> = {
   Se: 2,
 };
 
-export const valenceAlgorithm: RuleAlgorithm<ValenceRuleConfig> = (structure, config) => {
+export const valenceAlgorithm: RuleAlgorithm<ValenceRuleConfig> = structure => {
   const output: RulesValidationResults[] = [];
 
   for (const molecule of structure.molecules()) {

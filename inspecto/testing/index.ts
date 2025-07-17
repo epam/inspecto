@@ -1,10 +1,10 @@
-import type { Structure } from "../..";
 import IndigoModule from "indigo-ketcher";
 import { DataModelProcessor } from "@processors";
 import { type Rule } from "@rules/models/Rule";
 import { RulesManager } from "@rules";
 import { type Rules as RuleNames, type RulesValidationResults } from "@infrastructure";
 import { type Registry } from "@rules/infrastructure";
+import type { Structure } from "@models";
 
 const indigoModule = IndigoModule();
 const dataProcessor = new DataModelProcessor();

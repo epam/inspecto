@@ -1,21 +1,20 @@
-import type { RuleConfig, BaseRule } from "@rules/algorithms/base";
+import type { ConcreteRuleClass, RuleConfig } from "@rules/algorithms/base";
 import { type RuleAlgorithm } from "@rules/infrastructure";
 
 export class Rule<TConfig extends RuleConfig> {
   private readonly _name: string;
-  readonly _algorithm: RuleAlgorithm<TConfig> | typeof BaseRule<TConfig>;
+  readonly _algorithm: RuleAlgorithm<TConfig> | ConcreteRuleClass<TConfig>;
 
-  // eslint-disable-next-line @typescript-eslint/prefer-readonly
   private _config: TConfig;
   private readonly _tags: string[];
   private readonly _description: string;
 
   constructor(
     name: string,
-    algorithm: RuleAlgorithm<TConfig> | typeof BaseRule<TConfig>,
+    algorithm: RuleAlgorithm<TConfig> | ConcreteRuleClass<TConfig>,
     config: TConfig,
     tags?: string[],
-    description?: string
+    description?: string,
   ) {
     this._name = name;
     this._algorithm = algorithm;
@@ -38,6 +37,10 @@ export class Rule<TConfig extends RuleConfig> {
 
   public get config(): TConfig {
     return JSON.parse(JSON.stringify(this._config));
+  }
+
+  public set config(inputConfig: TConfig) {
+    this._config = inputConfig;
   }
 
   public getOriginalConfig(): TConfig {

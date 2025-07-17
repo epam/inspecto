@@ -1,11 +1,12 @@
 import { type Rules, type InspectoResults } from "@infrastructure";
-import { Inspecto, type Structure } from "..";
+import { Inspecto } from "..";
 import { type Rule, RulesManager } from "../rules";
 import dat from "dat.gui";
 import { writeList } from "./components/list/list";
 import { getKetcher } from "./utils/getKetcher";
 import { getFixRule } from "./utils/getFixRule";
 import { getObject, storeObject, storeString, getString } from "./utils/storage";
+import type { Structure } from "@models";
 
 const rules = RulesManager.getAllRules();
 
@@ -56,8 +57,7 @@ const gui = new dat.GUI();
 DOMNodes.rulesContainer?.appendChild(gui.domElement);
 DOMNodes.copyResultsButton?.addEventListener("click", () => {
   const output = DOMNodes.outputSection?.textContent;
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  navigator.clipboard.writeText(output ?? "");
+  void navigator.clipboard.writeText(output ?? "");
 });
 
 DOMNodes.navLinks.forEach(link => {
