@@ -23,18 +23,32 @@ Inspecto is a molecular checker that validates chemical structures to ensure the
 
 ## 🚀 Installation
 
-### Prerequisites
+### Using the Package
+
+Since this package is not published to npm, you can install it directly from GitHub:
+
+#### Using npm
+
+```bash
+npm install git+https://github.com/epam/inspecto.git
+```
+
+### Development Setup
+
+If you want to contribute to the project or run it locally:
+
+#### Prerequisites
 
 - Node.js (v14 or later)
 - pnpm
 
-### Install Dependencies
+#### Install Dependencies
 
 ```bash
 pnpm install
 ```
 
-### Build the Package
+#### Build the Package
 
 ```bash
 pnpm run build

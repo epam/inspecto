@@ -40,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git.epam.com/epm-lstr/epm-lstr-chc/inspecto/-/tree/Trunk"
+    "url": "https://github.com/epam/inspecto"
   },
   "keywords": [
     "epam",
