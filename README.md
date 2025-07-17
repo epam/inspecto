@@ -72,11 +72,17 @@ pnpm run update-ketcher
 
 ## 📘 API
 
-See the corresponding Knowledge Base page for detailed API documentation.
+See the corresponding Knowledge Base page for detailed [API documentation](https://github.com/epam/inspecto/wiki/API).
 
 ## 💻 Development
 
 For instructions on how to add new validation rules, see the [Creating a New Rule](./creating-new-rule.md) guide.
+
+For instructions on how to apply rules, see the [Apply rules](https://github.com/epam/inspecto/wiki/How-to:-Apply-rules) guide.
+
+List of available Rule Descriptions may be found [here](https://github.com/epam/inspecto/wiki/Rules).
+
+Data model described on this [page](https://github.com/epam/inspecto/wiki/Data-Model).
 
 ### Technology Stack
 
