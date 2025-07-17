@@ -113,7 +113,7 @@ function fixGraph(
   molecule: Molecule,
   output: RulesValidationResults[],
   config: BondAngleRuleConfig,
-  startAtom?: Atom
+  startAtom?: Atom,
 ): void {
   const longestChain = findLongestChainInGraph(graph, startAtom);
   if (longestChain.length < 3) {
@@ -202,14 +202,14 @@ function fixSubChain(
   longestChain: Atom[],
   molecule: Molecule,
   output: RulesValidationResults[],
-  config: BondAngleRuleConfig
+  config: BondAngleRuleConfig,
 ): void {
   const connectedAtoms = graph.get(atom);
   if (connectedAtoms === undefined) {
     return;
   }
   const connectedAtomsWithoutCentral = [...connectedAtoms].filter(
-    connectedAtom => !longestChain.includes(connectedAtom)
+    connectedAtom => !longestChain.includes(connectedAtom),
   );
   for (const connectedAtom of connectedAtomsWithoutCentral) {
     const subGraph = getSubGraph(graph, connectedAtom, [atom]);
@@ -240,7 +240,7 @@ function checkAndFixEqualAngles(data: CentralAtomData, errorCode: string, errorM
     const atomsWithoutReference = connectedAtoms.filter(atom => atom !== referenceAtom);
     const atomsWithoutReferenceSorted = atomsWithoutReference.sort(
       (a, b) =>
-        getAngleBetweenAtoms(centralAtom, referenceAtom, a) - getAngleBetweenAtoms(centralAtom, referenceAtom, b)
+        getAngleBetweenAtoms(centralAtom, referenceAtom, a) - getAngleBetweenAtoms(centralAtom, referenceAtom, b),
     );
     atomsWithoutReferenceSorted.forEach(connectedAtom => {
       changeAngleForConnectedAtom(connectedAtom, centralAtom, referenceAtom, angleStep, rightCentralAtom, molecule);
@@ -276,7 +276,7 @@ function checkAndFixFourBondsAngles(data: CentralAtomData, errorCode: string, er
       connectedAtom =>
         connectedAtom !== referenceAtom &&
         connectedAtom !== connectedAtomWithOneBond &&
-        connectedAtom !== rightCentralAtom
+        connectedAtom !== rightCentralAtom,
     )!;
 
     sortedConnectedAtoms = [
@@ -289,7 +289,7 @@ function checkAndFixFourBondsAngles(data: CentralAtomData, errorCode: string, er
     const connectedAtomsWithoutCentral = connectedAtoms.filter(connectedAtom => connectedAtom !== referenceAtom);
     const connectedAtomsWithoutCentralSorted = connectedAtomsWithoutCentral.sort(
       (a, b) =>
-        getAngleBetweenAtoms(centralAtom, referenceAtom, a) - getAngleBetweenAtoms(centralAtom, referenceAtom, b)
+        getAngleBetweenAtoms(centralAtom, referenceAtom, a) - getAngleBetweenAtoms(centralAtom, referenceAtom, b),
     );
     sortedConnectedAtoms = [referenceAtom, ...connectedAtomsWithoutCentralSorted];
   }
@@ -364,8 +364,8 @@ function checkAndFixTwoBondsAngles(data: CentralAtomData, errorCode: string, err
     childAtoms.forEach(childAtom => {
       const oldChildAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, childAtom);
       const newChildAngle = oldChildAngle - angleDiff;
-      const distance = getDistance(childAtom, centralAtom);
-      const childNewPosition = findCoordinatesForAngle(referenceAtom, centralAtom, distance, newChildAngle);
+      const childDistance = getDistance(childAtom, centralAtom);
+      const childNewPosition = findCoordinatesForAngle(referenceAtom, centralAtom, childDistance, newChildAngle);
       childAtom.changePosition(childNewPosition.x, childNewPosition.y);
     });
   } else {
@@ -384,7 +384,7 @@ function changeAngleForConnectedAtom(
   referenceAtom: Atom,
   angleStep: number,
   rightCentralAtom: Atom,
-  molecule: Molecule
+  molecule: Molecule,
 ): void {
   const distance = getDistance(connectedAtom, centralAtom);
   const oldAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, connectedAtom);
@@ -397,8 +397,8 @@ function changeAngleForConnectedAtom(
     childAtoms.forEach(childAtom => {
       const oldChildAngle = getAngleBetweenAtoms(centralAtom, referenceAtom, childAtom);
       const newChildAngle = oldChildAngle - angleDiff;
-      const distance = getDistance(childAtom, centralAtom);
-      const childNewPosition = findCoordinatesForAngle(referenceAtom, centralAtom, distance, newChildAngle);
+      const childDistance = getDistance(childAtom, centralAtom);
+      const childNewPosition = findCoordinatesForAngle(referenceAtom, centralAtom, childDistance, newChildAngle);
       childAtom.changePosition(childNewPosition.x, childNewPosition.y);
     });
   }

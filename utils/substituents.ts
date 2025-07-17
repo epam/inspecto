@@ -87,7 +87,7 @@ export function compareSubstituentPair(molecule: Molecule, atom: Atom): Atom | n
     substituent1,
     childrenOfSubstituent1,
     substituent2,
-    childrenOfSubstituent2
+    childrenOfSubstituent2,
   );
   if (result !== null) {
     return result;
@@ -109,9 +109,9 @@ export function compareSubstituentPair(molecule: Molecule, atom: Atom): Atom | n
     ) {
       const childCompareResult = compareSubstituents(highestChild1, highestChild2);
       if (childCompareResult !== 0) {
-        const result = childCompareResult > 0 ? substituent2 : substituent1;
+        const resultingSubstituent = childCompareResult > 0 ? substituent2 : substituent1;
 
-        return result;
+        return resultingSubstituent;
       } else if (childCompareResult === 0) {
         const grandChildrenOfSubstituent1 = findGrandchildren(childrenOfSubstituent1, molecule, substituent1);
         const grandChildrenOfSubstituent2 = findGrandchildren(childrenOfSubstituent2, molecule, substituent2);
@@ -144,16 +144,16 @@ export function compareSubstituentPair(molecule: Molecule, atom: Atom): Atom | n
           ) {
             const grandchildCompareResult = compareSubstituents(highestGrandchild1, highestGrandchild2);
             if (grandchildCompareResult !== 0) {
-              const result = grandchildCompareResult > 0 ? substituent2 : substituent1;
+              const resultingSubstituent = grandchildCompareResult > 0 ? substituent2 : substituent1;
 
-              return result;
+              return resultingSubstituent;
             }
           }
           const compareTotalAtomicNum = compareTotalAtomicNumbers(
             childrenOfSubstituent1,
             grandChildrenOfSubstituent1,
             childrenOfSubstituent2,
-            grandChildrenOfSubstituent2
+            grandChildrenOfSubstituent2,
           );
 
           if (compareTotalAtomicNum === 1) {
@@ -216,11 +216,11 @@ export function compareSubstituents(atomA: Atom, atomB: Atom): number {
 }
 
 export function findChild(atom: Atom, molecule: Molecule, exclude: Atom): Atom[] {
-  const findChild = molecule
+  const foundChild = molecule
     .getAtomBonds(atom)
     .filter(bond => bond.from !== exclude && bond.to !== exclude)
     .map(bond => (bond.from === atom ? bond.to : bond.from));
-  return findChild;
+  return foundChild;
 }
 
 export function containsCipLabel(atomList: Atom[], label: string): boolean {
@@ -232,7 +232,7 @@ export function determineHigherPrioritySubstituentBasedOnChildren(
   substituent1: Atom,
   childrenOfSubstituent1: Atom[],
   substituent2: Atom,
-  childrenOfSubstituent2: Atom[]
+  childrenOfSubstituent2: Atom[],
 ): Atom | null {
   const substituent1TotalChildPriority = calculateTotalEffectiveAtomCount(molecule, childrenOfSubstituent1);
   const substituent2TotalChildPriority = calculateTotalEffectiveAtomCount(molecule, childrenOfSubstituent2);
@@ -303,7 +303,7 @@ export function compareTotalAtomicNumbers(
   children1: Atom[],
   grandChildren1: Atom[],
   children2: Atom[],
-  grandChildren2: Atom[]
+  grandChildren2: Atom[],
 ): number | undefined {
   function sumOfAtomicNumbers(atoms: Atom[]): number {
     return atoms.reduce((sum, atom) => {

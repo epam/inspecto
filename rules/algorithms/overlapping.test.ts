@@ -46,8 +46,6 @@ function createSampleGraph(): Map<Atom, Set<Atom>> {
   const atomA = createAtomWithLocation("C", 0, 0, 0);
   const atomB = createAtomWithLocation("C", 1, 0, 0);
   const atomC = createAtomWithLocation("C", 2, 0, 0);
-  const bondAB = new Bond(BOND_TYPES.SINGLE, [atomA, atomB], [0, 1]);
-  const bondBC = new Bond(BOND_TYPES.SINGLE, [atomB, atomC], [1, 2]);
   const graph = new Map<Atom, Set<Atom>>();
   graph.set(atomA, new Set([atomB]));
   graph.set(atomB, new Set([atomA, atomC]));
@@ -234,7 +232,7 @@ describe("calculateAtomDistancesToCenterOfMass", () => {
       "SymmetricalMolecule",
       [atomA, atomB, atomC, atomD],
       [bondAB, bondBC, bondCD],
-      sgroups
+      sgroups,
     );
     const centerOfMass = { x: 1, y: 0.25, z: 0 };
     const distances = calculateAtomDistancesToCenterOfMass(molecule.atoms, centerOfMass);
@@ -265,7 +263,7 @@ describe("findShortestPathOverlappingBonds", () => {
       "TestMolecule",
       [atomA, atomB, atomC, atomD, atomE],
       [bondAB, bondBC, bondCD, bondDE],
-      []
+      [],
     );
     const graph = createGraph(molecule);
 
