@@ -19,6 +19,8 @@
 
 ## 🧪 Definition
 
+![Scheme, describing how inspecto is working](./public/description.png)
+
 Inspecto is a molecular checker that validates chemical structures to ensure they satisfy chemical rules.
 
 ## 🚀 Installation
